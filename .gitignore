@@ -1,0 +1,33 @@
+/member-service/logs
+/member-service/*.pid
+application.pid
+
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.settings/
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.pid
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/logs/
+/pay-service/.gitignore
