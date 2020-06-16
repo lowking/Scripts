@@ -35,3 +35,6 @@ application.pid
 ### node ###
 package-lock.json
 node_modules
+
+### others
+github.js
