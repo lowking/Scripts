@@ -124,8 +124,6 @@ function superTalkSignIn(index, name, super_id) {
 function notify() {
     return new Promise((resolve, reject) => {
         lk.msg(`微博超话签到结果`, ``, `${notifyInfo}`)
-        // 待测试
-        lk.setValueForKey(signHeaderKey, ``)
         lk.done()
         resolve()
     })
