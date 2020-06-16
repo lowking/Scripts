@@ -31,3 +31,7 @@ application.pid
 /.nb-gradle/
 /logs/
 /pay-service/.gitignore
+
+### node ###
+package-lock.json
+node_modules
