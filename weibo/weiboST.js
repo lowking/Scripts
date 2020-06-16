@@ -39,20 +39,24 @@ const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 const mainTitle = `微博超话`
+const userFollowSTKey = `lkUserFollowSTKey`
 var notifyInfo = ``
-var accounts = [
-    ["女流", "10080850b1c3b64e5545118a102f555513c8e2"],
-    ["VVebo", "100808ea6caf9419bec340a20efc3c6aa50b65"],
-    ["雀", "1008082ff97aa6fcfa3e39c3ef65fa51f0a027"],
-    ["超级小桀", "10080883321dbae3ada25e5c406fccd3aaadd5"],
-    ["动森", "100808a6c64b07163fe20e1a35fee1538280ed"]
-]
+var accounts = !lk.getVal(userFollowSTKey) ? [
+        ["女流", "10080850b1c3b64e5545118a102f555513c8e2"],
+        ["VVebo", "100808ea6caf9419bec340a20efc3c6aa50b65"],
+        ["雀", "1008082ff97aa6fcfa3e39c3ef65fa51f0a027"],
+        ["超级小桀", "10080883321dbae3ada25e5c406fccd3aaadd5"],
+        ["动森", "100808a6c64b07163fe20e1a35fee1538280ed"]
+    ] : JSON.parse(lk.getVal(userFollowSTKey))
 
 async function all() {
     let cookie = lk.getVal(signHeaderKey)
     //校验cookie
-    if (!cookie || isClearCookie) {
-        lk.msg(mainTitle, ``, `未获取到cookie，请重新获取❌`)
+    lk.log(cookie)
+    lk.log(lk.getVal(userFollowSTKey))
+    if (!cookie || isClearCookie || !userFollowSTKey) {
+        lk.setValueForKey(signHeaderKey, ``)
+        lk.msg(mainTitle, ``, isClearCookie ? `手动清除cookie` : `未获取到cookie或关注列表，请重新获取❌`)
         lk.done()
         return false
     }

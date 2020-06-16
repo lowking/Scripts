@@ -36,7 +36,7 @@ const lk = nobyda()
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
 const mainTitle = `QQ会员成长值签到`
 var notifyInfo = ``
-var accounts = lk.getVal(signHeaderKey) ? JSON.parse(lk.getVal(signHeaderKey)) : []
+var accounts = !lk.getVal(signHeaderKey) ? [] : JSON.parse(lk.getVal(signHeaderKey))
 // accounts = []
 
 let isGetCookie = typeof $request !== 'undefined'
