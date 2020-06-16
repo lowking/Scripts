@@ -36,6 +36,7 @@ hostname= weibo.com
 const isEnableLog = true
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
+const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 var notifyInfo = ``
 var accounts = [
     ["女流", "10080850b1c3b64e5545118a102f555513c8e2"],
@@ -46,6 +47,7 @@ var accounts = [
 ]
 
 async function all() {
+    lk.log(lk.getVal(signHeaderKey))
     await signIn() //签到
     await notify() //通知
 }
@@ -68,10 +70,11 @@ function superTalkSignIn(index, name, super_id) {
             url: "https://weibo.com/p/aj/general/button?ajwvr=6&api=http://i.huati.weibo.com/aj/super/checkin&texta=%E7%AD%BE%E5%88%B0&textb=%E5%B7%B2%E7%AD%BE%E5%88%B0&status=0&id=" + super_id + "&location=page_100808_super_index&timezone=GMT+0800&lang=zh-cn&plat=MacIntel&ua=Mozilla/5.0%20(Macintosh;%20Intel%20Mac%20OS%20X%2010_15)%20AppleWebKit/605.1.15%20(KHTML,%20like%20Gecko)%20Version/13.0.4%20Safari/605.1.15&screen=375*812&__rnd=1576850070506",
             headers: {
                 Cookie: lk.getVal(signHeaderKey),
+                "User-Agent": userAgent
             }
         }
         lk.get(super_url, (error, response, data) => {
-            lk.log(`\n${data}`);
+            lk.log(`\n${JSON.stringify(super_url)}`);
             try {
                 if (error) {
                     notifyInfo += `【${name}】超话签到错误！-${error}`
