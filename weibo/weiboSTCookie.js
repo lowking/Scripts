@@ -78,7 +78,7 @@ function nobyda() {
             body: subtitle ? subtitle + "\n" + message : message
         })
     }
-    const setValueForKey = (value, key) => {
+    const setValueForKey = (key, value) => {
         if (isQuanX) return $prefs.setValueForKey(value, key)
         if (isSurge) return $persistentStore.write(value, key)
     }
