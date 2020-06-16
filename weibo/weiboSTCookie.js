@@ -164,7 +164,9 @@ function nobyda() {
             $http.post(options);
         }
     }
-    const log = (message) => console.log(`\n██${message}`)
+    const log = (message) => {
+        if (isEnableLog) console.log(`\n██${message}`)
+    }
     const time = () => {
         const end = ((Date.now() - start) / 1000).toFixed(2)
         return console.log('\n签到用时: ' + end + ' 秒')

@@ -33,7 +33,7 @@ https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.wei
 [mitm] 
 hostname= weibo.com
 */
-const isEnableLog = true
+const isEnableLog = false
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
@@ -230,7 +230,9 @@ function nobyda() {
             $http.post(options);
         }
     }
-    const log = (message) => console.log(`\n██${message}`)
+    const log = (message) => {
+        if (isEnableLog) console.log(`\n██${message}`)
+    }
     const time = () => {
         const end = ((Date.now() - start) / 1000).toFixed(2)
         return console.log('\n签到用时: ' + end + ' 秒')
