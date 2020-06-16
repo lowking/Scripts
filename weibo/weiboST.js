@@ -1,5 +1,5 @@
 /*
-微博超话签到-lowking-v1.0(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
+微博超话签到-lowking-v1.1(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
 
 ⚠️注：获取完cookie记得把脚本禁用
 
@@ -33,10 +33,12 @@ https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.wei
 [mitm] 
 hostname= weibo.com
 */
-const isEnableLog = false
+const isEnableLog = true
+const isClearCookie = false
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
+const mainTitle = `微博超话`
 var notifyInfo = ``
 var accounts = [
     ["女流", "10080850b1c3b64e5545118a102f555513c8e2"],
@@ -47,10 +49,17 @@ var accounts = [
 ]
 
 async function all() {
-    lk.log(lk.getVal(signHeaderKey))
-    await signIn() //签到
+    let cookie = lk.getVal(signHeaderKey)
+    //校验cookie
+    if (!cookie || isClearCookie) {
+        lk.msg(mainTitle, ``, `未获取到cookie，请重新获取❌`)
+        lk.done()
+        return false
+    }
+    await signIn(); //签到
     await notify() //通知
 }
+
 all()
 
 function signIn() {
@@ -74,11 +83,10 @@ function superTalkSignIn(index, name, super_id) {
             }
         }
         lk.get(super_url, (error, response, data) => {
-            lk.log(`\n${JSON.stringify(super_url)}`);
+            lk.log(`\n${JSON.stringify(data)}`);
             try {
                 if (error) {
                     notifyInfo += `【${name}】超话签到错误！-${error}`
-                    lk.setValueForKey(signHeaderKey, ``)
                 } else {
                     if (index > 0) {
                         notifyInfo += `\n`
@@ -103,6 +111,9 @@ function superTalkSignIn(index, name, super_id) {
                         notifyInfo += `【${name}】超话签到${msg}`
                     }
                 }
+            } catch (e) {
+                lk.log(`超话签到异常：${e}`)
+                lk.msg(mainTitle, `签到失败，请查看【超话签到异常】日志，反馈给作者`)
             } finally {
                 resolve()
             }
@@ -114,7 +125,7 @@ function notify() {
     return new Promise((resolve, reject) => {
         lk.msg(`微博超话签到结果`, ``, `${notifyInfo}`)
         // 待测试
-        // lk.setValueForKey(signHeaderKey, ``)
+        lk.setValueForKey(signHeaderKey, ``)
         lk.done()
         resolve()
     })
@@ -130,7 +141,7 @@ function nobyda() {
     const node = (() => {
         if (isNode) {
             const request = require('request');
-            return ({ request })
+            return ({request})
         } else {
             return (null)
         }
@@ -185,7 +196,7 @@ function nobyda() {
                 url: options
             }
             options["header"] = options["headers"]
-            options["handler"] = function(resp) {
+            options["handler"] = function (resp) {
                 let error = resp.error;
                 if (error) error = JSON.stringify(resp.error)
                 let body = resp.data;
@@ -220,7 +231,7 @@ function nobyda() {
                 url: options
             }
             options["header"] = options["headers"]
-            options["handler"] = function(resp) {
+            options["handler"] = function (resp) {
                 let error = resp.error;
                 if (error) error = JSON.stringify(resp.error)
                 let body = resp.data;
@@ -241,5 +252,5 @@ function nobyda() {
         if (isQuanX) isRequest ? $done(value) : null
         if (isSurge) isRequest ? $done(value) : $done()
     }
-    return { isRequest, isJSBox, isNode, msg, setValueForKey, getVal, get, post, log, time, done }
+    return {isRequest, isJSBox, isNode, msg, setValueForKey, getVal, get, post, log, time, done}
 }
