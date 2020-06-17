@@ -36,66 +36,85 @@ hostname= weibo.com
 const isEnableLog = true
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
-const myFollowUrl = `https://weibo.com/p/1005051760825157/myfollow?relate=interested&pids=plc_main&ajaxpagelet=1&ajaxpagelet_v6=1&__ref=%2F1760825157%2Ffollow%3Frightmod%3D1%26wvr%3D6&_t=FM_159231991868741`
+const myFollowUrl = `https://weibo.com/p/1005051760825157/myfollow?relate=interested&pids=plc_main&ajaxpagelet=1&ajaxpagelet_v6=1&__ref=%2F1760825157%2Ffollow%3Frightmod%3D1%26wvr%3D6&_t=FM_159231991868741erested__97_page`
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 const userFollowSTKey = `lkUserFollowSTKey`
+var superTalkList = []
 
-if ($request.headers['Cookie']) {
-    var url = $request.url;
-    var super_id = url.match(/id.*?(?=&loc)/)
-    super_id = super_id[0].replace("id=", "")
-    var cookie = $request.headers['Cookie'];
-    var super_cookie = lk.setValueForKey(signHeaderKey, cookie);
-    if (!super_cookie) {
-        lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请重试")
+async function getInfo() {
+    if ($request.headers['Cookie']) {
+        var url = $request.url;
+        var super_id = url.match(/id.*?(?=&loc)/)
+        super_id = super_id[0].replace("id=", "")
+        var cookie = $request.headers['Cookie'];
+        var super_cookie = lk.setValueForKey(signHeaderKey, cookie);
+        if (!super_cookie) {
+            lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请重试")
+        } else {
+            lk.msg("写入微博超话Cookie成功🎉", "超话id: " + super_id, "您可以手动禁用此脚本")
+        }
+        //拿到cookie之后获取关注到超话列表
+        await getFollowList(1)
+        //持久化
+        lk.log(JSON.stringify(superTalkList))
+        lk.setValueForKey(userFollowSTKey, JSON.stringify(superTalkList))
+        lk.log(`获取关注超话${superTalkList.length}个`)
+        lk.done()
     } else {
-        lk.msg("写入微博超话Cookie成功🎉", "超话id: " + super_id, "您可以手动禁用此脚本")
+        lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请退出账号, 重复步骤")
     }
-    //拿到cookie之后获取关注到超话列表
-    lk.get({
-        url: myFollowUrl,
-        headers: {
-            cookie: cookie,
-            "User-Agent": userAgent
-        }
-    }, (error, statusCode, body) => {
-        try {
-            lk.log(cookie)
-            let superTalkList = []
-            body.split(`<script>parent.FM.view({`).forEach((curStr) => {
-                if (curStr.indexOf(`关系列表模块`) != -1 && curStr.indexOf(`Pl_Official_RelationInterested`) != -1) {
-                    lk.log(`************************${curStr}`)
-                    let listStr = curStr.split(`"html":`)[1].split(`"\n})</script>`)[0]
-                    // console.log(listStr)
-                    listStr.split(`<a href=\\"\\/p\\/`).forEach((curST, index) => {
-                        if (index > 0) {
-                            let superId = curST.split(`?`)[0]
-                            let screenName = curST.split(`target=\\"_blank\\">`)[1].split(`<`)[0]
-                            if (screenName.indexOf(`<img class=\\"W_face_radius\\"`) == -1 && !!screenName) {
-                                lk.log(`超话id：${superId}，超话名：${screenName}`);
-                                superTalkList.push([screenName, superId])
-                            }
-                        }
-                    })
-                }
-            })
-            //持久化
-            lk.log(JSON.stringify(superTalkList))
-            lk.setValueForKey(userFollowSTKey, JSON.stringify(superTalkList))
-            if (superTalkList.length <= 0) {
-                lk.msg(`获取关注超话列表失败❌`, ``, `请重试，或者把日志完整文件发给作者`);
-            } else {
-                lk.msg(`获取关注超话列表成功🎉`, ``, `请禁用获取cookie脚本`);
-            }
-        } catch (e) {
-            lk.log(`//**********************************「\n${error}\n${statusCode}\n${body}\n」**********************************/`)
-            lk.msg(`获取关注的超话列表失败`, ``, `请重新获取，或者把日志完整文件发给作者`)
-        }
-    })
-} else {
-    lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请退出账号, 重复步骤")
 }
-lk.done()
+
+getInfo()
+
+function getFollowList(page) {
+    return new Promise((resolve, reject) => {
+        let option = {
+            url: myFollowUrl + (page > 1 ? `&Pl_Official_RelationInterested__97_page=${page}` : ``),
+            headers: {
+                cookie: `webim_unReadCount=%7B%22time%22%3A1592369536893%2C%22dm_pub_total%22%3A2%2C%22chat_group_client%22%3A999%2C%22chat_group_notice%22%3A0%2C%22allcountNum%22%3A1001%2C%22msgbox%22%3A0%7D; Apache=4638243674156.289.1592364939622; ULV=1592364939645:2:2:2:4638243674156.289.1592364939622:1592332169029; _s_tentry=-; YF-Page-G0=20a0c65c6e2ee949c1f78305a122073b|1592364932|1592364932; SINAGLOBAL=3087794508714.5396.1592332168990; ALF=1594924151; SUB=_2A25z7X8nDeRhGedG7FsR9ivKzT2IHXVRLgFvrDV8PUJbkNANLWnkkW1NUR6_mI91fKr9qr7hFwtKHE_Kg2rLyTe2; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2sp.ciXQs1D_Pp7oyppw_5JpX5oz75NHD95Qp1hM4ehqfSoqpWs4DqcjlCs8X9HLaUHSf9sxLdJp4`,
+                "User-Agent": userAgent
+            }
+        }
+        lk.log(JSON.stringify(option))
+        lk.get(option, async (error, statusCode, body) => {
+            try {
+                // lk.log(body)
+                let count = 0
+                body.split(`<script>parent.FM.view({`).forEach((curStr) => {
+                    if (curStr.indexOf(`关系列表模块`) != -1 && curStr.indexOf(`Pl_Official_RelationInterested`) != -1) {
+                        // lk.log(`************************${curStr}`)
+                        let listStr = curStr.split(`"html":`)[1].split(`"\n})</script>`)[0]
+                        listStr.split(`<a href=\\"\\/p\\/`).forEach((curST, index) => {
+                            if (index > 0) {
+                                let superId = curST.split(`?`)[0]
+                                let screenName = curST.split(`target=\\"_blank\\">`)[1].split(`<`)[0]
+                                if (screenName.indexOf(`<img class=\\"W_face_radius\\"`) == -1 && !!screenName) {
+                                    lk.log(`超话id：${superId}，超话名：${screenName}`);
+                                    superTalkList.push([screenName, superId])
+                                    count++
+                                }
+                            }
+                        })
+                    }
+                })
+                if (count >= 30) {
+                    await getFollowList(++page)
+                } else {
+                    if (superTalkList.length <= 0) {
+                        lk.msg(`获取关注超话列表失败❌`, ``, `请重试，或者把日志完整文件发给作者`);
+                    } else {
+                        lk.msg(`获取关注超话列表成功🎉`, ``, `请禁用获取cookie脚本`);
+                    }
+                }
+                resolve()
+            } catch (e) {
+                lk.log(`//**********************************「\n${error}\n${JSON.stringify(statusCode)}\n${body}\n」**********************************/`)
+                lk.msg(`获取关注的超话列表失败`, ``, `请重新获取，或者把日志完整文件发给作者`)
+            }
+        })
+    })
+}
 
 function nobyda() {
     const start = Date.now()
