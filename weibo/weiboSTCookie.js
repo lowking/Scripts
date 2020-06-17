@@ -40,13 +40,14 @@ const myFollowUrl = `https://weibo.com/p/1005051760825157/myfollow?relate=intere
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 const userFollowSTKey = `lkUserFollowSTKey`
 var superTalkList = []
+var cookie
 
 async function getInfo() {
     if ($request.headers['Cookie']) {
         var url = $request.url;
         var super_id = url.match(/id.*?(?=&loc)/)
         super_id = super_id[0].replace("id=", "")
-        var cookie = $request.headers['Cookie'];
+        cookie = $request.headers['Cookie'];
         var super_cookie = lk.setValueForKey(signHeaderKey, cookie);
         if (!super_cookie) {
             lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请重试")
@@ -72,7 +73,7 @@ function getFollowList(page) {
         let option = {
             url: myFollowUrl + (page > 1 ? `&Pl_Official_RelationInterested__97_page=${page}` : ``),
             headers: {
-                cookie: `webim_unReadCount=%7B%22time%22%3A1592369536893%2C%22dm_pub_total%22%3A2%2C%22chat_group_client%22%3A999%2C%22chat_group_notice%22%3A0%2C%22allcountNum%22%3A1001%2C%22msgbox%22%3A0%7D; Apache=4638243674156.289.1592364939622; ULV=1592364939645:2:2:2:4638243674156.289.1592364939622:1592332169029; _s_tentry=-; YF-Page-G0=20a0c65c6e2ee949c1f78305a122073b|1592364932|1592364932; SINAGLOBAL=3087794508714.5396.1592332168990; ALF=1594924151; SUB=_2A25z7X8nDeRhGedG7FsR9ivKzT2IHXVRLgFvrDV8PUJbkNANLWnkkW1NUR6_mI91fKr9qr7hFwtKHE_Kg2rLyTe2; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9WF2sp.ciXQs1D_Pp7oyppw_5JpX5oz75NHD95Qp1hM4ehqfSoqpWs4DqcjlCs8X9HLaUHSf9sxLdJp4`,
+                cookie: cookie,
                 "User-Agent": userAgent
             }
         }
