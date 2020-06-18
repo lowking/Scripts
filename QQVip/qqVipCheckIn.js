@@ -1,5 +1,5 @@
 /*
-QQ会员成长值-lowking-v1.0
+QQ会员成长值-lowking-v1.1
 
 按下面配置完之后，手机qq进入左侧会员，滑动即可
 ⚠️注：发现cookie存活时间较短，增加isEnableNotifyForGetCookie，用来控制获取cookie时的通知，默认关闭通知
