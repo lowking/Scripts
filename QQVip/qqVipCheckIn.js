@@ -2,7 +2,7 @@
 QQ会员成长值-lowking-v1.0
 
 按下面配置完之后，手机qq进入左侧会员，滑动即可
-⚠️注：不知道能保持多久，等时间验证吧
+⚠️注：发现cookie存活时间较短，增加isEnableNotifyForGetCookie，用来控制获取cookie时的通知，默认关闭通知
 
 ************************
 Surge 4.2.0+ 脚本配置:
@@ -31,6 +31,8 @@ https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi? url script-request-header qq
 hostname= proxy.vac.qq.com
 */
 const isEnableLog = true
+const isEnableNotifyForGetCookie = false
+const isDeleteAllCookie = false
 const signHeaderKey = 'lkQQSignHeaderKey'
 const lk = nobyda()
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
@@ -57,27 +59,33 @@ async function all() {
 function getCookie() {
     const url = $request.url
     if ($request && $request.method != 'OPTIONS' && url.match(/\/cgi-bin\/srfentry/)) {
-        const qqheader = JSON.stringify($request.headers.Cookie)
-        lk.log(qqheader)
-        if (qqheader) {
-            let obj = {
-                qq: Number(getCookieProp(qqheader, `uin`).substring(1)),
-                skey: getCookieProp(qqheader, `skey`),
-                cookie: qqheader
-            }
-            //判断当前qq信息是否持久化
-            if (accounts.length > 0) {
-                for (var i in accounts) {
-                    if (accounts[i].qq == obj.qq) {
-                        accounts.splice(i, 1);
+        try {
+            const qqheader = JSON.stringify($request.headers.Cookie)
+            lk.log(qqheader)
+            if (qqheader) {
+                let obj = {
+                    qq: Number(getCookieProp(qqheader, `uin`).substring(1)),
+                    skey: getCookieProp(qqheader, `skey`),
+                    cookie: qqheader
+                }
+                //判断当前qq信息是否持久化
+                if (accounts.length > 0) {
+                    for (var i in accounts) {
+                        if (accounts[i].qq == obj.qq) {
+                            accounts.splice(i, 1);
+                        }
                     }
                 }
+                accounts.push(obj)
+                lk.setValueForKey(signHeaderKey, JSON.stringify(accounts))
+                lk.log(`${JSON.stringify(accounts)}`)
+                lk.log(`${lk.getVal(signHeaderKey)}`)
+                if (isEnableNotifyForGetCookie) {
+                    lk.msg(mainTitle, ``, `${autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}获取cookie成功🎉`)
+                }
             }
-            accounts.push(obj)
-            lk.setValueForKey(signHeaderKey, JSON.stringify(accounts))
-            lk.log(`${JSON.stringify(accounts)}`)
-            lk.log(`${lk.getVal(signHeaderKey)}`)
-            lk.msg(mainTitle, ``, `${autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}获取cookie成功🎉`)
+        } catch (e) {
+            lk.msg(mainTitle, ``, `获取cookie失败，请重试❌`)
         }
     }
     lk.done()
@@ -86,9 +94,18 @@ function getCookie() {
 function signIn() {
     return new Promise(async (resolve, reject) => {
         lk.log(`所有账号：${JSON.stringify(accounts)}`);
-        for (var i in accounts) {
-            lk.log(`账号：${JSON.stringify(accounts[i])}`);
-            await qqVipSignIn(i, accounts[i])
+        if (!accounts || accounts.length <= 0) {
+            lk.msg(mainTitle, ``, `帐号列表为空，请获取cookie之后再试❌`)
+        } else {
+            if (isDeleteAllCookie) {
+                lk.setValueForKey(signHeaderKey, ``)
+                lk.msg(mainTitle, ``, `已清除所有cookie⭕️`)
+            } else {
+                for (var i in accounts) {
+                    lk.log(`账号：${JSON.stringify(accounts[i])}`);
+                    await qqVipSignIn(i, accounts[i]);
+                }
+            }
         }
         resolve()
     })
@@ -145,7 +162,9 @@ function getCookieProp(ca, cname) {
 
 function notify() {
     return new Promise((resolve, reject) => {
-        lk.msg(`QQ会员成长值签到结果`, ``, `${notifyInfo}`)
+        if(!!notifyInfo.trim()) {
+            lk.msg(`QQ会员成长值签到结果`, ``, `${notifyInfo}`)
+        }
         // 待测试
         // lk.setValueForKey(signHeaderKey, ``)
         lk.time()
