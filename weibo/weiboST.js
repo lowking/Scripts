@@ -117,7 +117,7 @@ function superTalkSignIn(index, name, super_id) {
                 }
             } catch (e) {
                 lk.log(`超话签到异常：${e}`)
-                lk.msg(mainTitle, ``, `签到失败，请查看【超话签到异常】日志，反馈给作者`)
+                lk.msg(mainTitle, ``, `签到失败，请重新获取cookie！`)
             } finally {
                 resolve()
             }
