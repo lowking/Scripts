@@ -33,9 +33,9 @@ https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.wei
 [mitm]
 hostname= weibo.com
 */
-const isEnableLog = true
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
+const isEnableLog = !lk.getVal('lkIsEnableLogWeiboSTCookie') ? true : JSON.parse(lk.getVal('lkIsEnableLogWeiboSTCookie'))
 const myFollowUrl = `https://weibo.com/p/1005051760825157/myfollow?relate=interested&pids=plc_main&ajaxpagelet=1&ajaxpagelet_v6=1&__ref=%2F1760825157%2Ffollow%3Frightmod%3D1%26wvr%3D6&_t=FM_159231991868741erested__97_page`
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 const userFollowSTKey = `lkUserFollowSTKey`

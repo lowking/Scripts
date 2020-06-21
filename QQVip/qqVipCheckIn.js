@@ -29,12 +29,22 @@ https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi? url script-request-header qq
 
 [mitm]
 hostname= proxy.vac.qq.com
+
+************************
+LOON 本地脚本配置:
+************************
+
+[Script]
+http-request https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js, timeout=10, tag=qq会员获取
+cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js, tag=qq会员签到
+
+mitm= proxy.vac.qq.com
 */
-const isEnableLog = true
-const isEnableNotifyForGetCookie = false
-const isDeleteAllCookie = false
 const signHeaderKey = 'lkQQSignHeaderKey'
 const lk = nobyda()
+const isEnableLog = !lk.getVal('lkIsEnableLogQQVip') ? true : JSON.parse(lk.getVal('lkIsEnableLogQQVip'))
+const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookie') ? false : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookie'))
+const isDeleteAllCookie = !lk.getVal('lkIsDeleteAllCookie') ? false : JSON.parse(lk.getVal('lkIsDeleteAllCookie'))
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
 const mainTitle = `QQ会员成长值签到`
 var notifyInfo = ``

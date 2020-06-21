@@ -33,10 +33,10 @@ https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.wei
 [mitm] 
 hostname= weibo.com
 */
-const isEnableLog = true
-const isClearCookie = false
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = nobyda()
+const isEnableLog = !lk.getVal('lkIsEnableLogWeiboST') ? true : JSON.parse(lk.getVal('lkIsEnableLogWeiboST'))
+const isClearCookie = !lk.getVal('lkIsClearCookie') ? false : JSON.parse(lk.getVal('lkIsClearCookie'))
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 const mainTitle = `微博超话`
 const userFollowSTKey = `lkUserFollowSTKey`

@@ -1,0 +1,98 @@
+{
+  "id": "lowking.app.sub",
+  "name": "lowking应用订阅",
+  "author": "@lowking",
+  "icon": "https://avatars0.githubusercontent.com/u/33308659?s=460&u=9223074586cb14f2ae7ee0953515f8781ded8be9&v=4",
+  "repo": "https://github.com/lowking/Scripts/",
+  "apps": [
+    {
+      "id": "lk.qqvip",
+      "name": "QQ会员成长值签到",
+      "keys": ["ignore"],
+      "settings": [
+        {
+          "id": "lkIsEnableLogQQVip",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkIsEnableNotifyForGetCookie",
+          "name": "开启/关闭获取Cookie时的通知",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsDeleteAllCookie",
+          "name": "开启/关闭删除Cookie",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkQQSignHeaderKey",
+          "name": "Cookie",
+          "val": "",
+          "type": "text",
+          "desc": "Cookie"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/qqvip.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/qqvip.png"
+      ]
+    },
+    {
+      "id": "lk.weiboST",
+      "name": "微博超话",
+      "keys": ["ignore"],
+      "settings": [
+        {
+          "id": "lkIsEnableLogWeiboST",
+          "name": "开启/关闭日志（签到脚本）",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkIsEnableLogWeiboSTCookie",
+          "name": "开启/关闭日志（获取Cookie脚本）",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkIsClearCookie",
+          "name": "开启/关闭删除Cookie",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkWeiboSTSignHeaderKey",
+          "name": "Cookie",
+          "val": "",
+          "type": "text",
+          "desc": "Cookie"
+        },
+        {
+          "id": "lkUserFollowSTKey",
+          "name": "需要签到的超话列表",
+          "val": "",
+          "type": "text",
+          "desc": "需要签到的超话列表"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"
+      ]
+    }
+  ]
+}
