@@ -45,6 +45,7 @@ const lk = nobyda()
 const isEnableLog = !lk.getVal('lkIsEnableLogQQVip') ? true : JSON.parse(lk.getVal('lkIsEnableLogQQVip'))
 const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookie') ? false : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookie'))
 const isDeleteAllCookie = !lk.getVal('lkIsDeleteAllCookie') ? false : JSON.parse(lk.getVal('lkIsDeleteAllCookie'))
+const isEnableGetCookie = !lk.getVal('lkIsEnableGetCookieQQVIP') ? true : JSON.parse(lk.getVal('lkIsEnableGetCookieQQVIP'))
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
 const mainTitle = `QQ会员成长值签到`
 var notifyInfo = ``
@@ -54,7 +55,11 @@ var accounts = !lk.getVal(signHeaderKey) ? [] : JSON.parse(lk.getVal(signHeaderK
 let isGetCookie = typeof $request !== 'undefined'
 
 if (isGetCookie) {
-    getCookie()
+    if (isEnableGetCookie) {
+        getCookie()
+    } else {
+        lk.done()
+    }
 } else {
     all()
 }

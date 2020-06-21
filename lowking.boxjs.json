@@ -8,7 +8,7 @@
     {
       "id": "lk.qqvip",
       "name": "QQ会员成长值签到",
-      "keys": ["ignore"],
+      "keys": ["lkQQSignHeaderKey"],
       "settings": [
         {
           "id": "lkIsEnableLogQQVip",
@@ -37,6 +37,13 @@
           "val": "",
           "type": "text",
           "desc": "Cookie"
+        },
+        {
+          "id": "lkIsEnableGetCookieQQVIP",
+          "name": "开启/关闭获取Cookie",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
         }
       ],
       "author": "@lowking",
@@ -49,7 +56,7 @@
     {
       "id": "lk.weiboST",
       "name": "微博超话",
-      "keys": ["ignore"],
+      "keys": ["lkWeiboSTSignHeaderKey", "lkUserFollowSTKey"],
       "settings": [
         {
           "id": "lkIsEnableLogWeiboST",
@@ -85,6 +92,13 @@
           "val": "",
           "type": "text",
           "desc": "需要签到的超话列表"
+        },
+        {
+          "id": "lkIsEnableGetCookieWeiboST",
+          "name": "开启/关闭获取Cookie",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
         }
       ],
       "author": "@lowking",
