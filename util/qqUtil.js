@@ -1,6 +1,24 @@
 /*
  * qq相关
  */
+
+function randomString(len) {
+    len = len || 32;
+    var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+    var maxPos = $chars.length;
+    var pwd = '';
+    for (i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+    }
+    return pwd;
+}
+
+function getPstk(t) {
+    for (var e = 5381, i = 0, n = t.length; n > i; ++i)
+        e += (e << 5) + t.charCodeAt(i);
+    return 2147483647 & e
+}
+
 function getCSRFToken(skeyz) {
     var t = '5381';
     var n = 'tencentQQVIP123443safde&!%^%1282';
@@ -254,7 +272,6 @@ function autoComplete(str, prefix, suffix, fill, len, direction, ifCode, clen, s
         str = str.substring(0, startIndex) + temp + str.substring(clen + startIndex)
     }
     str = prefix + str + suffix;
-    lk.log(`补齐后：${str}`)
     return toDBC(str)
 }
 
