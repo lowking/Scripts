@@ -123,10 +123,15 @@ function signIn() {
                     if (list != null && list.length > 0) {
                         pcount = 0
                         arcount = 0
+                        errorcount = 0
                         for (let ii = 0; ii < list.length; ii++) {
-                            await doPraise(list[ii], accounts[i])
+                            if (list[ii]["isPraise"] == 0) {
+                                await doPraise(list[ii], accounts[i])
+                            } else {
+                                arcount++
+                            }
                         }
-                        notifyInfo += `\n本次点赞成功【${pcount}】个，历史成功【${arcount}】个`
+                        notifyInfo += `\n🎉【${pcount}】个，🔁【${arcount}】个，❌【${errorcount}】个`
                     }
                 }
             }
@@ -137,6 +142,7 @@ function signIn() {
 
 var pcount = 0
 var arcount = 0
+var errorcount = 0
 function praise(index, obj){
     return new Promise(async (resolve, reject) => {
         let qqno = autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)
@@ -197,9 +203,9 @@ function doPraise(item, obj){
                     if (presult.ret == 0) {
                         lk.log(`给第${item["rank"]}名：${item["memo"]}点赞成功🎉`)
                         pcount++
-                    } else if (presult.ret == -12002) {
-                        lk.log(`第${item["rank"]}名：${item["memo"]}已经点赞🔁`)
-                        arcount++
+                    } else {
+                        lk.log(`第${item["rank"]}名：${item["memo"]}点赞失败❌`)
+                        errorcount++
                     }
                 } catch (e) {
                     console.log(e)
