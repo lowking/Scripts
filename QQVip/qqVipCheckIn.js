@@ -1,8 +1,20 @@
 /*
-QQ会员成长值-lowking-v1.2
+QQ会员成长值-lowking-v1.3
 
 按下面配置完之后，手机qq进入左侧会员，滑动即可
 ⚠️注：发现cookie存活时间较短，增加isEnableNotifyForGetCookie，用来控制获取cookie时的通知，默认关闭通知
+
+点赞排除列表数据结构如下：
+{
+    "qq号":[
+        "要拉黑的人，写排行榜中的名字",
+        "要拉黑的人，写排行榜中的名字"
+    ],
+    "qq号2":[
+        "要拉黑的人，写排行榜中的名字",
+        "要拉黑的人，写排行榜中的名字"
+    ]
+}
 
 ************************
 Surge 4.2.0+ 脚本配置:
@@ -41,6 +53,7 @@ cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scrip
 mitm= proxy.vac.qq.com
 */
 const signHeaderKey = 'lkQQSignHeaderKey'
+const blockListKey = 'lkQQSignBlockListKey'
 const lk = nobyda()
 const isEnableLog = !lk.getVal('lkIsEnableLogQQVip') ? true : JSON.parse(lk.getVal('lkIsEnableLogQQVip'))
 const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookie') ? false : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookie'))
@@ -51,6 +64,7 @@ const praiseurlVal = `https://mq.vip.qq.com/m/growth/loadfrank?`
 const mainTitle = `QQ会员成长值签到`
 var notifyInfo = ``
 var accounts = !lk.getVal(signHeaderKey) ? [] : JSON.parse(lk.getVal(signHeaderKey))
+var blockList = !lk.getVal(blockListKey) ? {} : JSON.parse(lk.getVal(blockListKey))
 // accounts = []
 
 let isGetCookie = typeof $request !== 'undefined'
@@ -125,6 +139,10 @@ function signIn() {
                         arcount = 0
                         errorcount = 0
                         for (let ii = 0; ii < list.length; ii++) {
+                            if (isBlock(list[ii]["memo"], accounts[i]["qq"])) {
+                                lk.log(`点赞排除【${list[ii]["memo"]}】`)
+                                continue
+                            }
                             if (list[ii]["isPraise"] == 0) {
                                 await doPraise(list[ii], accounts[i])
                             } else {
@@ -138,6 +156,20 @@ function signIn() {
         }
         resolve()
     })
+}
+
+function isBlock(name, qqno) {
+    for(var key in blockList){
+        if (key == qqno) {
+            if (blockList[key].indexOf(name) != -1) {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+
+    return false
 }
 
 var pcount = 0

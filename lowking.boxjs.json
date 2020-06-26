@@ -39,6 +39,13 @@
           "desc": "Cookie"
         },
         {
+          "id": "lkQQSignBlockListKey",
+          "name": "点赞黑名单列表",
+          "val": "",
+          "type": "text",
+          "desc": "数据结构看脚本"
+        },
+        {
           "id": "lkIsEnableGetCookieQQVIP",
           "name": "开启/关闭获取Cookie",
           "val": true,
