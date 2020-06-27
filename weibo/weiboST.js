@@ -95,9 +95,6 @@ function superTalkSignIn(index, name, super_id) {
                     if (index > 0) {
                         notifyInfo += `\n`
                     }
-                    if (index == 3) {
-                        notifyInfo += `【左滑 '查看' 以显示签到详情】\n`
-                    }
                     var obj = JSON.parse(data);
                     var code = obj.code;
                     var msg = obj.msg;
@@ -107,7 +104,7 @@ function superTalkSignIn(index, name, super_id) {
                         tipMessage = obj.data.tipMessage;
                         alert_title = obj.data.alert_title;
                         alert_subtitle = obj.data.alert_subtitle;
-                        notifyInfo += `【${name}】超话签到成功🎉${alert_title}:${alert_subtitle}`
+                        notifyInfo += `【${name}】超话签到成功🎉\n${alert_title}:${alert_subtitle}`
                     } else if (code == 382004) {
                         msg = msg.replace("(382004)", "")
                         notifyInfo += `【${name}】超话${msg} 🎉`
