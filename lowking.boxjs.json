@@ -116,6 +116,26 @@
       ]
     },
     {
+      "id": "lk.wifi.assistant",
+      "name": "Wi-Fi助手（自用）",
+      "settings": [
+        {
+          "id": "lkWifiSsids",
+          "name": "连接这些SSID直连模式",
+          "val": "",
+          "type": "text",
+          "desc": "填写SSID（数组）"
+        }
+      ],
+      "keys": ["lkWifiSsids"],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/box.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/box.png"
+      ]
+    },
+    {
       "id": "htt",
       "name": "惠头条",
       "keys": ["htt_dongfangnameA", "htt_signurlcknameA", "htt_signbdnameA", "htt_videonameA", "htt_smvideonameA"],
