@@ -114,6 +114,17 @@
         "https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"
       ]
+    },
+    {
+      "id": "htt",
+      "name": "惠头条",
+      "keys": ["htt_dongfangnameA", "htt_signurlcknameA", "htt_signbdnameA", "htt_videonameA", "htt_smvideonameA"],
+      "author": "@iamxiaoyuge",
+      "repo": "https://github.com/iamxiaoyuge/Pixiewool/blob/master/Multi-local/cy/htt/htt_task.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/01.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/01.png"
+      ]
     }
   ]
 }
