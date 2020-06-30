@@ -145,6 +145,17 @@
         "https://raw.githubusercontent.com/Orz-3/mini/master/box.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/box.png"
       ]
+    },
+    {
+      "id": "yuba",
+      "name": "斗鱼鱼吧",
+      "keys": ["CookieDY", "GroupDY"],
+      "author": "@demo2099",
+      "repo": "https://github.com/demo2099/jscool/blob/master/Task/yubaSign.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
+      ]
     }
   ]
 }
