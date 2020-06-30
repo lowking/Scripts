@@ -117,7 +117,7 @@
     },
     {
       "id": "lk.wifi.assistant",
-      "name": "Wi-Fi助手（自用）",
+      "name": "Wi-Fi助手（surge专用）",
       "settings": [
         {
           "id": "lkWifiSsids",
