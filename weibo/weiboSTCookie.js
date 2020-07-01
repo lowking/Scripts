@@ -1,6 +1,8 @@
 /*
 微博超话签到-lowking-v1.3(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
 
+⚠️使用方法：按下面的配置完之后打开超话页面，点击签到按钮获取cookie
+
 ⚠️注：获取完cookie记得把脚本禁用
 
 ************************
@@ -63,7 +65,7 @@ async function getInfo() {
         lk.log(`获取关注超话${superTalkList.length}个`)
         lk.done()
     } else {
-        lk.msg("写入微博超话Cookie失败！", "超话id: " + super_id, "请退出账号, 重复步骤")
+        lk.msg("写入微博超话Cookie失败！", "", "请退出账号, 重复步骤")
     }
 }
 

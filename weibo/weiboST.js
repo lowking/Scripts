@@ -1,6 +1,8 @@
 /*
 微博超话签到-lowking-v1.3(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
 
+⚠️使用方法：按下面的配置完之后打开超话页面，点击签到按钮获取cookie
+
 ⚠️注：获取完cookie记得把脚本禁用
 
 ************************
@@ -68,7 +70,7 @@ all()
 
 function signIn() {
     return new Promise(async (resolve, reject) => {
-        for (var i in accounts) {
+        for (let i in accounts) {
             let name = accounts[i][0]
             let super_id = accounts[i][1]
             await superTalkSignIn(i, name, super_id)
