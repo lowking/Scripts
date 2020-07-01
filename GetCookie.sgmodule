@@ -3,7 +3,9 @@
 #!system=ios
 
 [Script]
-115 = type=http-request,pattern=^https?:\/\/proapi\.115\.com\/ios\/user\/takespc\?,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/115/115.js,script-update-interval=0
+115 = type=http-request,pattern=^https?:\/\/proapi\.115\.com\/ios\/user\/takespc\?,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/115/115.js
+
+qq会员 = type=http-request,pattern=https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js
 
 微博 = type=http-request,pattern=https:\/\/api\.weibo\.cn\/\d\/video\/machine\?gsid,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/weibo.js
 
@@ -33,9 +35,9 @@
 
 芒果TV = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/mgtv/mgtv.cookie.js,type=http-request,pattern=^https:\/\/credits.bz.mgtv.com\/user\/creditsTake
 
-分期乐 = type=http-request,pattern=^https:\/\/pm\.m\.fenqile\.com/route0014\/app\/tab\/privilege\/convertTaskReward.json,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fenqile/fenqile.cookie.js,script-update-interval=0
+分期乐 = type=http-request,pattern=^https:\/\/pm\.m\.fenqile\.com/route0014\/app\/tab\/privilege\/convertTaskReward.json,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fenqile/fenqile.cookie.js
 
-分期乐 = type=http-request,pattern=^https://pm\.m\.fenqile\.com/route0014/star/sign/sign.json,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fenqile/fenqile.cookie.js,script-update-interval=0
+分期乐 = type=http-request,pattern=^https://pm\.m\.fenqile\.com/route0014/star/sign/sign.json,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fenqile/fenqile.cookie.js
 
 [MITM]
 hostname = %APPEND% proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, passport.suning.com, luckman.suning.com, sign.suning.com, gameapi.suning.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
