@@ -1,10 +1,12 @@
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+[![LICENSE](https://img.shields.io/badge/感谢-Orz3的图标-red.svg)](https://github.com/Orz-3)
 # Scripts
 ### 日志
 #### 2020-07-02
 > ##### 新增
 > - [Wi-Fi助手模块（Surge专用）](https://gist.githubusercontent.com/lowking/3aa8748416e938528967885bc403b2f1/raw/ssid.sgmodule)：在boxjs中配置需直连的ssid
 > - 自用GetCookie、Tasks模块
+> - 订阅转换器（目前功能简陋，自用）
 
 > ##### 更新
 > - QQ会员成长值签到支持好友列表点赞（每天20点）

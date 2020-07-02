@@ -131,8 +131,8 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/box.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/box.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/ssid.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/ssid.png"
       ]
     },
     {
@@ -194,8 +194,8 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts/blob/master/util/SubConverter.js",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/box.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/box.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png"
       ]
     }
   ]
