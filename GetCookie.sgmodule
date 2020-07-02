@@ -39,7 +39,7 @@
 
 分期乐-cookie = type=http-request,pattern=^https://pm\.m\.fenqile\.com/route0014/star/sign/sign.json,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/fenqile/fenqile.cookie.js
 
-斗鱼鱼吧 = type=http-request,pattern=^https://yuba.douyu.com/wbapi/web/group/myFollow,max-size=0,script-path=https://raw.githubusercontent.com/demo2099/jscool/master/Task/yubaSign.js
+斗鱼鱼吧 = type=http-request,pattern=^https://yuba.douyu.com/wbapi/web/group/myFollow,script-path=https://raw.githubusercontent.com/demo2099/jscool/master/Task/yubaSign.js
 
 [MITM]
 hostname = %APPEND% yuba.douyu.com, proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, passport.suning.com, luckman.suning.com, sign.suning.com, gameapi.suning.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
