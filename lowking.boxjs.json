@@ -170,6 +170,13 @@
           "desc": "默认关闭"
         },
         {
+          "id": "lkIsEnableLogSubConverter",
+          "name": "开启/关闭日志",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
           "id": "lkPrefixSubConverter",
           "name": "截取前缀",
           "val": "",
