@@ -15,17 +15,20 @@ const suffix = !lk.getVal('lkSuffixSubConverter') ? `[Proxy Group]` : lk.getVal(
 const url = $request.url
 let body = $response.body
 
-if (isEnable) {
+if (isEnable && body.indexOf(prefix) != -1 && body.indexOf(suffix) != -1) {
     try {
         lk.log(`开始转换订阅： ${url}\n██内容：${JSON.stringify(body)}`)
         const pattern = /\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/;// 匹配/**/注释块
         const converted = body.substring(body.indexOf(prefix) + prefix.length, body.indexOf(suffix)).replace(pattern, ``)
         lk.log(`转换成功\n██内容：${converted}██`)
+        lk.msg(`订阅转换器`, ``, `转换成功🎉`)
         lk.done({body: converted})
     } catch (e) {
+        lk.msg(`订阅转换器`, ``, `转换失败❌，使用原始数据`)
         lk.done({body: body})
     }
 } else {
+    lk.msg(`订阅转换器`, ``, `未转换，使用原始数据`)
     lk.done({body: body})
 }
 
