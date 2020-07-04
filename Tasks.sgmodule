@@ -22,7 +22,7 @@ qq会员签到 = type=cron,cronexp="0 3 12,13 * * ?",wake-system=1,script-path=h
 滴滴遗忘福利金 = type=cron,cronexp="59 23 * * *",wake-system=1,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/DiDi/DiDi_reward.js,script-update-interval=0
 滴滴出行 = type=cron,cronexp="0 8 0,1 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/DiDi/DiDi.js,script-update-interval=0
 
-京东多合一签到 = type=cron,cronexp="0 9 0,1 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js,script-update-interval=0,max-size=-1
+京东多合一签到 = type=cron,cronexp="0 9 0,1,20 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js,script-update-interval=0,max-size=-1
 
 腾讯视频 = type=cron,cronexp="0 10 0,1 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/videoqq/videoqq.js,script-update-interval=0
 
