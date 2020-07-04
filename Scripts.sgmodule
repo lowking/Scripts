@@ -4,12 +4,7 @@
 
 [Rule]
 # > 京东  去启动广告，必须是REJECT-TINYGIF, 否则比价会失效
-URL-REGEX,^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=start$,REJECT
-# 加上一下4条, 上面的那条可以不用REJECT-TINYGIF, 直接REJECT就可以
-URL-REGEX,^https?+:\/\/api\.m\.jd\.com\/client\.action\?functionId=start$,REJECT
-URL-REGEX,^https?+:\/\/b?dsp-x\.jd\.com\/adx\/,REJECT
-URL-REGEX,^https?+:\/\/ms\.jr\.jd\.com\/gw\/generic\/base\/na\/m\/adInfo,REJECT
-URL-REGEX,^https?+:\/\/ms\.jr\.jd\.com\/gw\/generic\/aladdin\/na\/m\/getLoadingPicture,REJECT
+URL-REGEX,^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=start$,REJECT-TINYGIF
 
 [Script]
 # > yichahucha
