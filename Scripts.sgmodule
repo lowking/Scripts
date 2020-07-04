@@ -2,6 +2,10 @@
 #!desc=该模块自用，脚本合集
 #!system=ios
 
+[Rule]
+# > 京东  去启动广告，必须是REJECT-TINYGIF, 否则比价会失效
+URL-REGEX,^https?:\/\/api\.m\.jd\.com\/client\.action\?functionId=start$,REJECT-TINYGIF
+
 [Script]
 # > yichahucha
 # > 京东比价
