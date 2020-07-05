@@ -9,7 +9,7 @@
 
 GitHub监控 = type=cron,cronexp="0 */5 * * * ?",wake-system=1,timeout=120,script-path=https://gist.githubusercontent.com/lowking/3b6e52a7d3882bfa80a35cc35ebfad1d/raw/myGIthub.js,script-update-interval=0
 
-qq会员签到 = type=cron,cronexp="0 3 12,13 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js,script-update-interval=0
+qq会员签到 = type=cron,cronexp="0 3 12,13 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js,script-update-interval=0
 
 微博 = type=cron,cronexp="0 4 6,7 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/weibo.js,script-update-interval=0
 
