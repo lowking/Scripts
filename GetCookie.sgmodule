@@ -19,14 +19,6 @@
 
 腾讯视频-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/videoqq/videoqq.cookie.js,type=http-request,pattern=^https:\/\/access.video.qq.com\/user\/auth_refresh
 
-苏宁易购-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/suning/suning.cookie.js,requires-body=true,type=http-request,pattern=^https:\/\/passport.suning.com\/ids\/login$
-
-苏宁易购-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/suning/suning.cookie.js,type=http-request,pattern=^https:\/\/luckman.suning.com\/luck-web\/sign\/api\/clock_sign.do
-
-苏宁易购-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/suning/suning.cookie.js,type=http-request,pattern=^https:\/\/sign.suning.com\/sign-web\/m\/promotion\/sign\/doSign.do
-
-苏宁易购-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/suning/suning.cookie.js,type=http-request,pattern=^https:\/\/gameapi.suning.com\/sngame-web\/(api\/signin\/private\/customerSignOperation.do|gateway\/api\/queryPrize.do)
-
 哔哩哔哩-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/bilibili/bilibili.cookie.js,type=http-request,pattern=^https:\/\/(www|live)\.bilibili\.com\/?.?
 
 智行火车票-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/zxhc/zxhc.cookie.js,requires-body=true,type=http-request,pattern=^https:\/\/m\.ctrip\.com/restapi/soa2/14593/json/attendanceDay?
@@ -42,4 +34,4 @@
 #斗鱼鱼吧 = type=http-request,pattern=^https://yuba.douyu.com/wbapi/web/group/myFollow,script-path=https://raw.githubusercontent.com/demo2099/jscool/master/Task/yubaSign.js
 
 [MITM]
-hostname = %APPEND% yuba.douyu.com, proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, passport.suning.com, luckman.suning.com, sign.suning.com, gameapi.suning.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
+hostname = %APPEND% yuba.douyu.com, proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
