@@ -2,6 +2,9 @@
 [![LICENSE](https://img.shields.io/badge/感谢-Orz3的图标-red.svg)](https://github.com/Orz-3)
 # Scripts
 ### 日志
+#### 2020-07-08
+> ##### 新增
+> - 添加Wi-Fi助手（从gist迁移过来，并汉化通知）
 #### 2020-07-02
 > ##### 新增
 > - [Wi-Fi助手模块（Surge专用）](https://gist.githubusercontent.com/lowking/3aa8748416e938528967885bc403b2f1/raw/ssid.sgmodule)：在boxjs中配置需直连的ssid

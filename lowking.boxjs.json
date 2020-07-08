@@ -124,7 +124,7 @@
           "name": "连接这些SSID直连模式",
           "val": "",
           "type": "text",
-          "desc": "填写SSID（数组）"
+          "desc": "填写SSID（数组），如果需要流量直连，请把“cellular”加到数组"
         }
       ],
       "keys": ["lkWifiSsids"],
