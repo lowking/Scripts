@@ -32,11 +32,11 @@
           "desc": "默认关闭"
         },
         {
-          "id": "lkQQSignHeaderKey",
-          "name": "Cookie",
-          "val": "",
-          "type": "text",
-          "desc": "Cookie"
+          "id": "lkIsEnableGetCookieQQVIP",
+          "name": "开启/关闭获取Cookie",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
         },
         {
           "id": "lkQQSignBlockListKey",
@@ -44,13 +44,6 @@
           "val": "",
           "type": "text",
           "desc": "数据结构看脚本"
-        },
-        {
-          "id": "lkIsEnableGetCookieQQVIP",
-          "name": "开启/关闭获取Cookie",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
         }
       ],
       "author": "@lowking",
@@ -85,20 +78,6 @@
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
-        },
-        {
-          "id": "lkWeiboSTSignHeaderKey",
-          "name": "Cookie",
-          "val": "",
-          "type": "text",
-          "desc": "Cookie"
-        },
-        {
-          "id": "lkUserFollowSTKey",
-          "name": "需要签到的超话列表",
-          "val": "",
-          "type": "text",
-          "desc": "需要签到的超话列表"
         },
         {
           "id": "lkIsEnableGetCookieWeiboST",
