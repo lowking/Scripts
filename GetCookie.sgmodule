@@ -37,4 +37,4 @@
 爱奇艺-cookie = type=http-request,pattern=https?:\/\/.*\.iqiyi\.com\/.*authcookie=,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/iQIYI-DailyBonus/iQIYI.js
 
 [MITM]
-hostname = %APPEND% *.smzdm.com, yuba.douyu.com, proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
+hostname = %APPEND% *.iqiyi.com, *.smzdm.com, yuba.douyu.com, proapi.115.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com, pm.m.fenqile.com
