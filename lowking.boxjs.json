@@ -142,32 +142,11 @@
       "keys": ["ignore"],
       "settings": [
         {
-          "id": "lkIsEnableSubConverter",
-          "name": "开启/关闭",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
           "id": "lkIsEnableLogSubConverter",
           "name": "开启/关闭日志",
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
-        },
-        {
-          "id": "lkPrefixSubConverter",
-          "name": "截取前缀",
-          "val": "",
-          "type": "text",
-          "desc": "默认[Proxy]"
-        },
-        {
-          "id": "lkSuffixSubConverter",
-          "name": "截取后缀",
-          "val": "",
-          "type": "text",
-          "desc": "[Proxy Group]"
         }
       ],
       "author": "@lowking",

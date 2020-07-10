@@ -1,12 +1,12 @@
 /*
  * 转自nobyda，修改压缩之后自用
- * 后面包括qq的csrftoken
  */
 function nobyda() {
     const start = Date.now()
     const isRequest = typeof $request != "undefined"
     const isSurge = typeof $httpClient != "undefined"
     const isQuanX = typeof $task != "undefined"
+    const isLoon = typeof $loon != "undefined"
     const isJSBox = typeof $app != "undefined" && typeof $http != "undefined"
     const isNode = typeof require == "function" && !isJSBox;
     const node = (() => {
@@ -17,6 +17,16 @@ function nobyda() {
             return (null)
         }
     })()
+    const getRequestUrl = () => {
+        if (isQuanX) return $resource.link
+        if (isSurge) return $request.url
+        return ""
+    }
+    const getResponseBody = () => {
+        if (isQuanX) return $resource.content
+        if (isSurge) return $response.body
+        return ""
+    }
     const msg = (title, subtitle, message) => {
         if (isQuanX) $notify(title, subtitle, message)
         if (isSurge) $notification.post(title, subtitle, message)
@@ -119,9 +129,17 @@ function nobyda() {
         const end = ((Date.now() - start) / 1000).toFixed(2)
         return console.log(`\n██用时：${end}秒`)
     }
-    const done = (value = {}) => {
-        if (isQuanX) isRequest ? $done(value) : null
-        if (isSurge) isRequest ? $done(value) : $done()
+    const done = (value) => {
+        let key = `body`
+        if(isRequest){
+            if (isQuanX) key = `content`
+            if (isSurge) key = `body`
+        }
+        let obj = {}
+        obj[key] = value
+        if (isQuanX) isRequest ? $done(obj) : null
+        if (isSurge) isRequest ? $done(obj) : $done()
+        if (isNode) log(JSON.stringify(obj))
     }
-    return {isRequest, isJSBox, isNode, msg, setValueForKey, getVal, get, post, log, time, done}
+    return {isRequest, isJSBox, isSurge, isQuanX, isLoon, isNode, getRequestUrl, getResponseBody, msg, setValueForKey, getVal, get, post, log, time, done}
 }
