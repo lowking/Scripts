@@ -144,7 +144,7 @@
         {
           "id": "lkIsEnableLogSubConverter",
           "name": "开启/关闭日志",
-          "val": false,
+          "val": true,
           "type": "boolean",
           "desc": "默认关闭"
         }
