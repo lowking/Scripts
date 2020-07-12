@@ -173,11 +173,11 @@ if(flag==3){
 
 function format2surge(content){
     for(let i=0;i<content.length;i++){
-        let item = content[i];
+        let item = content[i]
         let type = item.slice(0, item.indexOf(",")).split("=")[0]
         let hostNport = item.slice(0, item.indexOf(",")).split("=")[1]
-        let nl = item.slice(item.indexOf("tag"));
-        let nm=nl.slice(nl.indexOf("=")+1)
+        let nl = item.slice(item.indexOf("tag"))
+        let nm=nl.slice(nl.indexOf("=")+1).split(",")[0]
         let result = `${nm} = ${type}, ${hostNport.split(":")[0]}, ${hostNport.split(":")[1]}${item.slice(item.indexOf(","))}`
         content[i] = result.replace("password=", "username=")
     }
