@@ -16,8 +16,8 @@ var link0=lk.getRequestUrl();
 //const $done=function(snt){return snt}
 //parameters
 var para=(link0.indexOf("http")!=-1 && link0.indexOf("://")!=-1)? link0:link0+content0.split("\n")[0];
-var para1=para.slice(para.indexOf("#")+1) //防止参数中其它位置也存在"#"
-var mark0=para.indexOf("#")!=-1? true:false;
+var para1=para.slice(para.indexOf("$@$")+1) //防止参数中其它位置也存在"$@$"
+var mark0=para.indexOf("$@$")!=-1? true:false;
 const subinfo=``;
 const subtag=``;
 var Pinfo=mark0 && para1.indexOf("info=")!=-1? para1.split("info=")[1].split("&")[0]:0;
@@ -38,6 +38,7 @@ const subinfo_link1={"open-url":link0.split("#")[0], "media-url": "https://shrtm
 SubFlow() //流量通知
 var type0=Type_Check(content0); //  类型
 //$notify(type0)
+var delnodereg=mark0 && para1.indexOf("delnodereg=")!=-1? decodeURIComponent(para1.split("delnodereg=")[1].split("&")[0]):null;
 var Pin0=mark0 && para1.indexOf("in=")!=-1? (para1.split("in=")[1].split("&")[0].split("+")).map(decodeURIComponent):null;
 var Pout0=mark0 && para1.indexOf("out=")!=-1? (para1.split("out=")[1].split("&")[0].split("+")).map(decodeURIComponent):null;
 var Preg=mark0 && para1.indexOf("regex=")!=-1? decodeURIComponent(para1.split("regex=")[1].split("&")[0]):null; //server正则过滤参数
@@ -136,6 +137,9 @@ if(flag==3){
     if(Pin0||Pout0){
         total=Filter(total,Pin0,Pout0)
     }
+    if(delnodereg){
+        total=total.map(RegexDel).filter(Boolean)
+    }
     if(Preg){
         total=total.map(Regex).filter(Boolean)
     }
@@ -165,7 +169,7 @@ if(flag==3){
         total = format2surge(total);
     }
     total=total.join("\n");
-//$notify("Final","test",total)
+    lk.log(`转换后的节点如下：\n${total}`)
     if(flag==1 && !lk.isSurge && !lk.isNode){
         total=Base64.encode(total)} //强制 base64
     lk.done(total);
@@ -173,12 +177,12 @@ if(flag==3){
 
 function format2surge(content){
     for(let i=0;i<content.length;i++){
-        let item = content[i]
+        let item = content[i];
         let type = item.slice(0, item.indexOf(",")).split("=")[0]
         let hostNport = item.slice(0, item.indexOf(",")).split("=")[1]
-        let nl = item.slice(item.indexOf("tag"))
+        let nl = item.slice(item.indexOf("tag"));
         let nm=nl.slice(nl.indexOf("=")+1).split(",")[0]
-        let result = `${nm} = ${type}, ${hostNport.split(":")[0]}, ${hostNport.split(":")[1]}${item.slice(item.indexOf(","))}`
+        let result = `${nm.trim()} = ${type.trim()}, ${hostNport.split(":")[0].trim()}, ${hostNport.split(":")[1].trim()}${item.slice(item.indexOf(",")).trim()}`
         content[i] = result.replace("password=", "username=")
     }
     return content;
@@ -807,6 +811,15 @@ function Regex(content){
     Preg=RegExp(Preg,"i")
     cnt=content //.split("tag=")[1]
     if(Preg.test(cnt)){
+        return content
+    }
+}
+
+//正则筛选, 完整内容匹配
+function RegexDel(content){
+    delnodereg=RegExp(delnodereg,"i")
+    cnt=content //.split("tag=")[1]
+    if(!delnodereg.test(cnt)){
         return content
     }
 }
