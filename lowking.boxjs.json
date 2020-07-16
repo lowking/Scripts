@@ -115,17 +115,6 @@
       ]
     },
     {
-      "id": "htt",
-      "name": "惠头条",
-      "keys": ["htt_dongfangnameA", "htt_signurlcknameA", "htt_signbdnameA", "htt_videonameA", "htt_smvideonameA"],
-      "author": "@作者不知道",
-      "repo": "https://github.com/",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/box.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/box.png"
-      ]
-    },
-    {
       "id": "yuba",
       "name": "斗鱼鱼吧",
       "keys": ["CookieDY", "GroupDY"],
