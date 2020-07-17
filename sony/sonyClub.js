@@ -50,11 +50,7 @@ const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/6
 let isGetCookie = typeof $request !== 'undefined'
 
 if (isGetCookie) {
-    if (isEnableGetCookie) {
-        getCookie()
-    } else {
-        lk.done()
-    }
+    getCookie()
 } else {
     all()
 }
