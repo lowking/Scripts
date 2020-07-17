@@ -115,17 +115,6 @@
       ]
     },
     {
-      "id": "yuba",
-      "name": "斗鱼鱼吧",
-      "keys": ["CookieDY", "GroupDY"],
-      "author": "@demo2099",
-      "repo": "https://github.com/demo2099/jscool/blob/master/Task/yubaSign.js",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
-      ]
-    },
-    {
       "id": "lk.subconverter",
       "name": "订阅转换器",
       "keys": ["ignore"],
@@ -143,6 +132,37 @@
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png",
         "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png"
+      ]
+    },
+    {
+      "id": "lk.sony.club",
+      "name": "索尼俱乐部",
+      "keys": ["lkSonyClubToken"],
+      "settings": [
+        {
+          "id": "lkIsEnableLogSonyClub",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js",
+      "icons": [
+        "https://www.sonystyle.com.cn/favicon.ico",
+        "https://www.sonystyle.com.cn/favicon.ico"
+      ]
+    },
+    {
+      "id": "yuba",
+      "name": "斗鱼鱼吧",
+      "keys": ["CookieDY", "GroupDY"],
+      "author": "@demo2099",
+      "repo": "https://github.com/demo2099/jscool/blob/master/Task/yubaSign.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
       ]
     }
   ]
