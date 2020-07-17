@@ -145,6 +145,13 @@
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
+        },
+        {
+          "id": "lkSonyClubToken",
+          "name": "token",
+          "val": "",
+          "type": "text",
+          "desc": "索尼俱乐部token"
         }
       ],
       "author": "@lowking",
