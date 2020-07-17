@@ -44,7 +44,7 @@ const isEnableLog = !lk.getVal('lkIsEnableLogSonyClub') ? true : JSON.parse(lk.g
 const signurlVal = `https://www.sonystyle.com.cn/eSolverOmniChannel/account/signupPoints.do?channel=WAP&access_token=`
 const mainTitle = `索尼俱乐部签到`
 var notifyInfo = ``
-var sonyClubToken = !lk.getVal(sonyClubTokenKey) ? `` : JSON.parse(lk.getVal(sonyClubTokenKey))
+var sonyClubToken = !lk.getVal(sonyClubTokenKey) ? `` : lk.getVal(sonyClubTokenKey)
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 
 let isGetCookie = typeof $request !== 'undefined'
