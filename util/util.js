@@ -141,5 +141,15 @@ function nobyda() {
         if (isSurge) isRequest ? $done(obj) : $done()
         if (isNode) log(JSON.stringify(obj))
     }
-    return {isRequest, isJSBox, isSurge, isQuanX, isLoon, isNode, getRequestUrl, getResponseBody, msg, setValueForKey, getVal, get, post, log, time, done}
+    const isEmpty = (obj) => {
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    const wait = (time) => {
+        return new Promise((resolve) => setTimeout(resolve, time))
+    }
+    return {isRequest, isJSBox, isSurge, isQuanX, isLoon, isNode, getRequestUrl, getResponseBody, msg, setValueForKey, getVal, get, post, log, time, done, isEmpty, wait}
 }

@@ -165,7 +165,7 @@
           "name": "密码",
           "val": "",
           "type": "text",
-          "desc": "索尼俱乐部token"
+          "desc": ""
         }
       ],
       "author": "@lowking",
