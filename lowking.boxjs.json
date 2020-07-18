@@ -152,6 +152,20 @@
           "val": "",
           "type": "text",
           "desc": "索尼俱乐部token"
+        },
+        {
+          "id": "lkSonyClubLoginId",
+          "name": "帐号",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "lkSonyClubPassword",
+          "name": "密码",
+          "val": "",
+          "type": "text",
+          "desc": "索尼俱乐部token"
         }
       ],
       "author": "@lowking",
