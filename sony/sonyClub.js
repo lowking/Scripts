@@ -55,7 +55,7 @@ function signIn() {
                 }
             }
             lk.log(`${JSON.stringify(url)}`)
-            lk.post(url, (error, response, data) => {
+            lk.post(url, async (error, response, data) => {
                 try {
                     lk.log(data)
                     if (data == undefined) {
