@@ -30,17 +30,15 @@ cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts
 
 */
 const sonyClubTokenKey = 'lkSonyClubToken'
-const lk = nobyda()
-const isEnableLog = !lk.getVal('lkIsEnableLogSonyClub') ? true : JSON.parse(lk.getVal('lkIsEnableLogSonyClub'))
+const lk = new ToolKit('索尼俱乐部签到', 'SonyClub')
 const signurlVal = `https://www.sonystyle.com.cn/eSolverOmniChannel/account/signupPoints.do?channel=WAP&access_token=`
-const mainTitle = `索尼俱乐部签到`
-var notifyInfo = ``
 var sonyClubToken = !lk.getVal(sonyClubTokenKey) ? `` : lk.getVal(sonyClubTokenKey)
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 
 all()
 
 async function all() {
+    // lk.boxJsJsonBuilder({"author": "@lowking"})
     await signIn() //签到
     await notify() //通知
 }
@@ -60,27 +58,29 @@ function signIn() {
                     lk.log(data)
                     if (data == undefined) {
                         lk.log(`进入自动登录`)
-                        // notifyInfo += `签到失败❌请确认cookie是否获取`
                         // 不通知直接登录获取token
                         if (loginCount > 3) {
-                            notifyInfo += `登录尝试3次，均失败❌请确认帐号密码是否正确！`
+                            lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                            lk.execFail()
                         }else{
                             await loginSonyClub()
                         }
                     } else {
                         const result = JSON.parse(data)
                         if (result.resultMsg[0].code == "00") {
-                            notifyInfo += `连续签到${result.resultData.successiveSignupDays}天🎉\n本次签到获得【${result.resultData.signupRankingOfDay}】成长值，共【${result.resultData.totalPoints}】成长值`
+                            lk.appendNotifyInfo(`连续签到${result.resultData.successiveSignupDays}天🎉\n本次签到获得【${result.resultData.signupRankingOfDay}】成长值，共【${result.resultData.totalPoints}】成长值`)
                         } else if (result.resultMsg[0].code == "99") {
-                            notifyInfo += `重复签到🔁`
+                            lk.appendNotifyInfo(`重复签到🔁`)
                         } else if (result.resultMsg[0].code == "98") {
                             if (loginCount > 3) {
-                                notifyInfo += `登录尝试3次，均失败❌请确认帐号密码是否正确！`
+                                lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                                lk.execFail()
                             }else{
                                 await loginSonyClub()
                             }
                         } else {
-                            notifyInfo += `签到失败❌\n${result.resultMsg[0].message}`
+                            lk.appendNotifyInfo(`签到失败❌\\n${result.resultMsg[0].message}`)
+                            lk.execFail()
                         }
                     }
                 } catch (ee) {
@@ -90,8 +90,9 @@ function signIn() {
                 }
             })
         } catch (e) {
-            lk.log(`${mainTitle}异常：\n${e}`)
-            lk.msg(mainTitle, ``, `签到异常，请带上日志联系作者❌`)
+            lk.log(`${lk.name}异常：\n${e}`)
+            lk.execFail()
+            lk.msg(``, `签到异常，请带上日志联系作者❌`)
             return resolve()
         }
     })
@@ -105,7 +106,8 @@ async function loginSonyClub() {
         let loginId = lk.getVal("lkSonyClubLoginId")
         let pwd = lk.getVal("lkSonyClubPassword")
         if (lk.isEmpty(loginId) || lk.isEmpty(pwd)) {
-            notifyInfo += `请到BoxJs填写帐号密码⚠️`
+            lk.appendNotifyInfo(`请到BoxJs填写帐号密码⚠️`)
+            lk.execFail()
             return resolve()
         }
         let loginUrl = {
@@ -127,7 +129,8 @@ async function loginSonyClub() {
                     lk.log(data)
                     if (data == undefined) {
                         if (loginCount > 3) {
-                            notifyInfo += `登录尝试3次，均失败❌请确认帐号密码是否正确！`
+                            lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                            lk.execFail()
                             return resolve()
                         } else {
                             await loginSonyClub()
@@ -138,11 +141,12 @@ async function loginSonyClub() {
                             //登录成功，调用签到
                             let accessToken = result.resultData["access_token"]
                             lk.log(`登录成功，token：${accessToken}`)
-                            lk.setValueForKey(sonyClubTokenKey, accessToken)
+                            lk.setVal(sonyClubTokenKey, accessToken)
                             sonyClubToken = accessToken
                             await signIn()
                         } else {
-                            notifyInfo += `登录失败❌\n${result.resultMsg[0].message}`
+                            lk.appendNotifyInfo(`登录失败❌\n${result.resultMsg[0].message}`)
+                            lk.execFail()
                             return resolve()
                         }
                     }
@@ -151,6 +155,7 @@ async function loginSonyClub() {
                 }
             })
         } catch (e) {
+            lk.execFail()
             throw e
         }
     })
@@ -158,13 +163,10 @@ async function loginSonyClub() {
 
 function notify() {
     return new Promise((resolve, reject) => {
-        if(!!notifyInfo.trim()) {
-            lk.msg(`${mainTitle}结果`, ``, `${notifyInfo}`)
-        }
-        lk.time()
+        lk.msg(``)
         lk.done()
         return resolve()
     })
 }
 
-function nobyda(){const e=Date.now();const t=typeof $request!="undefined";const n=typeof $httpClient!="undefined";const o=typeof $task!="undefined";const r=typeof $loon!="undefined";const s=typeof $app!="undefined"&&typeof $http!="undefined";const i=typeof require=="function"&&!s;const f=(()=>{if(i){const e=require("request");return{request:e}}else{return null}})();const u=()=>{if(o)return $resource.link;if(n)return $request.url;return""};const l=()=>{if(o)return $resource.content;if(n)return $response.body;return""};const d=(e,t,r)=>{if(o)$notify(e,t,r);if(n)$notification.post(e,t,r);if(i)g(e+t+r);if(s)$push.schedule({title:e,body:t?t+"\n"+r:r})};const c=(e,t)=>{if(o)return $prefs.setValueForKey(t,e);if(n)return $persistentStore.write(t,e)};const a=e=>{if(o)return $prefs.valueForKey(e);if(n)return $persistentStore.read(e)};const p=e=>{if(e){if(e.status){e["statusCode"]=e.status}else if(e.statusCode){e["status"]=e.statusCode}}return e};const y=(e,t)=>{if(o){if(typeof e=="string")e={url:e};e["method"]="GET";$task.fetch(e).then(e=>{t(null,p(e),e.body)},e=>t(e.error,null,null))}if(n)$httpClient.get(e,(e,n,o)=>{t(e,p(n),o)});if(i){f.request(e,(e,n,o)=>{t(e,p(n),o)})}if(s){if(typeof e=="string")e={url:e};e["header"]=e["headers"];e["handler"]=function(e){let n=e.error;if(n)n=JSON.stringify(e.error);let o=e.data;if(typeof o=="object")o=JSON.stringify(e.data);t(n,p(e.response),o)};$http.get(e)}};const $=(e,t)=>{if(o){if(typeof e=="string")e={url:e};e["method"]="POST";$task.fetch(e).then(e=>{t(null,p(e),e.body)},e=>t(e.error,null,null))}if(n){$httpClient.post(e,(e,n,o)=>{t(e,p(n),o)})}if(i){f.request.post(e,(e,n,o)=>{t(e,p(n),o)})}if(s){if(typeof e=="string")e={url:e};e["header"]=e["headers"];e["handler"]=function(e){let n=e.error;if(n)n=JSON.stringify(e.error);let o=e.data;if(typeof o=="object")o=JSON.stringify(e.data);t(n,p(e.response),o)};$http.post(e)}};const g=e=>{if(isEnableLog)console.log(`\n██${e}`)};const h=()=>{const t=((Date.now()-e)/1e3).toFixed(2);return console.log(`\n██用时：${t}秒`)};const b=e=>{let r=`body`;if(t){if(o)r=`content`;if(n)r=`body`}let s={};s[r]=e;if(o)t?$done(s):null;if(n)t?$done(s):$done();if(i)g(JSON.stringify(s))};const q=e=>{if(typeof e=="undefined"||e==null||e==""){return true}else{return false}};const S=e=>{return new Promise(t=>setTimeout(t,e))};return{isRequest:t,isJSBox:s,isSurge:n,isQuanX:o,isLoon:r,isNode:i,getRequestUrl:u,getResponseBody:l,msg:d,setValueForKey:c,getVal:a,get:y,post:$,log:g,time:h,done:b,isEmpty:q,wait:S}}
+function ToolKit(t,s){return new class{constructor(t,s){this.prefix=`lk`;this.name=t;this.id=s;this.data=null;this.dataFile=`${this.prefix}${this.id}.dat`;this.isEnableLog=this.getVal(`${this.prefix}IsEnableLog${this.id}`);this.isEnableLog=this.isEnableLog!=false;this.isNotifyOnlyFail=this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`);this.isNotifyOnlyFail=!!this.isNotifyOnlyFail;this.logSeparator="\n██";this.startTime=(new Date).getTime();this.node=(()=>{if(this.isNode()){const t=require("request");return{request:t}}else{return null}})();this.execStatus=true;this.notifyInfo=[];this.log(`${this.name}, 开始执行!`)}boxJsJsonBuilder(t){const s="https://raw.githubusercontent.com/Orz-3";let i={};i.id=this.id;i.name=this.name;i.icons=[`${s}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${s}/task/master/${this.id.toLocaleLowerCase()}.png`];i.keys=[];i.settings=[{id:`${this.prefix}IsEnableLog${this.id}`,name:"开启/关闭日志",val:true,type:"boolean",desc:"默认开启"},{id:`${this.prefix}NotifyOnlyFail${this.id}`,name:"只当执行失败才通知",val:false,type:"boolean",desc:"默认关闭"}];i.author="@lowking";i.repo="https://github.com/lowking/Scripts";Object.assign(i,t);console.log(`${this.logSeparator}${JSON.stringify(i)}`)}appendNotifyInfo(t,s){if(s==1){this.notifyInfo=t}else{this.notifyInfo.push(t)}}execFail(){this.execStatus=false}isRequest(){return typeof $request!="undefined"}isSurge(){return typeof $httpClient!="undefined"}isQuanX(){return typeof $task!="undefined"}isLoon(){return typeof $loon!="undefined"}isJSBox(){return typeof $app!="undefined"&&typeof $http!="undefined"}isNode(){return typeof require=="function"&&!this.isJSBox()}sleep(t){return new Promise(s=>setTimeout(s,t))}log(t){if(this.isEnableLog)console.log(`${this.logSeparator}${t}`)}msg(t,s){if(this.isNotifyOnlyFail&&this.execStatus){}else{if(this.isEmpty(s)){if(Array.isArray(this.notifyInfo)){s=this.notifyInfo.join("\n")}else{s=this.notifyInfo}}if(this.isQuanX())$notify(this.name,t,s);if(this.isSurge())$notification.post(this.name,t,s);if(this.isNode())this.log("⭐️"+this.name+t+s);if(this.isJSBox())$push.schedule({title:this.name,body:t?t+"\n"+s:s})}}getVal(t){if(this.isSurge()||this.isLoon()){return $persistentStore.read(t)}else if(this.isQuanX()){return $prefs.valueForKey(t)}else if(this.isNode()){this.data=this.loadData();return this.data[t]}else{return this.data&&this.data[t]||null}}setVal(t,s){if(this.isSurge()||this.isLoon()){return $persistentStore.write(s,t)}else if(this.isQuanX()){return $prefs.setValueForKey(s,t)}else if(this.isNode()){this.data=this.loadData();this.data[t]=s;this.writeData();return true}else{return this.data&&this.data[t]||null}}loadData(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs");this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile);const s=this.path.resolve(process.cwd(),this.dataFile);const i=this.fs.existsSync(t);const e=!i&&this.fs.existsSync(s);if(i||e){const e=i?t:s;try{return JSON.parse(this.fs.readFileSync(e))}catch(t){return{}}}else return{}}else return{}}writeData(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs");this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile);const s=this.path.resolve(process.cwd(),this.dataFile);const i=this.fs.existsSync(t);const e=!i&&this.fs.existsSync(s);const r=JSON.stringify(this.data);if(i){this.fs.writeFileSync(t,r)}else if(e){this.fs.writeFileSync(s,r)}else{this.fs.writeFileSync(t,r)}}}adapterStatus(t){if(t){if(t.status){t["statusCode"]=t.status}else if(t.statusCode){t["status"]=t.statusCode}}return t}get(t,s=(()=>{})){if(this.isQuanX()){if(typeof t=="string")t={url:t};t["method"]="GET";$task.fetch(t).then(t=>{s(null,this.adapterStatus(t),t.body)},t=>s(t.error,null,null))}if(this.isSurge())$httpClient.get(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)});if(this.isNode()){this.node.request(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isJSBox()){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let i=t.error;if(i)i=JSON.stringify(t.error);let e=t.data;if(typeof e=="object")e=JSON.stringify(t.data);s(i,this.adapterStatus(t.response),e)};$http.get(t)}}post(t,s=(()=>{})){if(this.isQuanX()){if(typeof t=="string")t={url:t};t["method"]="POST";$task.fetch(t).then(t=>{s(null,this.adapterStatus(t),t.body)},t=>s(t.error,null,null))}if(this.isSurge()){$httpClient.post(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isNode()){this.node.request.post(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isJSBox()){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let i=t.error;if(i)i=JSON.stringify(t.error);let e=t.data;if(typeof e=="object")e=JSON.stringify(t.data);s(i,this.adapterStatus(t.response),e)};$http.post(t)}}done(t){const s=(new Date).getTime();const i=(s-this.startTime)/1e3;this.log(`${this.name}执行完毕！耗时【${i}】秒`);let e=`body`;if(this.isRequest()){if(this.isQuanX())e=`content`;if(this.isSurge())e=`body`}let r={};r[e]=t;if(this.isQuanX())this.isRequest()?$done(r):null;if(this.isSurge())this.isRequest()?$done(r):$done();if(this.isNode())this.log(JSON.stringify(r))}getRequestUrl(){if(this.isQuanX())return $resource.link;if(this.isSurge())return $request.url;return""}getResponseBody(){if(this.isQuanX())return $resource.content;if(this.isSurge())return $response.body;return""}isEmpty(t){if(typeof t=="undefined"||t==null||t==""){return true}else{return false}}}(t,s)}
