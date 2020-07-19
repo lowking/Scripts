@@ -24,9 +24,9 @@ function ToolKit(scriptName, scriptId) {
             this.dataFile = `${this.prefix}${this.id}.dat`
             this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
-            this.isEnableLog = this.isEnableLog != false
+            this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : JSON.parse(this.isEnableLog)
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
-            this.isNotifyOnlyFail = !!this.isNotifyOnlyFail
+            this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : JSON.parse(this.isNotifyOnlyFail)
             this.logSeparator = '\n██'
             this.startTime = new Date().getTime()
             this.node = (() => {
