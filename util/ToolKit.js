@@ -43,6 +43,7 @@ function ToolKit(scriptName, scriptId) {
         }
 
         boxJsJsonBuilder(info) {
+            let needAppendKeys = ["keys", "settings"]
             const domain = 'https://raw.githubusercontent.com/Orz-3'
             let boxJsJson = {}
             boxJsJson.id = `${this.prefix}${this.id}`
@@ -67,6 +68,14 @@ function ToolKit(scriptName, scriptId) {
             ]
             boxJsJson.author = "@lowking"
             boxJsJson.repo = "https://github.com/lowking/Scripts"
+            //除了settings和keys追加，其他的都覆盖
+            for (let i in needAppendKeys) {
+                let key = needAppendKeys[i]
+                if (!this.isEmpty(info[key])) {
+                    boxJsJson[key] = boxJsJson[key].concat(info[key]);
+                }
+                delete info[key]
+            }
             Object.assign(boxJsJson, info)
             if (this.isNode()) {
                 this.fs = this.fs ? this.fs : require('fs')
@@ -75,7 +84,7 @@ function ToolKit(scriptName, scriptId) {
                 const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
                 const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
                 const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-                const jsondata = JSON.stringify(boxJsJson)
+                const jsondata = JSON.stringify(boxJsJson, null, '\t')
                 if (isCurDirDataFile) {
                     this.fs.writeFileSync(curDirDataFilePath, jsondata)
                 } else if (isRootDirDataFile) {
