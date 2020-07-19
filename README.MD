@@ -2,6 +2,10 @@
 [![LICENSE](https://img.shields.io/badge/感谢-Orz3的图标-red.svg)](https://github.com/Orz-3)
 # Scripts
 ### 日志
+#### 2020-07-19
+> ##### 新增
+> - 索尼俱乐部签到，支持自动登录签到
+
 #### 2020-07-10
 > ##### 更新
 > - 订阅转换器引用[KOP-XIAO的资源转换器](https://raw.githubusercontent.com/KOP-XIAO/QuantumultX/master/Scripts/resource-parser.js)（我就简单的支持了surge，就测试过vmess格式的订阅）
