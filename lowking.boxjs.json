@@ -147,6 +147,13 @@
           "desc": "默认开启"
         },
         {
+          "id": "lkNotifyOnlyFailSonyClub",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
           "id": "lkSonyClubToken",
           "name": "token",
           "val": "",

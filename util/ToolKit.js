@@ -22,6 +22,7 @@ function ToolKit(scriptName, scriptId) {
             this.id = scriptId
             this.data = null
             this.dataFile = `${this.prefix}${this.id}.dat`
+            this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
             this.isEnableLog = this.isEnableLog != false
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
@@ -44,7 +45,7 @@ function ToolKit(scriptName, scriptId) {
         boxJsJsonBuilder(info) {
             const domain = 'https://raw.githubusercontent.com/Orz-3'
             let boxJsJson = {}
-            boxJsJson.id = this.id
+            boxJsJson.id = `${this.prefix}${this.id}`
             boxJsJson.name = this.name
             boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
             boxJsJson.keys = []
@@ -67,7 +68,22 @@ function ToolKit(scriptName, scriptId) {
             boxJsJson.author = "@lowking"
             boxJsJson.repo = "https://github.com/lowking/Scripts"
             Object.assign(boxJsJson, info)
-            console.log(`${this.logSeparator}${JSON.stringify(boxJsJson)}`)
+            if (this.isNode()) {
+                this.fs = this.fs ? this.fs : require('fs')
+                this.path = this.path ? this.path : require('path')
+                const curDirDataFilePath = this.path.resolve(this.boxJsJsonFile)
+                const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
+                const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+                const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+                const jsondata = JSON.stringify(boxJsJson)
+                if (isCurDirDataFile) {
+                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
+                } else if (isRootDirDataFile) {
+                    this.fs.writeFileSync(rootDirDataFilePath, jsondata)
+                } else {
+                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
+                }
+            }
         }
 
         appendNotifyInfo(info, type) {
