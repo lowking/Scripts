@@ -204,6 +204,13 @@
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailBilibiliBangumiMonitor",
+          "name": "只当有番剧更新了才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
         }
       ],
       "author": "@lowking",

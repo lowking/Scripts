@@ -420,24 +420,19 @@ function ToolKit(scriptName, scriptId) {
          * @returns {*|void|string}
          */
         customReplace(str, param, prefix, suffix) {
-            if (this.isEmpty(prefix)) {
-                prefix = "#{"
-            }
-            if (this.isEmpty(suffix)) {
-                suffix = "}"
-            }
-            let regex = new RegExp(`(?<=(${prefix}))(.+?)(?=${suffix})`);
-            let m
+            try {
+                if (this.isEmpty(prefix)) {
+                    prefix = "#{"
+                }
+                if (this.isEmpty(suffix)) {
+                    suffix = "}"
+                }
 
-            while ((m = regex.exec(str)) !== null) {
-                if (m.index === regex.lastIndex) {
-                    regex.lastIndex++
+                for (let i in param) {
+                    str = str.replace(`${prefix}${i}${suffix}`, param[i])
                 }
-                let t = param[m[0]]
-                if (this.isEmpty(t)) {
-                    t = ""
-                }
-                str = str.replace(`${prefix}${m[0]}${suffix}`, t)
+            } catch (e) {
+                this.logErr(e)
             }
 
             return str
