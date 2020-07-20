@@ -2,6 +2,12 @@
 [![LICENSE](https://img.shields.io/badge/感谢-Orz3的图标-red.svg)](https://github.com/Orz-3)
 # Scripts
 ### 日志
+
+#### 2020-07-20
+> ##### 更新
+> - ToolKit新增randomString和autoComplete方法
+> - QQ会员成长值签到改造，使用ToolKit
+
 #### 2020-07-19
 > ##### 新增
 > - 索尼俱乐部签到，支持自动登录签到

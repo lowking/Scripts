@@ -7,6 +7,8 @@
  *      getRequestUrl： 获取请求的url（目前仅支持surge和quanx）
  *      getResponseBody： 获取响应体（目前仅支持surge和quanx）
  *      boxJsJsonBuilder：构建最简默认boxjs配置json
+ *      randomString： 生成随机字符串
+ *      autoComplete：自动补齐字符串
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
@@ -43,54 +45,59 @@ function ToolKit(scriptName, scriptId) {
         }
 
         boxJsJsonBuilder(info) {
-            let needAppendKeys = ["keys", "settings"]
-            const domain = 'https://raw.githubusercontent.com/Orz-3'
-            let boxJsJson = {}
-            boxJsJson.id = `${this.prefix}${this.id}`
-            boxJsJson.name = this.name
-            boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
-            boxJsJson.keys = []
-            boxJsJson.settings = [
-                {
-                    "id": `${this.prefix}IsEnableLog${this.id}`,
-                    "name": "开启/关闭日志",
-                    "val": true,
-                    "type": "boolean",
-                    "desc": "默认开启"
-                },
-                {
-                    "id": `${this.prefix}NotifyOnlyFail${this.id}`,
-                    "name": "只当执行失败才通知",
-                    "val": false,
-                    "type": "boolean",
-                    "desc": "默认关闭"
-                }
-            ]
-            boxJsJson.author = "@lowking"
-            boxJsJson.repo = "https://github.com/lowking/Scripts"
-            //除了settings和keys追加，其他的都覆盖
-            for (let i in needAppendKeys) {
-                let key = needAppendKeys[i]
-                if (!this.isEmpty(info[key])) {
-                    boxJsJson[key] = boxJsJson[key].concat(info[key]);
-                }
-                delete info[key]
-            }
-            Object.assign(boxJsJson, info)
             if (this.isNode()) {
-                this.fs = this.fs ? this.fs : require('fs')
-                this.path = this.path ? this.path : require('path')
-                const curDirDataFilePath = this.path.resolve(this.boxJsJsonFile)
-                const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
-                const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
-                const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-                const jsondata = JSON.stringify(boxJsJson, null, '\t')
-                if (isCurDirDataFile) {
-                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
-                } else if (isRootDirDataFile) {
-                    this.fs.writeFileSync(rootDirDataFilePath, jsondata)
-                } else {
-                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
+                this.log('-')
+                let needAppendKeys = ["keys", "settings"];
+                const domain = 'https://raw.githubusercontent.com/Orz-3'
+                let boxJsJson = {}
+                boxJsJson.id = `${this.prefix}${this.id}`
+                boxJsJson.name = this.name
+                boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
+                boxJsJson.keys = []
+                boxJsJson.settings = [
+                    {
+                        "id": `${this.prefix}IsEnableLog${this.id}`,
+                        "name": "开启/关闭日志",
+                        "val": true,
+                        "type": "boolean",
+                        "desc": "默认开启"
+                    },
+                    {
+                        "id": `${this.prefix}NotifyOnlyFail${this.id}`,
+                        "name": "只当执行失败才通知",
+                        "val": false,
+                        "type": "boolean",
+                        "desc": "默认关闭"
+                    }
+                ]
+                boxJsJson.author = "@lowking"
+                boxJsJson.repo = "https://github.com/lowking/Scripts"
+                //除了settings和keys追加，其他的都覆盖
+                if (!this.isEmpty(info)) {
+                    for (let i in needAppendKeys) {
+                        let key = needAppendKeys[i]
+                        if (!this.isEmpty(info[key])) {
+                            boxJsJson[key] = boxJsJson[key].concat(info[key])
+                        }
+                        delete info[key]
+                    }
+                }
+                Object.assign(boxJsJson, info)
+                if (this.isNode()) {
+                    this.fs = this.fs ? this.fs : require('fs')
+                    this.path = this.path ? this.path : require('path')
+                    const curDirDataFilePath = this.path.resolve(this.boxJsJsonFile)
+                    const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
+                    const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+                    const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+                    const jsondata = JSON.stringify(boxJsJson, null, '\t')
+                    if (isCurDirDataFile) {
+                        this.fs.writeFileSync(curDirDataFilePath, jsondata)
+                    } else if (isRootDirDataFile) {
+                        this.fs.writeFileSync(rootDirDataFilePath, jsondata)
+                    } else {
+                        this.fs.writeFileSync(curDirDataFilePath, jsondata)
+                    }
                 }
             }
         }
@@ -261,7 +268,7 @@ function ToolKit(scriptName, scriptId) {
                 }
                 options["header"] = options["headers"]
                 options["handler"] = function (resp) {
-                    let error = resp.error;
+                    let error = resp.error
                     if (error) error = JSON.stringify(resp.error)
                     let body = resp.data;
                     if (typeof body == "object") body = JSON.stringify(resp.data);
@@ -297,13 +304,13 @@ function ToolKit(scriptName, scriptId) {
                 }
                 options["header"] = options["headers"]
                 options["handler"] = function (resp) {
-                    let error = resp.error;
+                    let error = resp.error
                     if (error) error = JSON.stringify(resp.error)
-                    let body = resp.data;
+                    let body = resp.data
                     if (typeof body == "object") body = JSON.stringify(resp.data)
                     callback(error, this.adapterStatus(resp.response), body)
                 }
-                $http.post(options);
+                $http.post(options)
             }
         }
 
@@ -337,10 +344,69 @@ function ToolKit(scriptName, scriptId) {
 
         isEmpty(obj) {
             if(typeof obj == "undefined" || obj == null || obj == ""){
-                return true;
+                return true
             }else{
-                return false;
+                return false
             }
+        }
+
+        randomString(len) {
+            len = len || 32;
+            var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
+            var maxPos = $chars.length
+            var pwd = ''
+            for (let i = 0; i < len; i++) {
+                pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+            }
+            return pwd
+        }
+
+        /**
+         * 自动补齐字符串
+         * @param str 原始字符串
+         * @param prefix 前缀
+         * @param suffix 后缀
+         * @param fill 补齐用字符
+         * @param len 目标补齐长度，不包含前后缀
+         * @param direction 方向：0往后补齐
+         * @param ifCode 是否打码
+         * @param clen 打码长度
+         * @param startIndex 起始坐标
+         * @param cstr 打码字符
+         * @returns {*}
+         */
+        autoComplete(str, prefix, suffix, fill, len, direction, ifCode, clen, startIndex, cstr) {
+            str += ``
+            if (str.length < len) {
+                while (str.length < len) {
+                    if (direction == 0) {
+                        str += fill
+                    } else {
+                        str = fill + str
+                    }
+                }
+            }
+            if (ifCode) {
+                let temp = ``
+                for (var i = 0; i < clen; i++) {
+                    temp += cstr
+                }
+                str = str.substring(0, startIndex) + temp + str.substring(clen + startIndex)
+            }
+            str = prefix + str + suffix
+            return this.toDBC(str)
+        }
+
+        toDBC(txtstring) {
+            var tmp = ""
+            for (var i = 0; i < txtstring.length; i++) {
+                if (txtstring.charCodeAt(i) == 32) {
+                    tmp = tmp + String.fromCharCode(12288)
+                } else if (txtstring.charCodeAt(i) < 127) {
+                    tmp = tmp + String.fromCharCode(txtstring.charCodeAt(i) + 65248)
+                }
+            }
+            return tmp
         }
     })(scriptName, scriptId)
 }

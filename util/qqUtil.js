@@ -1,18 +1,6 @@
 /*
  * qq相关
  */
-
-function randomString(len) {
-    len = len || 32;
-    var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
-    var maxPos = $chars.length;
-    var pwd = '';
-    for (i = 0; i < len; i++) {
-        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-    }
-    return pwd;
-}
-
 function getPstk(t) {
     for (var e = 5381, i = 0, n = t.length; n > i; ++i)
         e += (e << 5) + t.charCodeAt(i);
@@ -237,52 +225,4 @@ function md5z(e) {
     }
 
     return o(e)
-}
-
-/**
- * 自动补齐字符串
- * @param str 原始字符串
- * @param prefix 前缀
- * @param suffix 后缀
- * @param fill 补齐用字符
- * @param len 目标补齐长度，不包含前后缀
- * @param direction 方向：0往后补齐
- * @param ifCode 是否打码
- * @param clen 打码长度
- * @param startIndex 起始坐标
- * @param cstr 打码字符
- * @returns {*}
- */
-function autoComplete(str, prefix, suffix, fill, len, direction, ifCode, clen, startIndex, cstr) {
-    str += ``
-    if (str.length < len) {
-        while (str.length < len) {
-            if (direction == 0) {
-                str += fill
-            } else {
-                str = fill + str
-            }
-        }
-    }
-    if (ifCode) {
-        let temp = ``
-        for (var i = 0; i < clen; i++) {
-            temp += cstr
-        }
-        str = str.substring(0, startIndex) + temp + str.substring(clen + startIndex)
-    }
-    str = prefix + str + suffix;
-    return toDBC(str)
-}
-
-function toDBC(txtstring) {
-    var tmp = ""
-    for (var i = 0; i < txtstring.length; i++) {
-        if (txtstring.charCodeAt(i) == 32) {
-            tmp = tmp + String.fromCharCode(12288)
-        } else if (txtstring.charCodeAt(i) < 127) {
-            tmp = tmp + String.fromCharCode(txtstring.charCodeAt(i) + 65248)
-        }
-    }
-    return tmp
 }

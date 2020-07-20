@@ -1,5 +1,5 @@
 /*
-QQ会员成长值-lowking-v1.3
+QQ会员成长值-lowking-v1.5
 
 按下面配置完之后，手机qq进入左侧会员，滑动即可
 ⚠️注：发现cookie存活时间较短，增加isEnableNotifyForGetCookie，用来控制获取cookie时的通知，默认关闭通知
@@ -65,9 +65,7 @@ var accounts = !lk.getVal(signHeaderKey) ? [] : JSON.parse(lk.getVal(signHeaderK
 var blockList = !lk.getVal(blockListKey) ? {} : JSON.parse(lk.getVal(blockListKey))
 // accounts = []
 
-let isGetCookie = typeof $request !== 'undefined'
-
-if (isGetCookie) {
+if (lk.isRequest()) {
     if (isEnableGetCookie) {
         getCookie()
     } else {
