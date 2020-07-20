@@ -190,6 +190,26 @@
       ]
     },
     {
+      "id": "lkBilibiliBangumiMonitor",
+      "name": "哔哩哔哩番剧监控",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/bilibili.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/bilibili.png"
+      ],
+      "keys": ["lkVmidBilibiliBangumiMonitor", "lkBilibiliBangumiList"],
+      "settings": [
+        {
+          "id": "lkIsEnableLogBilibiliBangumiMonitor",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts"
+    },
+    {
       "id": "yuba",
       "name": "斗鱼鱼吧",
       "keys": ["CookieDY", "GroupDY"],

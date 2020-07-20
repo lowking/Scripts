@@ -8,7 +8,8 @@
  *      getResponseBody： 获取响应体（目前仅支持surge和quanx）
  *      boxJsJsonBuilder：构建最简默认boxjs配置json
  *      randomString： 生成随机字符串
- *      autoComplete：自动补齐字符串
+ *      autoComplete： 自动补齐字符串
+ *      customReplace： 自定义替换
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
@@ -19,6 +20,7 @@
 function ToolKit(scriptName, scriptId) {
     return new (class {
         constructor(scriptName, scriptId) {
+            this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
             this.id = scriptId
@@ -46,7 +48,7 @@ function ToolKit(scriptName, scriptId) {
 
         boxJsJsonBuilder(info) {
             if (this.isNode()) {
-                this.log('-')
+                this.log('using node')
                 let needAppendKeys = ["keys", "settings"];
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
                 let boxJsJson = {}
@@ -144,6 +146,13 @@ function ToolKit(scriptName, scriptId) {
 
         log(message) {
             if (this.isEnableLog) console.log(`${this.logSeparator}${message}`)
+        }
+
+        logErr(message) {
+            if (this.isEnableLog) {
+                console.log(`${this.logSeparator}${this.name}执行异常:`)
+                console.log(message)
+            }
         }
 
         msg(subtitle, message) {
@@ -395,6 +404,43 @@ function ToolKit(scriptName, scriptId) {
             }
             str = prefix + str + suffix
             return this.toDBC(str)
+        }
+
+        /**
+         * @param str 源字符串 "#{code}, #{value}"
+         * @param param 用于替换的数据，结构如下
+         * @param prefix 前缀 "#{"
+         * @param suffix 后缀 "}"
+         * {
+         *     "code": 1,
+         *     "value": 2
+         * }
+         * 按上面的传入，输出为"1, 2"
+         * 对应的#{code}用param里面code的值替换，#{value}也是
+         * @returns {*|void|string}
+         */
+        customReplace(str, param, prefix, suffix) {
+            if (this.isEmpty(prefix)) {
+                prefix = "#{"
+            }
+            if (this.isEmpty(suffix)) {
+                suffix = "}"
+            }
+            let regex = new RegExp(`(?<=(${prefix}))(.+?)(?=${suffix})`);
+            let m
+
+            while ((m = regex.exec(str)) !== null) {
+                if (m.index === regex.lastIndex) {
+                    regex.lastIndex++
+                }
+                let t = param[m[0]]
+                if (this.isEmpty(t)) {
+                    t = ""
+                }
+                str = str.replace(`${prefix}${m[0]}${suffix}`, t)
+            }
+
+            return str
         }
 
         toDBC(txtstring) {
