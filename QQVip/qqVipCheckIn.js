@@ -54,15 +54,13 @@ mitm= proxy.vac.qq.com
 */
 const signHeaderKey = 'lkQQSignHeaderKey'
 const blockListKey = 'lkQQSignBlockListKey'
-const lk = nobyda()
-const isEnableLog = !lk.getVal('lkIsEnableLogQQVip') ? true : JSON.parse(lk.getVal('lkIsEnableLogQQVip'))
+const lk = new ToolKit('QQ会员成长值签到', 'QQVipCheckIn')
 const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookie') ? false : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookie'))
 const isDeleteAllCookie = !lk.getVal('lkIsDeleteAllCookie') ? false : JSON.parse(lk.getVal('lkIsDeleteAllCookie'))
 const isEnableGetCookie = !lk.getVal('lkIsEnableGetCookieQQVIP') ? true : JSON.parse(lk.getVal('lkIsEnableGetCookieQQVIP'))
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
 const praiseurlVal = `https://mq.vip.qq.com/m/growth/loadfrank?`
 const mainTitle = `QQ会员成长值签到`
-var notifyInfo = ``
 var accounts = !lk.getVal(signHeaderKey) ? [] : JSON.parse(lk.getVal(signHeaderKey))
 var blockList = !lk.getVal(blockListKey) ? {} : JSON.parse(lk.getVal(blockListKey))
 // accounts = []
@@ -80,6 +78,7 @@ if (isGetCookie) {
 }
 
 async function all() {
+    lk.boxJsJsonBuilder()
     await signIn() //签到
     await notify() //通知
 }
@@ -105,15 +104,15 @@ function getCookie() {
                     }
                 }
                 accounts.push(obj)
-                lk.setValueForKey(signHeaderKey, JSON.stringify(accounts))
+                lk.setVal(signHeaderKey, JSON.stringify(accounts))
                 lk.log(`${JSON.stringify(accounts)}`)
                 lk.log(`${lk.getVal(signHeaderKey)}`)
                 if (isEnableNotifyForGetCookie) {
-                    lk.msg(mainTitle, ``, `${autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}获取cookie成功🎉`)
+                    lk.msg(``, `${lk.autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}获取cookie成功🎉`)
                 }
             }
         } catch (e) {
-            lk.msg(mainTitle, ``, `获取cookie失败，请重试❌`)
+            lk.msg(``, `获取cookie失败，请重试❌`)
         }
     }
     lk.done()
@@ -123,14 +122,15 @@ function signIn() {
     return new Promise(async (resolve, reject) => {
         lk.log(`所有账号：${JSON.stringify(accounts)}`);
         if (!accounts || accounts.length <= 0) {
-            lk.msg(mainTitle, ``, `帐号列表为空，请获取cookie之后再试❌`)
+            lk.execFail()
+            lk.msg(``, `帐号列表为空，请获取cookie之后再试❌`)
         } else {
             if (isDeleteAllCookie) {
-                lk.setValueForKey(signHeaderKey, ``)
-                lk.msg(mainTitle, ``, `已清除所有cookie⭕️`)
+                lk.setVal(signHeaderKey, ``)
+                lk.execFail()
+                lk.msg(``, `已清除所有cookie⭕️`)
             } else {
                 for (let i in accounts) {
-                    lk.log(`████████████████████████████`)
                     lk.log(`账号：${JSON.stringify(accounts[i])}`)
                     await qqVipSignIn(i, accounts[i])
                     let list = await praise(i, accounts[i])
@@ -149,7 +149,7 @@ function signIn() {
                                 arcount++
                             }
                         }
-                        notifyInfo += `\n🎉【${pcount}】个，🔁【${arcount}】个，❌【${errorcount}】个`
+                        lk.appendNotifyInfo(`🎉【${pcount}】个，🔁【${arcount}】个，❌【${errorcount}】个`)
                     }
                 }
             }
@@ -177,8 +177,8 @@ var arcount = 0
 var errorcount = 0
 function praise(index, obj){
     return new Promise(async (resolve, reject) => {
-        let qqno = autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)
-        let pskey = randomString(44)
+        let qqno = lk.autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)
+        let pskey = lk.randomString(44)
         let pstk = getPstk(pskey)
         let gtk = getCSRFToken(obj.skey)
         let praiseurlValReal = praiseurlVal
@@ -199,13 +199,16 @@ function praise(index, obj){
                 if (result.ret == 0) {
                     list = result.data
                 } else if (result.ret == -7) {
-                    notifyInfo += `\n${qqno}❌\ncookie失效，请重新获取`
+                    lk.appendNotifyInfo(`${qqno}❌\ncookie失效，请重新获取`)
+                    lk.execFail()
                 } else {
                     //获取列表失败，返回
-                    notifyInfo += `\n${qqno}会员点赞失败，请查看日志`
+                    lk.appendNotifyInfo(`${qqno}会员点赞失败，请查看日志`)
+                    lk.execFail()
                     lk.log(`当前帐号：${obj.qq}\n获取好友会员列表失败，请重新执行任务，若还是失败，请重新获取cookie`)
                 }
             } catch (e) {
+                lk.execFail()
                 lk.log(`${qqno}的cookie失效`)
             } finally {
                 resolve(list)
@@ -217,7 +220,7 @@ function praise(index, obj){
 function doPraise(item, obj){
     return new Promise(async (resolve, reject) => {
         if (item["me"] != `me`) {
-            let pskey = randomString(44)
+            let pskey = lk.randomString(44)
             let pstk = getPstk(pskey)
             let gtk = getCSRFToken(obj.skey)
             let realHeader = {}
@@ -237,6 +240,7 @@ function doPraise(item, obj){
                         pcount++
                     } else {
                         lk.log(`第${item["rank"]}名：${item["memo"]}点赞失败❌`)
+                        lk.execFail()
                         errorcount++
                     }
                 } catch (e) {
@@ -262,14 +266,12 @@ function qqVipSignIn(index, obj) {
             url: signurlValReal + getCSRFToken(obj.skey),
             headers: realHeader
         }
+        let notifyInfo = ''
         lk.get(url, (error, response, data) => {
             try {
-                if (index > 0) {
-                    notifyInfo += `\n`
-                }
-                notifyInfo += `${autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}`
+                notifyInfo += `${lk.autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}`
                 if (index == 3) {
-                    notifyInfo += `【左滑 '查看' 以显示签到详情】\n`
+                    lk.appendNotifyInfo(`【左滑 '查看' 以显示签到详情】`)
                 }
                 const result = JSON.parse(data)
                 if (result.ret == 0) {
@@ -278,8 +280,10 @@ function qqVipSignIn(index, obj) {
                     notifyInfo += `🔁`
                 } else {
                     notifyInfo += `❌`
+                    lk.execFail()
                 }
-                notifyInfo += `\n` + result.msg.indexOf(`火爆`) != -1 ? `\ncookie失效，请重新获取` : `\n${result.msg}`
+                lk.appendNotifyInfo(notifyInfo)
+                lk.appendNotifyInfo(result.msg.indexOf(`火爆`) != -1 ? `cookie失效，请重新获取` : `${result.msg}`)
             } finally {
                 resolve()
             }
@@ -301,14 +305,11 @@ function getCookieProp(ca, cname) {
 
 function notify() {
     return new Promise((resolve, reject) => {
-        if(!!notifyInfo.trim()) {
-            lk.msg(`QQ会员成长值签到结果`, ``, `${notifyInfo}`)
-        }
-        lk.time()
+        lk.msg(``)
         lk.done()
         resolve()
     })
 }
 
-function nobyda(){const t=Date.now();const e=typeof $request!="undefined";const n=typeof $httpClient!="undefined";const o=typeof $task!="undefined";const s=typeof $app!="undefined"&&typeof $http!="undefined";const r=typeof require=="function"&&!s;const i=(()=>{if(r){const t=require("request");return{request:t}}else{return null}})();const f=(t,e,i)=>{if(o)$notify(t,e,i);if(n)$notification.post(t,e,i);if(r)c(t+e+i);if(s)$push.schedule({title:t,body:e?e+"\n"+i:i})};const u=(t,e)=>{if(o)return $prefs.setValueForKey(e,t);if(n)return $persistentStore.write(e,t)};const l=t=>{if(o)return $prefs.valueForKey(t);if(n)return $persistentStore.read(t)};const d=t=>{if(t){if(t.status){t["statusCode"]=t.status}else if(t.statusCode){t["status"]=t.statusCode}}return t};const a=(t,e)=>{if(o){if(typeof t=="string")t={url:t};t["method"]="GET";$task.fetch(t).then(t=>{e(null,d(t),t.body)},t=>e(t.error,null,null))}if(n)$httpClient.get(t,(t,n,o)=>{e(t,d(n),o)});if(r){i.request(t,(t,n,o)=>{e(t,d(n),o)})}if(s){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let n=t.error;if(n)n=JSON.stringify(t.error);let o=t.data;if(typeof o=="object")o=JSON.stringify(t.data);e(n,d(t.response),o)};$http.get(t)}};const p=(t,e)=>{if(o){if(typeof t=="string")t={url:t};t["method"]="POST";$task.fetch(t).then(t=>{e(null,d(t),t.body)},t=>e(t.error,null,null))}if(n){$httpClient.post(t,(t,n,o)=>{e(t,d(n),o)})}if(r){i.request.post(t,(t,n,o)=>{e(t,d(n),o)})}if(s){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let n=t.error;if(n)n=JSON.stringify(t.error);let o=t.data;if(typeof o=="object")o=JSON.stringify(t.data);e(n,d(t.response),o)};$http.post(t)}};const c=t=>{if(isEnableLog)console.log(`\n██${t}`)};const y=()=>{const e=((Date.now()-t)/1e3).toFixed(2);return console.log(`\n██用时：${e}秒`)};const $=(t={})=>{if(o)e?$done(t):null;if(n)e?$done(t):$done()};return{isRequest:e,isJSBox:s,isNode:r,msg:f,setValueForKey:u,getVal:l,get:a,post:p,log:c,time:y,done:$}}
-function randomString(r){r=r||32;var n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";var t=n.length;var a="";for(i=0;i<r;i++){a+=n.charAt(Math.floor(Math.random()*t))}return a}function getPstk(r){for(var n=5381,t=0,a=r.length;a>t;++t)n+=(n<<5)+r.charCodeAt(t);return 2147483647&n}function getCSRFToken(r){var n="5381";var t="tencentQQVIP123443safde&!%^%1282";var a=r;var e=[],o;e.push(n<<5);for(var u=0,f=a.length;u<f;++u){o=a.charAt(u).charCodeAt(0);e.push((n<<5)+o);n=o}return md5z(e.join("")+t)}function md5z(r){var n=0;var t="";var a=8;var e=32;function o(r){return p(h(S(r),r.length*a))}function u(r){return B(h(S(r),r.length*a))}function f(r){return b(h(S(r),r.length*a))}function v(r,n){return p(s(r,n))}function i(r,n){return B(s(r,n))}function c(r,n){return b(s(r,n))}function h(r,n){r[n>>5]|=128<<n%32;r[(n+64>>>9<<4)+14]=n;var t=1732584193;var a=-271733879;var o=-1732584194;var u=271733878;for(var f=0;f<r.length;f+=16){var v=t;var i=a;var c=o;var h=u;t=l(t,a,o,u,r[f+0],7,-680876936);u=l(u,t,a,o,r[f+1],12,-389564586);o=l(o,u,t,a,r[f+2],17,606105819);a=l(a,o,u,t,r[f+3],22,-1044525330);t=l(t,a,o,u,r[f+4],7,-176418897);u=l(u,t,a,o,r[f+5],12,1200080426);o=l(o,u,t,a,r[f+6],17,-1473231341);a=l(a,o,u,t,r[f+7],22,-45705983);t=l(t,a,o,u,r[f+8],7,1770035416);u=l(u,t,a,o,r[f+9],12,-1958414417);o=l(o,u,t,a,r[f+10],17,-42063);a=l(a,o,u,t,r[f+11],22,-1990404162);t=l(t,a,o,u,r[f+12],7,1804603682);u=l(u,t,a,o,r[f+13],12,-40341101);o=l(o,u,t,a,r[f+14],17,-1502002290);a=l(a,o,u,t,r[f+15],22,1236535329);t=A(t,a,o,u,r[f+1],5,-165796510);u=A(u,t,a,o,r[f+6],9,-1069501632);o=A(o,u,t,a,r[f+11],14,643717713);a=A(a,o,u,t,r[f+0],20,-373897302);t=A(t,a,o,u,r[f+5],5,-701558691);u=A(u,t,a,o,r[f+10],9,38016083);o=A(o,u,t,a,r[f+15],14,-660478335);a=A(a,o,u,t,r[f+4],20,-405537848);t=A(t,a,o,u,r[f+9],5,568446438);u=A(u,t,a,o,r[f+14],9,-1019803690);o=A(o,u,t,a,r[f+3],14,-187363961);a=A(a,o,u,t,r[f+8],20,1163531501);t=A(t,a,o,u,r[f+13],5,-1444681467);u=A(u,t,a,o,r[f+2],9,-51403784);o=A(o,u,t,a,r[f+7],14,1735328473);a=A(a,o,u,t,r[f+12],20,-1926607734);t=C(t,a,o,u,r[f+5],4,-378558);u=C(u,t,a,o,r[f+8],11,-2022574463);o=C(o,u,t,a,r[f+11],16,1839030562);a=C(a,o,u,t,r[f+14],23,-35309556);t=C(t,a,o,u,r[f+1],4,-1530992060);u=C(u,t,a,o,r[f+4],11,1272893353);o=C(o,u,t,a,r[f+7],16,-155497632);a=C(a,o,u,t,r[f+10],23,-1094730640);t=C(t,a,o,u,r[f+13],4,681279174);u=C(u,t,a,o,r[f+0],11,-358537222);o=C(o,u,t,a,r[f+3],16,-722521979);a=C(a,o,u,t,r[f+6],23,76029189);t=C(t,a,o,u,r[f+9],4,-640364487);u=C(u,t,a,o,r[f+12],11,-421815835);o=C(o,u,t,a,r[f+15],16,530742520);a=C(a,o,u,t,r[f+2],23,-995338651);t=d(t,a,o,u,r[f+0],6,-198630844);u=d(u,t,a,o,r[f+7],10,1126891415);o=d(o,u,t,a,r[f+14],15,-1416354905);a=d(a,o,u,t,r[f+5],21,-57434055);t=d(t,a,o,u,r[f+12],6,1700485571);u=d(u,t,a,o,r[f+3],10,-1894986606);o=d(o,u,t,a,r[f+10],15,-1051523);a=d(a,o,u,t,r[f+1],21,-2054922799);t=d(t,a,o,u,r[f+8],6,1873313359);u=d(u,t,a,o,r[f+15],10,-30611744);o=d(o,u,t,a,r[f+6],15,-1560198380);a=d(a,o,u,t,r[f+13],21,1309151649);t=d(t,a,o,u,r[f+4],6,-145523070);u=d(u,t,a,o,r[f+11],10,-1120210379);o=d(o,u,t,a,r[f+2],15,718787259);a=d(a,o,u,t,r[f+9],21,-343485551);t=m(t,v);a=m(a,i);o=m(o,c);u=m(u,h)}if(e==16){return Array(a,o)}else{return Array(t,a,o,u)}}function g(r,n,t,a,e,o){return m(y(m(m(n,r),m(a,o)),e),t)}function l(r,n,t,a,e,o,u){return g(n&t|~n&a,r,n,e,o,u)}function A(r,n,t,a,e,o,u){return g(n&a|t&~a,r,n,e,o,u)}function C(r,n,t,a,e,o,u){return g(n^t^a,r,n,e,o,u)}function d(r,n,t,a,e,o,u){return g(t^(n|~a),r,n,e,o,u)}function s(r,n){var t=S(r);if(t.length>16)t=h(t,r.length*a);var e=Array(16),o=Array(16);for(var u=0;u<16;u++){e[u]=t[u]^909522486;o[u]=t[u]^1549556828}var f=h(e.concat(S(n)),512+n.length*a);return h(o.concat(f),512+128)}function m(r,n){var t=(r&65535)+(n&65535);var a=(r>>16)+(n>>16)+(t>>16);return a<<16|t&65535}function y(r,n){return r<<n|r>>>32-n}function S(r){var n=Array();var t=(1<<a)-1;for(var e=0;e<r.length*a;e+=a)n[e>>5]|=(r.charCodeAt(e/a)&t)<<e%32;return n}function b(r){var n="";var t=(1<<a)-1;for(var e=0;e<r.length*32;e+=a)n+=String.fromCharCode(r[e>>5]>>>e%32&t);return n}function p(r){var t=n?"0123456789ABCDEF":"0123456789abcdef";var a="";for(var e=0;e<r.length*4;e++){a+=t.charAt(r[e>>2]>>e%4*8+4&15)+t.charAt(r[e>>2]>>e%4*8&15)}return a}function B(r){var n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";var a="";for(var e=0;e<r.length*4;e+=3){var o=(r[e>>2]>>8*(e%4)&255)<<16|(r[e+1>>2]>>8*((e+1)%4)&255)<<8|r[e+2>>2]>>8*((e+2)%4)&255;for(var u=0;u<4;u++){if(e*8+u*6>r.length*32)a+=t;else a+=n.charAt(o>>6*(3-u)&63)}}return a}return o(r)}function autoComplete(r,n,t,a,e,o,u,f,v,i){r+=``;if(r.length<e){while(r.length<e){if(o==0){r+=a}else{r=a+r}}}if(u){let n=``;for(var c=0;c<f;c++){n+=i}r=r.substring(0,v)+n+r.substring(f+v)}r=n+r+t;return toDBC(r)}function toDBC(r){var n="";for(var t=0;t<r.length;t++){if(r.charCodeAt(t)==32){n=n+String.fromCharCode(12288)}else if(r.charCodeAt(t)<127){n=n+String.fromCharCode(r.charCodeAt(t)+65248)}}return n}
+function ToolKit(t,s){return new class{constructor(t,s){this.prefix=`lk`;this.name=t;this.id=s;this.data=null;this.dataFile=`${this.prefix}${this.id}.dat`;this.boxJsJsonFile=`${this.prefix}${this.id}.boxjs.json`;this.isEnableLog=this.getVal(`${this.prefix}IsEnableLog${this.id}`);this.isEnableLog=this.isEmpty(this.isEnableLog)?true:JSON.parse(this.isEnableLog);this.isNotifyOnlyFail=this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`);this.isNotifyOnlyFail=this.isEmpty(this.isNotifyOnlyFail)?false:JSON.parse(this.isNotifyOnlyFail);this.logSeparator="\n██";this.startTime=(new Date).getTime();this.node=(()=>{if(this.isNode()){const t=require("request");return{request:t}}else{return null}})();this.execStatus=true;this.notifyInfo=[];this.log(`${this.name}, 开始执行!`)}boxJsJsonBuilder(t){if(this.isNode()){this.log("-");let s=["keys","settings"];const i="https://raw.githubusercontent.com/Orz-3";let e={};e.id=`${this.prefix}${this.id}`;e.name=this.name;e.icons=[`${i}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${i}/task/master/${this.id.toLocaleLowerCase()}.png`];e.keys=[];e.settings=[{id:`${this.prefix}IsEnableLog${this.id}`,name:"开启/关闭日志",val:true,type:"boolean",desc:"默认开启"},{id:`${this.prefix}NotifyOnlyFail${this.id}`,name:"只当执行失败才通知",val:false,type:"boolean",desc:"默认关闭"}];e.author="@lowking";e.repo="https://github.com/lowking/Scripts";if(!this.isEmpty(t)){for(let i in s){let r=s[i];if(!this.isEmpty(t[r])){e[r]=e[r].concat(t[r])}delete t[r]}}Object.assign(e,t);if(this.isNode()){this.fs=this.fs?this.fs:require("fs");this.path=this.path?this.path:require("path");const t=this.path.resolve(this.boxJsJsonFile);const s=this.path.resolve(process.cwd(),this.boxJsJsonFile);const i=this.fs.existsSync(t);const r=!i&&this.fs.existsSync(s);const n=JSON.stringify(e,null,"\t");if(i){this.fs.writeFileSync(t,n)}else if(r){this.fs.writeFileSync(s,n)}else{this.fs.writeFileSync(t,n)}}}}appendNotifyInfo(t,s){if(s==1){this.notifyInfo=t}else{this.notifyInfo.push(t)}}execFail(){this.execStatus=false}isRequest(){return typeof $request!="undefined"}isSurge(){return typeof $httpClient!="undefined"}isQuanX(){return typeof $task!="undefined"}isLoon(){return typeof $loon!="undefined"}isJSBox(){return typeof $app!="undefined"&&typeof $http!="undefined"}isNode(){return typeof require=="function"&&!this.isJSBox()}sleep(t){return new Promise(s=>setTimeout(s,t))}log(t){if(this.isEnableLog)console.log(`${this.logSeparator}${t}`)}msg(t,s){if(this.isNotifyOnlyFail&&this.execStatus){}else{if(this.isEmpty(s)){if(Array.isArray(this.notifyInfo)){s=this.notifyInfo.join("\n")}else{s=this.notifyInfo}}if(this.isQuanX())$notify(this.name,t,s);if(this.isSurge())$notification.post(this.name,t,s);if(this.isNode())this.log("⭐️"+this.name+t+s);if(this.isJSBox())$push.schedule({title:this.name,body:t?t+"\n"+s:s})}}getVal(t){if(this.isSurge()||this.isLoon()){return $persistentStore.read(t)}else if(this.isQuanX()){return $prefs.valueForKey(t)}else if(this.isNode()){this.data=this.loadData();return this.data[t]}else{return this.data&&this.data[t]||null}}setVal(t,s){if(this.isSurge()||this.isLoon()){return $persistentStore.write(s,t)}else if(this.isQuanX()){return $prefs.setValueForKey(s,t)}else if(this.isNode()){this.data=this.loadData();this.data[t]=s;this.writeData();return true}else{return this.data&&this.data[t]||null}}loadData(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs");this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile);const s=this.path.resolve(process.cwd(),this.dataFile);const i=this.fs.existsSync(t);const e=!i&&this.fs.existsSync(s);if(i||e){const e=i?t:s;try{return JSON.parse(this.fs.readFileSync(e))}catch(t){return{}}}else return{}}else return{}}writeData(){if(this.isNode()){this.fs=this.fs?this.fs:require("fs");this.path=this.path?this.path:require("path");const t=this.path.resolve(this.dataFile);const s=this.path.resolve(process.cwd(),this.dataFile);const i=this.fs.existsSync(t);const e=!i&&this.fs.existsSync(s);const r=JSON.stringify(this.data);if(i){this.fs.writeFileSync(t,r)}else if(e){this.fs.writeFileSync(s,r)}else{this.fs.writeFileSync(t,r)}}}adapterStatus(t){if(t){if(t.status){t["statusCode"]=t.status}else if(t.statusCode){t["status"]=t.statusCode}}return t}get(t,s=(()=>{})){if(this.isQuanX()){if(typeof t=="string")t={url:t};t["method"]="GET";$task.fetch(t).then(t=>{s(null,this.adapterStatus(t),t.body)},t=>s(t.error,null,null))}if(this.isSurge())$httpClient.get(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)});if(this.isNode()){this.node.request(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isJSBox()){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let i=t.error;if(i)i=JSON.stringify(t.error);let e=t.data;if(typeof e=="object")e=JSON.stringify(t.data);s(i,this.adapterStatus(t.response),e)};$http.get(t)}}post(t,s=(()=>{})){if(this.isQuanX()){if(typeof t=="string")t={url:t};t["method"]="POST";$task.fetch(t).then(t=>{s(null,this.adapterStatus(t),t.body)},t=>s(t.error,null,null))}if(this.isSurge()){$httpClient.post(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isNode()){this.node.request.post(t,(t,i,e)=>{s(t,this.adapterStatus(i),e)})}if(this.isJSBox()){if(typeof t=="string")t={url:t};t["header"]=t["headers"];t["handler"]=function(t){let i=t.error;if(i)i=JSON.stringify(t.error);let e=t.data;if(typeof e=="object")e=JSON.stringify(t.data);s(i,this.adapterStatus(t.response),e)};$http.post(t)}}done(t){const s=(new Date).getTime();const i=(s-this.startTime)/1e3;this.log(`${this.name}执行完毕！耗时【${i}】秒`);let e=`body`;if(this.isRequest()){if(this.isQuanX())e=`content`;if(this.isSurge())e=`body`}let r={};r[e]=t;if(this.isQuanX())this.isRequest()?$done(r):null;if(this.isSurge())this.isRequest()?$done(r):$done();if(this.isNode())this.log(JSON.stringify(r))}getRequestUrl(){if(this.isQuanX())return $resource.link;if(this.isSurge())return $request.url;return""}getResponseBody(){if(this.isQuanX())return $resource.content;if(this.isSurge())return $response.body;return""}isEmpty(t){if(typeof t=="undefined"||t==null||t==""){return true}else{return false}}randomString(t){t=t||32;var s="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";var i=s.length;var e="";for(let r=0;r<t;r++){e+=s.charAt(Math.floor(Math.random()*i))}return e}autoComplete(t,s,i,e,r,n,h,o,a,f){t+=``;if(t.length<r){while(t.length<r){if(n==0){t+=e}else{t=e+t}}}if(h){let s=``;for(var l=0;l<o;l++){s+=f}t=t.substring(0,a)+s+t.substring(o+a)}t=s+t+i;return this.toDBC(t)}toDBC(t){var s="";for(var i=0;i<t.length;i++){if(t.charCodeAt(i)==32){s=s+String.fromCharCode(12288)}else if(t.charCodeAt(i)<127){s=s+String.fromCharCode(t.charCodeAt(i)+65248)}}return s}}(t,s)}
+function getPstk(r){for(var n=5381,t=0,a=r.length;a>t;++t)n+=(n<<5)+r.charCodeAt(t);return 2147483647&n}function getCSRFToken(r){var n="5381";var t="tencentQQVIP123443safde&!%^%1282";var a=r;var e=[],u;e.push(n<<5);for(var o=0,v=a.length;o<v;++o){u=a.charAt(o).charCodeAt(0);e.push((n<<5)+u);n=u}return md5z(e.join("")+t)}function md5z(r){var n=0;var t="";var a=8;var e=32;function u(r){return z(h(k(r),r.length*a))}function o(r){return F(h(k(r),r.length*a))}function v(r){return p(h(k(r),r.length*a))}function f(r,n){return z(s(r,n))}function c(r,n){return F(s(r,n))}function i(r,n){return p(s(r,n))}function h(r,n){r[n>>5]|=128<<n%32;r[(n+64>>>9<<4)+14]=n;var t=1732584193;var a=-271733879;var u=-1732584194;var o=271733878;for(var v=0;v<r.length;v+=16){var f=t;var c=a;var i=u;var h=o;t=l(t,a,u,o,r[v+0],7,-680876936);o=l(o,t,a,u,r[v+1],12,-389564586);u=l(u,o,t,a,r[v+2],17,606105819);a=l(a,u,o,t,r[v+3],22,-1044525330);t=l(t,a,u,o,r[v+4],7,-176418897);o=l(o,t,a,u,r[v+5],12,1200080426);u=l(u,o,t,a,r[v+6],17,-1473231341);a=l(a,u,o,t,r[v+7],22,-45705983);t=l(t,a,u,o,r[v+8],7,1770035416);o=l(o,t,a,u,r[v+9],12,-1958414417);u=l(u,o,t,a,r[v+10],17,-42063);a=l(a,u,o,t,r[v+11],22,-1990404162);t=l(t,a,u,o,r[v+12],7,1804603682);o=l(o,t,a,u,r[v+13],12,-40341101);u=l(u,o,t,a,r[v+14],17,-1502002290);a=l(a,u,o,t,r[v+15],22,1236535329);t=A(t,a,u,o,r[v+1],5,-165796510);o=A(o,t,a,u,r[v+6],9,-1069501632);u=A(u,o,t,a,r[v+11],14,643717713);a=A(a,u,o,t,r[v+0],20,-373897302);t=A(t,a,u,o,r[v+5],5,-701558691);o=A(o,t,a,u,r[v+10],9,38016083);u=A(u,o,t,a,r[v+15],14,-660478335);a=A(a,u,o,t,r[v+4],20,-405537848);t=A(t,a,u,o,r[v+9],5,568446438);o=A(o,t,a,u,r[v+14],9,-1019803690);u=A(u,o,t,a,r[v+3],14,-187363961);a=A(a,u,o,t,r[v+8],20,1163531501);t=A(t,a,u,o,r[v+13],5,-1444681467);o=A(o,t,a,u,r[v+2],9,-51403784);u=A(u,o,t,a,r[v+7],14,1735328473);a=A(a,u,o,t,r[v+12],20,-1926607734);t=d(t,a,u,o,r[v+5],4,-378558);o=d(o,t,a,u,r[v+8],11,-2022574463);u=d(u,o,t,a,r[v+11],16,1839030562);a=d(a,u,o,t,r[v+14],23,-35309556);t=d(t,a,u,o,r[v+1],4,-1530992060);o=d(o,t,a,u,r[v+4],11,1272893353);u=d(u,o,t,a,r[v+7],16,-155497632);a=d(a,u,o,t,r[v+10],23,-1094730640);t=d(t,a,u,o,r[v+13],4,681279174);o=d(o,t,a,u,r[v+0],11,-358537222);u=d(u,o,t,a,r[v+3],16,-722521979);a=d(a,u,o,t,r[v+6],23,76029189);t=d(t,a,u,o,r[v+9],4,-640364487);o=d(o,t,a,u,r[v+12],11,-421815835);u=d(u,o,t,a,r[v+15],16,530742520);a=d(a,u,o,t,r[v+2],23,-995338651);t=C(t,a,u,o,r[v+0],6,-198630844);o=C(o,t,a,u,r[v+7],10,1126891415);u=C(u,o,t,a,r[v+14],15,-1416354905);a=C(a,u,o,t,r[v+5],21,-57434055);t=C(t,a,u,o,r[v+12],6,1700485571);o=C(o,t,a,u,r[v+3],10,-1894986606);u=C(u,o,t,a,r[v+10],15,-1051523);a=C(a,u,o,t,r[v+1],21,-2054922799);t=C(t,a,u,o,r[v+8],6,1873313359);o=C(o,t,a,u,r[v+15],10,-30611744);u=C(u,o,t,a,r[v+6],15,-1560198380);a=C(a,u,o,t,r[v+13],21,1309151649);t=C(t,a,u,o,r[v+4],6,-145523070);o=C(o,t,a,u,r[v+11],10,-1120210379);u=C(u,o,t,a,r[v+2],15,718787259);a=C(a,u,o,t,r[v+9],21,-343485551);t=y(t,f);a=y(a,c);u=y(u,i);o=y(o,h)}if(e==16){return Array(a,u)}else{return Array(t,a,u,o)}}function g(r,n,t,a,e,u){return y(m(y(y(n,r),y(a,u)),e),t)}function l(r,n,t,a,e,u,o){return g(n&t|~n&a,r,n,e,u,o)}function A(r,n,t,a,e,u,o){return g(n&a|t&~a,r,n,e,u,o)}function d(r,n,t,a,e,u,o){return g(n^t^a,r,n,e,u,o)}function C(r,n,t,a,e,u,o){return g(t^(n|~a),r,n,e,u,o)}function s(r,n){var t=k(r);if(t.length>16)t=h(t,r.length*a);var e=Array(16),u=Array(16);for(var o=0;o<16;o++){e[o]=t[o]^909522486;u[o]=t[o]^1549556828}var v=h(e.concat(k(n)),512+n.length*a);return h(u.concat(v),512+128)}function y(r,n){var t=(r&65535)+(n&65535);var a=(r>>16)+(n>>16)+(t>>16);return a<<16|t&65535}function m(r,n){return r<<n|r>>>32-n}function k(r){var n=Array();var t=(1<<a)-1;for(var e=0;e<r.length*a;e+=a)n[e>>5]|=(r.charCodeAt(e/a)&t)<<e%32;return n}function p(r){var n="";var t=(1<<a)-1;for(var e=0;e<r.length*32;e+=a)n+=String.fromCharCode(r[e>>5]>>>e%32&t);return n}function z(r){var t=n?"0123456789ABCDEF":"0123456789abcdef";var a="";for(var e=0;e<r.length*4;e++){a+=t.charAt(r[e>>2]>>e%4*8+4&15)+t.charAt(r[e>>2]>>e%4*8&15)}return a}function F(r){var n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";var a="";for(var e=0;e<r.length*4;e+=3){var u=(r[e>>2]>>8*(e%4)&255)<<16|(r[e+1>>2]>>8*((e+1)%4)&255)<<8|r[e+2>>2]>>8*((e+2)%4)&255;for(var o=0;o<4;o++){if(e*8+o*6>r.length*32)a+=t;else a+=n.charAt(u>>6*(3-o)&63)}}return a}return u(r)}
