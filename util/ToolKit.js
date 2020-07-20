@@ -147,7 +147,7 @@ function ToolKit(scriptName, scriptId) {
         }
 
         msg(subtitle, message) {
-            if (this.isNotifyOnlyFail && this.execStatus) {
+            if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
             }else{
                 if (this.isEmpty(message)) {
