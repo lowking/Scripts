@@ -11,11 +11,18 @@
       "keys": ["lkQQSignHeaderKey"],
       "settings": [
         {
-          "id": "lkIsEnableLogQQVip",
+          "id": "lkIsEnableLogQQVipCheckIn",
           "name": "开启/关闭日志",
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailQQVipCheckIn",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
         },
         {
           "id": "lkIsEnableNotifyForGetCookie",
