@@ -1,5 +1,5 @@
 /*
-哔哩哔哩番剧监控-lowking-v1.2
+哔哩哔哩番剧监控-lowking-v1.3
 
 按下面配置完之后，手机哔哩哔哩点击我的-动态，即可获取cookie
 
@@ -48,8 +48,9 @@ if (lk.isRequest()) {
 }
 
 function getCookie() {
-    if ($request.method != 'OPTIONS' && lk.getRequestUrl().match(/\/x\/v2\/space\/bangumi/)) {
-        lk.setVal('lkVmidBilibiliBangumiMonitor', lk.getRequestUrl().split("vmid=")[1].split("&")[0])
+    const url = $request.url
+    if ($request && $request.method != 'OPTIONS' && url.match(/\/x\/v2\/space\/bangumi/)) {
+        lk.setVal('lkVmidBilibiliBangumiMonitor', url.split("vmid=")[1].split("&")[0])
         lk.msg(``, `获取Cookie成功🎉`)
     }
 }
