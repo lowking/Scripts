@@ -1,6 +1,3 @@
-/member-service/logs
-/member-service/*.pid
-application.pid
 
 /target/
 !.mvn/wrapper/maven-wrapper.jar

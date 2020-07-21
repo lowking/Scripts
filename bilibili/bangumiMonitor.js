@@ -10,7 +10,7 @@ Surge 4.2.0+ 脚本配置:
 ************************
 
 [Script]
-# > qq会员成长值签到
+# > 哔哩哔哩番剧监控
 哔哩哔哩番剧监控cookie = type=http-request,pattern=https?:\/\/app.bilibili.com\/x\/v2\/space\/bangumi,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/bangumiMonitor.js
 哔哩哔哩番剧监控 = type=cron,cronexp="0 0 0,1 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/bangumiMonitor.js
 
