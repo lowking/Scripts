@@ -341,15 +341,11 @@ function ToolKit(scriptName, scriptId) {
         }
 
         getRequestUrl() {
-            if (this.isQuanX()) return $resource.link
-            if (this.isSurge()) return $request.url
-            return ""
+            return $request.url
         }
 
         getResponseBody() {
-            if (this.isQuanX()) return $resource.content
-            if (this.isSurge()) return $response.body
-            return ""
+            return $response.body
         }
 
         isEmpty(obj) {
