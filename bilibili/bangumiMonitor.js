@@ -60,7 +60,9 @@ async function all() {
         lk.appendNotifyInfo(`请获取Cookie之后再试❌`)
     } else {
         let curList = await getFollowList(1, 15)
-        await compareDiff(curList)
+        if (!lk.isEmpty(curList) && Object.keys(curList).length > 0) {
+            await compareDiff(curList)
+        }
     }
     lk.msg(``)
     lk.done()
@@ -198,7 +200,8 @@ function getFollowList(pn, ps, preList) {
                             curList = await getFollowList(++pn, ps, curList)
                         }
                     } else {
-                        lk.log(`err code:${ret.code}`)
+                        lk.execFail()
+                        lk.appendNotifyInfo(`❌获取追番列表失败：${ret.message}`)
                     }
                 }
             } catch (e) {
