@@ -152,6 +152,7 @@ function ToolKit(scriptName, scriptId) {
             if (this.isEnableLog) {
                 console.log(`${this.logSeparator}${this.name}执行异常:`)
                 console.log(message)
+                console.log(`\n${message.message}`)
             }
         }
 
