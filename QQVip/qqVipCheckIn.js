@@ -114,6 +114,7 @@ function getCookie() {
             lk.appendNotifyInfo(`获取cookie失败，请重试❌`)
         }
     }
+    lk.msg(``)
     lk.done()
 }
 
