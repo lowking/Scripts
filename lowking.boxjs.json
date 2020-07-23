@@ -66,11 +66,18 @@
       "keys": ["lkWeiboSTSignHeaderKey", "lkUserFollowSTKey"],
       "settings": [
         {
-          "id": "lkIsEnableLogWeiboST",
+          "id": "lkIsEnableLogWeiboSTSign",
           "name": "开启/关闭日志（签到脚本）",
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailWeiboSTSign",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
         },
         {
           "id": "lkIsEnableLogWeiboSTCookie",

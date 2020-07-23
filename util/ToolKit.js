@@ -27,10 +27,22 @@ function ToolKit(scriptName, scriptId) {
             this.data = null
             this.dataFile = `${this.prefix}${this.id}.dat`
             this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
+
+            //默认脚本开关
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
             this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : JSON.parse(this.isEnableLog)
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
             this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : JSON.parse(this.isNotifyOnlyFail)
+
+            //计时部分
+            this.costTotalStringKey = `${this.prefix}CostTotalString${this.id}`
+            this.costTotalString = this.getVal(this.costTotalStringKey)
+            this.costTotalString = this.isEmpty(this.costTotalString) ? `0,0` : this.costTotalString.replace("\"", "")
+            this.costTotalMs = this.costTotalString.split(",")[0]
+            this.execCount = this.costTotalString.split(",")[1]
+            this.costTotalMs = this.isEmpty(this.costTotalMs) ? 0 : parseInt(this.costTotalMs)
+            this.execCount = this.isEmpty(this.execCount) ? 0 : parseInt(this.execCount)
+
             this.logSeparator = '\n██'
             this.startTime = new Date().getTime()
             this.node = (() => {
@@ -324,10 +336,20 @@ function ToolKit(scriptName, scriptId) {
             }
         }
 
-        done(value) {
+        costTime() {
             const endTime = new Date().getTime()
-            const costTime = (endTime - this.startTime) / 1000
-            this.log(`${this.name}执行完毕！耗时【${costTime}】秒`)
+            const ms = endTime - this.startTime
+            const costTime = ms / 1000
+            this.execCount++
+            this.costTotalMs += ms
+            this.log(`${this.name}执行完毕！耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
+            this.setVal(this.costTotalStringKey, JSON.stringify(`${this.costTotalMs},${this.execCount}`))
+            // this.setVal(this.execCountKey, JSON.stringify(0))
+            // this.setVal(this.costTotalMsKey, JSON.stringify(0))
+        }
+
+        done(value) {
+            this.costTime()
             let key = `body`
             if (this.isRequest()) {
                 if (this.isQuanX()) key = `content`
@@ -348,8 +370,12 @@ function ToolKit(scriptName, scriptId) {
             return $response.body
         }
 
+        isGetCookie(reg) {
+            return !!($request.method != 'OPTIONS' && this.getRequestUrl().match(reg));
+        }
+
         isEmpty(obj) {
-            if(typeof obj == "undefined" || obj == null || obj == ""){
+            if(typeof obj == "undefined" || obj == null || obj == "" || obj == "null"){
                 return true
             }else{
                 return false
