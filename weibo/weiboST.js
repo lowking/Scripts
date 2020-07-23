@@ -1,5 +1,5 @@
 /*
-微博超话签到-lowking-v1.4(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
+微博超话签到-lowking-v1.5(原作者NavePnow，因为通知太多进行修改，同时重构了代码)
 
 ⚠️使用方法：按下面的配置完之后打开超话页面，点击签到按钮获取cookie
 
@@ -40,13 +40,7 @@ const lk = new ToolKit(`微博超话签到`, `WeiboSTSign`)
 const isEnableLog = !lk.getVal('lkIsEnableLogWeiboST') ? true : JSON.parse(lk.getVal('lkIsEnableLogWeiboST'))
 const isClearCookie = !lk.getVal('lkIsClearCookie') ? false : JSON.parse(lk.getVal('lkIsClearCookie'))
 const userFollowSTKey = `lkUserFollowSTKey`
-var accounts = !lk.getVal(userFollowSTKey) ? [
-        ["女流", "10080850b1c3b64e5545118a102f555513c8e2"],
-        ["VVebo", "100808ea6caf9419bec340a20efc3c6aa50b65"],
-        ["雀", "1008082ff97aa6fcfa3e39c3ef65fa51f0a027"],
-        ["超级小桀", "10080883321dbae3ada25e5c406fccd3aaadd5"],
-        ["动森", "100808a6c64b07163fe20e1a35fee1538280ed"]
-    ] : JSON.parse(lk.getVal(userFollowSTKey))
+var accounts = !lk.getVal(userFollowSTKey) ? false : JSON.parse(lk.getVal(userFollowSTKey))
 
 
 !(async () => {
@@ -54,7 +48,7 @@ var accounts = !lk.getVal(userFollowSTKey) ? [
     let cookie = lk.getVal(signHeaderKey)
     //校验cookie
     lk.log(lk.getVal(userFollowSTKey))
-    if (!cookie || isClearCookie || !userFollowSTKey) {
+    if (!cookie || isClearCookie || !accounts) {
         lk.execFail()
         lk.setVal(signHeaderKey, ``)
         lk.appendNotifyInfo(isClearCookie ? `手动清除cookie` : `未获取到cookie或关注列表，请重新获取❌`)
@@ -71,9 +65,6 @@ function signIn() {
             let name = accounts[i][0]
             let super_id = accounts[i][1]
             await superTalkSignIn(i, name, super_id)
-            if (!lk.execStatus) {
-                break
-            }
         }
         resolve()
     })
