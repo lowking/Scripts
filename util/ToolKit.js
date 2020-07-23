@@ -34,6 +34,12 @@ function ToolKit(scriptName, scriptId) {
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
             this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : JSON.parse(this.isNotifyOnlyFail)
 
+            //tg通知开关
+            this.isEnableTgNotify = this.getVal(`${this.prefix}IsEnableTgNotify${this.id}`)
+            this.isEnableTgNotify = this.isEmpty(this.isEnableTgNotify) ? false : JSON.parse(this.isEnableTgNotify)
+            this.tgNotifyUrl = this.getVal(`${this.prefix}TgNotifyUrl${this.id}`)
+            this.isEnableTgNotify = !this.isEmpty(this.tgNotifyUrl)
+
             //计时部分
             this.costTotalStringKey = `${this.prefix}CostTotalString${this.id}`
             this.costTotalString = this.getVal(this.costTotalStringKey)
@@ -47,7 +53,7 @@ function ToolKit(scriptName, scriptId) {
             this.startTime = new Date().getTime()
             this.node = (() => {
                 if (this.isNode()) {
-                    const request = require('request');
+                    const request = require('request')
                     return ({request})
                 } else {
                     return (null)
@@ -61,7 +67,7 @@ function ToolKit(scriptName, scriptId) {
         boxJsJsonBuilder(info) {
             if (this.isNode()) {
                 this.log('using node')
-                let needAppendKeys = ["keys", "settings"];
+                let needAppendKeys = ["keys", "settings"]
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
                 let boxJsJson = {}
                 boxJsJson.id = `${this.prefix}${this.id}`
@@ -82,6 +88,20 @@ function ToolKit(scriptName, scriptId) {
                         "val": false,
                         "type": "boolean",
                         "desc": "默认关闭"
+                    },
+                    {
+                        "id": `${this.prefix}isEnableTgNotify${this.id}`,
+                        "name": "开启/关闭Telegram通知",
+                        "val": false,
+                        "type": "boolean",
+                        "desc": "默认关闭"
+                    },
+                    {
+                        "id": `${this.prefix}TgNotifyUrl${this.id}`,
+                        "name": "Telegram通知地址",
+                        "val": "",
+                        "type": "text",
+                        "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
                     }
                 ]
                 boxJsJson.author = "@lowking"
@@ -171,21 +191,32 @@ function ToolKit(scriptName, scriptId) {
         msg(subtitle, message) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
-            }else{
+            } else {
                 if (this.isEmpty(message)) {
                     if (Array.isArray(this.notifyInfo)) {
-                        message = this.notifyInfo.join("\n");
+                        message = this.notifyInfo.join("\n")
                     } else {
                         message = this.notifyInfo
                     }
                 }
-                if (this.isQuanX()) $notify(this.name, subtitle, message);
-                if (this.isSurge()) $notification.post(this.name, subtitle, message)
-                if (this.isNode()) this.log("⭐️" + this.name + subtitle + message)
-                if (this.isJSBox()) $push.schedule({
-                    title: this.name,
-                    body: subtitle ? subtitle + "\n" + message : message
-                })
+                if (!this.isEmpty(message)) {
+                    if (this.isEnableTgNotify) {
+                        this.log(`${this.name}Tg通知开始`)
+                        this.get({
+                            url: encodeURI(`${this.tgNotifyUrl}📌${this.name}\n${message}`)
+                        }, (error, statusCode, body) => {
+                            this.log(`Tg通知完毕`)
+                        })
+                    } else {
+                        if (this.isQuanX()) $notify(this.name, subtitle, message)
+                        if (this.isSurge()) $notification.post(this.name, subtitle, message)
+                        if (this.isNode()) this.log("⭐️" + this.name + subtitle + message)
+                        if (this.isJSBox()) $push.schedule({
+                            title: this.name,
+                            body: subtitle ? subtitle + "\n" + message : message
+                        })
+                    }
+                }
             }
         }
 
@@ -292,11 +323,11 @@ function ToolKit(scriptName, scriptId) {
                 options["handler"] = function (resp) {
                     let error = resp.error
                     if (error) error = JSON.stringify(resp.error)
-                    let body = resp.data;
-                    if (typeof body == "object") body = JSON.stringify(resp.data);
+                    let body = resp.data
+                    if (typeof body == "object") body = JSON.stringify(resp.data)
                     callback(error, this.adapterStatus(resp.response), body)
-                };
-                $http.get(options);
+                }
+                $http.get(options)
             }
         }
 
@@ -371,19 +402,19 @@ function ToolKit(scriptName, scriptId) {
         }
 
         isGetCookie(reg) {
-            return !!($request.method != 'OPTIONS' && this.getRequestUrl().match(reg));
+            return !!($request.method != 'OPTIONS' && this.getRequestUrl().match(reg))
         }
 
         isEmpty(obj) {
-            if(typeof obj == "undefined" || obj == null || obj == "" || obj == "null"){
+            if (typeof obj == "undefined" || obj == null || obj == "" || obj == "null") {
                 return true
-            }else{
+            } else {
                 return false
             }
         }
 
         randomString(len) {
-            len = len || 32;
+            len = len || 32
             var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
             var maxPos = $chars.length
             var pwd = ''

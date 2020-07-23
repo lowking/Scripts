@@ -25,6 +25,20 @@
           "desc": "默认关闭"
         },
         {
+          "id": "lkisEnableTgNotifyQQVipCheckIn",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlQQVipCheckIn",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
           "id": "lkIsEnableNotifyForGetCookie",
           "name": "开启/关闭获取Cookie时的通知",
           "val": true,
@@ -99,6 +113,20 @@
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
+        },
+        {
+          "id": "lkisEnableTgNotifyWeiboSTSign",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlWeiboSTSign",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         }
       ],
       "author": "@lowking",
@@ -168,6 +196,20 @@
           "desc": "默认关闭"
         },
         {
+          "id": "lkisEnableTgNotifySonyClub",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlSonyClub",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
           "id": "lkSonyClubToken",
           "name": "token",
           "val": "",
@@ -218,6 +260,20 @@
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
+        },
+        {
+          "id": "lkisEnableTgNotifyBilibiliBangumiMonitor",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlBilibiliBangumiMonitor",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         }
       ],
       "author": "@lowking",
