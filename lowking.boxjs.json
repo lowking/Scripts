@@ -69,6 +69,7 @@
       ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "script": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true",
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/qqvip.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/qqvip.png"
@@ -131,6 +132,7 @@
       ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js",
+      "script": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true",
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"
@@ -233,6 +235,7 @@
       ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js",
+      "script": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js?raw=true",
       "icons": [
         "https://www.sonystyle.com.cn/favicon.ico",
         "https://www.sonystyle.com.cn/favicon.ico"
@@ -277,7 +280,8 @@
         }
       ],
       "author": "@lowking",
-      "repo": "https://github.com/lowking/Scripts"
+      "repo": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js",
+      "script": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true"
     },
     {
       "id": "yuba",
