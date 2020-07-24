@@ -25,7 +25,7 @@
           "desc": "默认关闭"
         },
         {
-          "id": "lkisEnableTgNotifyQQVipCheckIn",
+          "id": "lkIsEnableTgNotifyQQVipCheckIn",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",
@@ -116,7 +116,7 @@
           "desc": "默认开启"
         },
         {
-          "id": "lkisEnableTgNotifyWeiboSTSign",
+          "id": "lkIsEnableTgNotifyWeiboSTSign",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",
@@ -198,7 +198,7 @@
           "desc": "默认关闭"
         },
         {
-          "id": "lkisEnableTgNotifySonyClub",
+          "id": "lkIsEnableTgNotifySonyClub",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",
@@ -265,7 +265,7 @@
           "desc": "默认关闭"
         },
         {
-          "id": "lkisEnableTgNotifyBilibiliBangumiMonitor",
+          "id": "lkIsEnableTgNotifyBilibiliBangumiMonitor",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",
@@ -289,6 +289,7 @@
       "keys": ["CookieDY", "GroupDY"],
       "author": "@demo2099",
       "repo": "https://github.com/demo2099/jscool/blob/master/Task/yubaSign.js",
+      "script": "https://github.com/demo2099/jscool/blob/master/Task/yubaSign.js?raw=true",
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
