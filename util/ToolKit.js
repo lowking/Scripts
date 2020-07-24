@@ -28,6 +28,9 @@ function ToolKit(scriptName, scriptId) {
             this.dataFile = `${this.prefix}${this.id}.dat`
             this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
 
+            //命令行入参
+            this.isExecComm = false
+
             //默认脚本开关
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
             this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : JSON.parse(this.isEnableLog)
@@ -38,7 +41,7 @@ function ToolKit(scriptName, scriptId) {
             this.isEnableTgNotify = this.getVal(`${this.prefix}IsEnableTgNotify${this.id}`)
             this.isEnableTgNotify = this.isEmpty(this.isEnableTgNotify) ? false : JSON.parse(this.isEnableTgNotify)
             this.tgNotifyUrl = this.getVal(`${this.prefix}TgNotifyUrl${this.id}`)
-            this.isEnableTgNotify = !this.isEmpty(this.tgNotifyUrl)
+            this.isEnableTgNotify = this.isEnableTgNotify ? !this.isEmpty(this.tgNotifyUrl) : this.isEnableTgNotify
 
             //计时部分
             this.costTotalStringKey = `${this.prefix}CostTotalString${this.id}`
@@ -62,6 +65,86 @@ function ToolKit(scriptName, scriptId) {
             this.execStatus = true
             this.notifyInfo = []
             this.log(`${this.name}, 开始执行!`)
+            this.execComm()
+        }
+
+        async execComm() {
+            //支持node命令，实现发送手机测试
+            if (this.isNode()) {
+                this.comm = process.argv.slice(2)
+                if (this.comm[0] == "p") {
+                    this.isExecComm = true
+                    //phone
+                    this.log(`发送到手机测试脚本！`)
+                    await this.callApi()
+                }
+            }
+        }
+
+        callApi() {
+            let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
+            let scriptStr = ''
+            this.fs = this.fs ? this.fs : require('fs')
+            this.path = this.path ? this.path : require('path')
+            const curDirDataFilePath = this.path.resolve(fname)
+            const rootDirDataFilePath = this.path.resolve(process.cwd(), fname)
+            const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+            const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+            if (isCurDirDataFile || isRootDirDataFile) {
+                const datPath = isCurDirDataFile ? curDirDataFilePath : rootDirDataFilePath
+                try {
+                    scriptStr = this.fs.readFileSync(datPath)
+                } catch (e) {
+                    scriptStr = ''
+                }
+            } else {
+                scriptStr = ''
+            }
+            let options = {
+                url: "http://3.3.3.18:6166/v1/scripting/evaluate",
+                headers: {
+                    "X-Key": "ffff"
+                },
+                body: JSON.stringify({
+                    "script_text": scriptStr,
+                    "mock_type": "cron",
+                    "timeout": 5
+                })
+            }
+            this.post(options, (error, response, data) => {
+                this.log(`指令【${this.comm[0]}】执行返回结果:\n${data}`)
+                this.done()
+            })
+        }
+
+        getCallerFileNameAndLine(){
+            function getCustomException() {
+                try {
+                    throw Error('')
+                } catch (err) {
+                    return err
+                }
+            }
+
+            const err = getCustomException()
+
+            const stack = err.stack
+            const stackArr = stack.split('\n')
+            let callerLogIndex = 0
+            for (let i = 0; i < stackArr.length; i++) {
+                if (stackArr[i].indexOf('getCustomException') > 0 && i + 1 < stackArr.length) {
+                    callerLogIndex = i
+                    break
+                }
+            }
+
+            if (callerLogIndex !== 0) {
+                const callerStackLine = stackArr[callerLogIndex]
+                this.path = this.path ? this.path : require('path')
+                return `[${callerStackLine.substring(callerStackLine.lastIndexOf(this.path.sep) + 1, callerStackLine.lastIndexOf(':'))}]`
+            } else {
+                return '[-]'
+            }
         }
 
         boxJsJsonBuilder(info) {
@@ -368,12 +451,16 @@ function ToolKit(scriptName, scriptId) {
         }
 
         costTime() {
+            let info = `${this.name}执行完毕！`
+            if (this.isNode() && this.isExecComm) {
+                info = `指令【${this.comm[0]}】执行完毕！`
+            }
             const endTime = new Date().getTime()
             const ms = endTime - this.startTime
             const costTime = ms / 1000
             this.execCount++
             this.costTotalMs += ms
-            this.log(`${this.name}执行完毕！耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
+            this.log(`${info}耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
             this.setVal(this.costTotalStringKey, JSON.stringify(`${this.costTotalMs},${this.execCount}`))
             // this.setVal(this.execCountKey, JSON.stringify(0))
             // this.setVal(this.costTotalMsKey, JSON.stringify(0))
@@ -390,7 +477,6 @@ function ToolKit(scriptName, scriptId) {
             obj[key] = value
             if (this.isQuanX()) this.isRequest() ? $done(obj) : null
             if (this.isSurge()) this.isRequest() ? $done(obj) : $done()
-            if (this.isNode()) this.log(JSON.stringify(obj))
         }
 
         getRequestUrl() {
