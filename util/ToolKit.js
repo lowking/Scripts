@@ -15,11 +15,13 @@
  *
  * @param scriptName 脚本名，用于通知时候的标题
  * @param scriptId 每个脚本唯一的id，用于存储持久化的时候加入key
+ * @param options 传入一些参数，目前参数如下；
+ *                                      httpApi=ffff@3.3.3.18:6166（这个是默认值，本人surge调试脚本用，可自行修改）
  * @constructor
  */
-function ToolKit(scriptName, scriptId) {
+function ToolKit(scriptName, scriptId, options) {
     return new (class {
-        constructor(scriptName, scriptId) {
+        constructor(scriptName, scriptId, options) {
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
@@ -27,6 +29,9 @@ function ToolKit(scriptName, scriptId) {
             this.data = null
             this.dataFile = `${this.prefix}${this.id}.dat`
             this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
+
+            //surge http api等一些扩展参数
+            this.options = options
 
             //命令行入参
             this.isExecComm = false
@@ -75,14 +80,28 @@ function ToolKit(scriptName, scriptId) {
                 if (this.comm[0] == "p") {
                     this.isExecComm = true
                     //phone
-                    this.log(`发送到手机测试脚本！`)
-                    await this.callApi()
+                    this.log(`开始执行指令【${this.comm[0]}】=> 发送到手机测试脚本！`)
+                    if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
+                        //设置默认值
+                        if (this.isEmpty(this.options)) {
+                            this.options = {}
+                        }
+                        this.options.httpApi = `ffff@3.3.3.18:6166`;
+                    } else {
+                        //判断格式
+                        if (/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
+                            this.log(`httpApi格式错误！格式：ffff@3.3.3.18:6166`)
+                            this.done()
+                        }
+                    }
+                    await this.callApi();
                 }
             }
         }
 
         callApi() {
             let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
+            this.log(`获取【${fname}】内容传给手机`)
             let scriptStr = ''
             this.fs = this.fs ? this.fs : require('fs')
             this.path = this.path ? this.path : require('path')
@@ -101,42 +120,34 @@ function ToolKit(scriptName, scriptId) {
                 scriptStr = ''
             }
             let options = {
-                url: "http://3.3.3.18:6166/v1/scripting/evaluate",
+                url: `http://${this.options.httpApi.split("@")[1]}/v1/scripting/evaluate`,
                 headers: {
-                    "X-Key": "ffff"
+                    "X-Key": `${this.options.httpApi.split("@")[0]}`
                 },
-                body: JSON.stringify({
-                    "script_text": scriptStr,
+                body: {
+                    "script_text": `${scriptStr}`,
                     "mock_type": "cron",
                     "timeout": 5
-                })
+                },
+                json: true
             }
             this.post(options, (error, response, data) => {
-                this.log(`指令【${this.comm[0]}】执行返回结果:\n${data}`)
+                this.log(`已将脚本【${fname}】发给手机！`)
                 this.done()
             })
         }
 
         getCallerFileNameAndLine(){
-            function getCustomException() {
-                try {
-                    throw Error('')
-                } catch (err) {
-                    return err
-                }
+            let error
+            try {
+                throw Error('')
+            } catch (err) {
+                error = err
             }
 
-            const err = getCustomException()
-
-            const stack = err.stack
+            const stack = error.stack
             const stackArr = stack.split('\n')
-            let callerLogIndex = 0
-            for (let i = 0; i < stackArr.length; i++) {
-                if (stackArr[i].indexOf('getCustomException') > 0 && i + 1 < stackArr.length) {
-                    callerLogIndex = i
-                    break
-                }
-            }
+            let callerLogIndex = 1
 
             if (callerLogIndex !== 0) {
                 const callerStackLine = stackArr[callerLogIndex]
@@ -145,6 +156,13 @@ function ToolKit(scriptName, scriptId) {
             } else {
                 return '[-]'
             }
+        }
+
+        getFunName(fun) {
+            var ret = fun.toString();
+            ret = ret.substr('function '.length);
+            ret = ret.substr(0, ret.indexOf('('));
+            return ret;
         }
 
         boxJsJsonBuilder(info) {
@@ -589,5 +607,5 @@ function ToolKit(scriptName, scriptId) {
             }
             return tmp
         }
-    })(scriptName, scriptId)
+    })(scriptName, scriptId, options)
 }
