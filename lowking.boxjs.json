@@ -159,26 +159,6 @@
       ]
     },
     {
-      "id": "lk.subconverter",
-      "name": "订阅转换器",
-      "keys": ["ignore"],
-      "settings": [
-        {
-          "id": "lkIsEnableLogSubConverter",
-          "name": "开启/关闭日志",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认关闭"
-        }
-      ],
-      "author": "@lowking",
-      "repo": "https://github.com/lowking/Scripts/blob/master/util/SubConverter.js",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png",
-        "https://raw.githubusercontent.com/Orz-3/mini/master/roundrobin.png"
-      ]
-    },
-    {
       "id": "lk.sony.club",
       "name": "索尼俱乐部",
       "keys": ["lkSonyClubToken"],
