@@ -8,6 +8,7 @@
     {
       "id": "lk.qqvip",
       "name": "QQ会员成长值签到",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "keys": ["lkQQSignHeaderKey"],
       "settings": [
         {
@@ -78,6 +79,7 @@
     {
       "id": "lk.weiboST",
       "name": "微博超话",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "keys": ["lkWeiboSTSignHeaderKey", "lkUserFollowSTKey"],
       "settings": [
         {
@@ -224,6 +226,7 @@
     {
       "id": "lkBilibiliBangumiMonitor",
       "name": "哔哩哔哩番剧监控",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/bilibili.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/bilibili.png"
