@@ -1,0 +1,97 @@
+{
+  "id": "lowking.app.sub",
+  "name": "lowking应用订阅",
+  "author": "@lowking",
+  "icon": "https://avatars0.githubusercontent.com/u/33308659?s=460&u=9223074586cb14f2ae7ee0953515f8781ded8be9&v=4",
+  "repo": "https://github.com/lowking/Scripts/",
+  "apps": [
+    {
+      "id": "lk.app1",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app2",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app3",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app4",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app5",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app6",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app7",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    },
+    {
+      "id": "lk.app8",
+      "name": "",
+      "keys": [],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
+      "icons": [
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+      ]
+    }
+  ]
+}
