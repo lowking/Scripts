@@ -26,7 +26,7 @@ execFail()
 isRequest()  
 |返回结果|描述
 |:---|:---
-|Boolean|用
+|Boolean|用于判断是否是请求
 
 getRequestUrl()  
 |描述
@@ -36,7 +36,7 @@ getRequestUrl()
 getResponseBody()  
 |描述
 |:---
-|获取请求的响应体
+|获取响应体
 
 sleep(time)  
 |参数|描述
@@ -90,7 +90,7 @@ done(value)
 isEmpty(obj)  
 |参数|描述
 |:---|:---
-|obj|传入对象，用于判断是否为空(typeof obj == "undefined" || obj == null || obj == "" || obj == "null")
+|obj|传入对象，用于判断是否为空
 
 randomString(len)  
 |参数|描述
