@@ -269,12 +269,12 @@
     {
       "id": "lkDouyuYubaSign",
       "name": "斗鱼鱼吧签到",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/douyu/yubaSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/douyuyubasign.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/douyuyubasign.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
       ],
-      "keys": [],
+      "keys": ["CookieDY", "GroupDY"],
       "settings": [
         {
           "id": "lkIsEnableLogDouyuYubaSign",
@@ -305,9 +305,9 @@
           "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         }
       ],
-      "author": "@lowking",
+      "author": "@demo2099, @lowking",
       "repo": "https://github.com/lowking/Scripts",
-      "script": "https://github.com/lowking/Scripts/douyu/yubaSign.js?raw=true"
+      "script": "https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true"
     }
   ]
 }
