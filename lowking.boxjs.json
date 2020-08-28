@@ -291,7 +291,7 @@
           "desc": "默认关闭"
         },
         {
-          "id": "lkisEnableTgNotifyDouyuYubaSign",
+          "id": "lkIsEnableTgNotifyDouyuYubaSign",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",

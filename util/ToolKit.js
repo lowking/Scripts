@@ -197,7 +197,7 @@ function ToolKit(scriptName, scriptId, options) {
                         "desc": "默认关闭"
                     },
                     {
-                        "id": `${this.prefix}isEnableTgNotify${this.id}`,
+                        "id": `${this.prefix}IsEnableTgNotify${this.id}`,
                         "name": "开启/关闭Telegram通知",
                         "val": false,
                         "type": "boolean",
