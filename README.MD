@@ -3,11 +3,21 @@
 # Scripts
 ### 日志
 
+#### 2020-08-28
+> ##### 新增
+> - 新增斗鱼鱼吧签到
+> ##### 更新
+> - 更新ToolKit，内容如下：
+>  > 1. 调整传入options.httpApi的格式校验
+>  > 2. 发送到ios surge允许传入超时参数：node ToolKitDemo.js p 5，最后一个参数"5"单位秒
+>  > 3. 加入prependNotifyInfo()方法，便于脚本最后统计执行情况的时候把汇总信息放在第一行
+>  > 4. 完善boxJsJsonBuilder()，构建更全的配置
+
 #### 2020-07-24
 > ##### 更新
 > - ToolKit支持surge新特性http api
->  > 1. 写法参考[UseToolKitDemo](https://github.com/lowking/Scripts/blob/master/util/example/useToolKitDemo.js)，之后就可以在脚本所在的目录下执行```node useToolKitDemo.js p```，记得命令尾巴加空格p，就可以把当前这个脚本发送到手机端测试了
->  > 2. 执行```node useToolKitDemo.js```可在当前目录下生成BoxJs配置文件，详细实现可以查看ToolKit中的boxJsJsonBuilder方法
+>  > 1. 写法参考[ToolKitDemo](https://github.com/lowking/Scripts/blob/master/util/example/useToolKitDemo.js)，之后就可以在脚本所在的目录下执行```node ToolKitDemo.js p```，记得命令尾巴加空格p，就可以把当前这个脚本发送到手机端测试了
+>  > 2. 执行```node ToolKitDemo.js```可在当前目录下生成BoxJs配置文件，详细实现可以查看ToolKit中的boxJsJsonBuilder方法
 
 #### 2020-07-20
 > ##### 更新

@@ -34,7 +34,7 @@ qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,scrip
 
 索尼俱乐部 = type=cron,cronexp="0 7 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js,script-update-interval=0
 
-斗鱼鱼吧 = type=cron,cronexp="30 7 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/demo2099/jscool/master/Task/yubaSign.js,script-update-interval=0
+斗鱼鱼吧 = type=cron,cronexp="30 7 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/yubaSign.js,script-update-interval=0
 
 什么值得买 = type=cron,cronexp="0 8 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/smzdm/smzdm.js,script-update-interval=0
 

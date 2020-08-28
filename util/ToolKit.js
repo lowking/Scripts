@@ -77,29 +77,34 @@ function ToolKit(scriptName, scriptId, options) {
             //支持node命令，实现发送手机测试
             if (this.isNode()) {
                 this.comm = process.argv.slice(2)
+                let isHttpApiErr = false
                 if (this.comm[0] == "p") {
                     this.isExecComm = true
                     //phone
                     this.log(`开始执行指令【${this.comm[0]}】=> 发送到手机测试脚本！`)
                     if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
+                        this.log(`未设置options，使用默认值`)
                         //设置默认值
                         if (this.isEmpty(this.options)) {
                             this.options = {}
                         }
-                        this.options.httpApi = `ffff@3.3.3.18:6166`;
+                        this.options.httpApi = `ffff@3.3.3.18:6166`
                     } else {
                         //判断格式
-                        if (/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
-                            this.log(`httpApi格式错误！格式：ffff@3.3.3.18:6166`)
+                        if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
+                            isHttpApiErr = true
+                            this.log(`❌httpApi格式错误！格式：ffff@3.3.3.18:6166`)
                             this.done()
                         }
                     }
-                    await this.callApi();
+                    if (!isHttpApiErr) {
+                        await this.callApi(this.comm[1]);
+                    }
                 }
             }
         }
 
-        callApi() {
+        callApi(timeout) {
             let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
             this.log(`获取【${fname}】内容传给手机`)
             let scriptStr = ''
@@ -127,7 +132,7 @@ function ToolKit(scriptName, scriptId, options) {
                 body: {
                     "script_text": `${scriptStr}`,
                     "mock_type": "cron",
-                    "timeout": 5
+                    "timeout": (!this.isEmpty(timeout) && timeout > 5) ? timeout : 5
                 },
                 json: true
             }
@@ -173,6 +178,7 @@ function ToolKit(scriptName, scriptId, options) {
                 let boxJsJson = {}
                 boxJsJson.id = `${this.prefix}${this.id}`
                 boxJsJson.name = this.name
+                boxJsJson.desc_html = "⚠️使用说明</br>详情【<a href='script_url?raw=true'><font class='red--text'>点我查看</font></a>】"
                 boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
                 boxJsJson.keys = []
                 boxJsJson.settings = [
@@ -207,6 +213,7 @@ function ToolKit(scriptName, scriptId, options) {
                 ]
                 boxJsJson.author = "@lowking"
                 boxJsJson.repo = "https://github.com/lowking/Scripts"
+                boxJsJson.script = "script_url?raw=true"
                 //除了settings和keys追加，其他的都覆盖
                 if (!this.isEmpty(info)) {
                     for (let i in needAppendKeys) {
@@ -243,6 +250,10 @@ function ToolKit(scriptName, scriptId, options) {
             } else {
                 this.notifyInfo.push(info)
             }
+        }
+
+        prependNotifyInfo(info) {
+            this.notifyInfo.splice(0, 0, info)
         }
 
         execFail() {
