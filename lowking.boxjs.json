@@ -312,6 +312,7 @@
     {
       "id": "lkGithubMonitorPushTg",
       "name": "GitHub 监控（tg通知版）",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "keys": ["lkGithubMonitorRepo", "lkGithubMonitorToken"],
       "settings": [
         {
