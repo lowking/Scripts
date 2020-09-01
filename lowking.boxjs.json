@@ -355,7 +355,7 @@
         "https://raw.githubusercontent.com/58xinian/icon/master/qqpet_mini.png",
         "https://raw.githubusercontent.com/58xinian/icon/master/qqpet.png"
       ],
-      "keys": ["lkQQPetToken", "lkQQPetCurUserTag"],
+      "keys": ["lkQQPetToken", "lkQQPetCurUserTag", "lkQQPetId"],
       "settings": [
         {
           "id": "lkIsEnableLogQQPet",

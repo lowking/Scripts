@@ -41,6 +41,7 @@ mitm = qqpet.jwetech.com
 */
 const lk = new ToolKit(`QQ萌宠`, `QQPet`)
 const qqPetTokenKey = `lkQQPetToken`
+const qqPetIdKey = `lkQQPetId`
 const qqPetToken = lk.getVal(qqPetTokenKey)
 const qqPetCurUserTag = !lk.getVal('lkQQPetCurUserTag') ? '' : lk.getVal('lkQQPetCurUserTag')
 
@@ -66,9 +67,10 @@ function getCookie() {
             lk.logErr(e)
             lk.appendNotifyInfo(`❌解析授权响应失败！请稍后再试`)
         }
-        lk.log(`获取到token：${obj.token}`)
+        lk.log(`${obj.id}获取到token：${obj.token}`)
         lk.appendNotifyInfo(`🎉成功获取token`)
         lk.setVal(qqPetTokenKey, `Bearer ${obj.token}`)
+        lk.setVal(qqPetIdKey, obj.id)
     }
 }
 
