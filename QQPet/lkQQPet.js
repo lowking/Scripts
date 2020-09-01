@@ -35,7 +35,7 @@ LOON 本地脚本配置:
 ************************
 
 [Script]
-http-request https:\/\/qqpet.jwetech.com\/api\/authorizations script-path=lkQQPet.js, timeout=10, requires-body=true, tag=QQ萌宠cookie
+http-response https:\/\/qqpet.jwetech.com\/api\/authorizations script-path=lkQQPet.js, timeout=10, requires-body=true, tag=QQ萌宠cookie
 cron "0 0 0,1 * * *" script-path=lkQQPet.js, tag=QQ萌宠
 
 mitm = qqpet.jwetech.com
