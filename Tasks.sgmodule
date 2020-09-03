@@ -51,11 +51,11 @@ epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=
 哔哩哔哩番剧监控 = type=cron,cronexp="*/29 6-23 * * *",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/bangumiMonitor.js,script-update-interval=0
 
 ##############需要BoxJs多会话切换的##############
-QQ萌宠 = type=cron,cronexp="30 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
+#QQ萌宠 = type=cron,cronexp="30 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
 
-会话切换1 = type=cron,cronexp="30 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
+#会话切换1 = type=cron,cronexp="30 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
 
-QQ萌宠 = type=cron,cronexp="35 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
+#QQ萌宠 = type=cron,cronexp="35 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
 
 ##############常开获取cookie##############
 qq会员-cookie = type=http-request,pattern=https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js
