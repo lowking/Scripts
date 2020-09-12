@@ -300,7 +300,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
-        msg(subtitle, message) {
+        msg(subtitle, message, openUrl, mediaUrl) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
             } else {
@@ -320,8 +320,19 @@ function ToolKit(scriptName, scriptId, options) {
                             this.log(`Tg通知完毕`)
                         })
                     } else {
-                        if (this.isQuanX()) $notify(this.name, subtitle, message)
-                        if (this.isSurge()) $notification.post(this.name, subtitle, message)
+                        let options = {}
+                        const hasOpenUrl = !this.isEmpty(openUrl)
+                        const hasMediaUrl = !this.isEmpty(mediaUrl)
+
+                        if (this.isQuanX()) {
+                            if(hasOpenUrl) options["open-url"] = openUrl
+                            if(hasMediaUrl) options["media-url"] = mediaUrl
+                            $notify(this.name, subtitle, message, options)
+                        }
+                        if (this.isSurge()) {
+                            if(hasOpenUrl) options["url"] = openUrl
+                            $notification.post(this.name, subtitle, message, options)
+                        }
                         if (this.isNode()) this.log("⭐️" + this.name + subtitle + message)
                         if (this.isJSBox()) $push.schedule({
                             title: this.name,
