@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+targetFile="/Users/lowking/Desktop/Scripts/util/ToolKit.min.js"
+targetPath="/Users/lowking/Desktop/Scripts"
+
+# 执行min
+uglifyjs $targetPath/util/ToolKit.js -m -o $targetPath/util/ToolKit.min.js
+
+# 复制min文件内容
+pbcopy < $targetPath/util/ToolKit.min.js
+
+# 从剪辑版复制内容
+pasteStr=`pbpaste -Prefer text`
+
+# 替换到所有脚本//ToolKit-start和//ToolKit-end之间的内容
+echo "批量替换.js中ToolKit开始"
+for i in `find $targetPath -name '*.js' ! -path '*node_modules*'`
+do
+	lineno=`grep -n "ToolKit-start" $i`
+	if [ -n "$lineno" ]; then
+		array=(`echo $lineno | tr ':' ' '` )
+		lineno=$[ ${array[0]} + 0 ]
+		if [ $lineno -ge 1 ]; then
+			# 调用py
+			python ~/bin/replaceAllJs.py $lineno $i
+			echo "$i 已替换【${lineno}】"
+		fi
+	fi
+done
+echo "批量替换.js中ToolKit完成"
+
