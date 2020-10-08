@@ -1,7 +1,8 @@
 # 说明
 - ```ugtoolkit```脚本用于批量替换项目下js中文中所有引用的ToolKit，避免更新一次ToolKit手动多次修改。
 - 使用方法（本人mac环境，以下只针对mac环境）：  
-  > - 把```ugtoolkit```复制到当前用户的bin目录下
+  > - 把```ugtoolkit```和```replaceAllJs.py```复制到当前用户的bin目录下
+  > - 注意修改```ugtoolkit```和```replaceAllJs.py```这2个脚本中的目录
   > - 在bin目录执行```chmod 755 ugtoolkit```
   > - 之后有调整ToolKit代码，只要在终端执行```ugtoolkit```即可完成代码min以及替换js中的引用
 - 截图
