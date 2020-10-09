@@ -4,7 +4,8 @@ import sys
 
 lineno=int(sys.argv[1])
 targetFile=sys.argv[2]
-with open('/Users/lowking/Desktop/Scripts/util/ToolKit.min.js') as fileObj:
+sourceFile=sys.argv[3]
+with open(sourceFile) as fileObj:
 	content = fileObj.read()
 	#print(content)
 

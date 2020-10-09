@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-targetFile="/Users/lowking/Desktop/Scripts/util/ToolKit.min.js"
 targetPath="/Users/lowking/Desktop/Scripts"
 
 # 执行min
