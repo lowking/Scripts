@@ -1,5 +1,9 @@
 /*
-哔哩哔哩番剧监控-lowking-v1.4
+哔哩哔哩番剧监控-lowking-v1.5
+
+⚠️注意，如果频繁出现“追番列表数据处理错误❌请带上日志联系作者”这个提示，多半是返回的数据太长，接收不完整破坏了原有json结构
+只需在BoxJs配置调小“页大小”，即可解决，建议10
+该参数决定每次请求多少个番剧信息，自己平衡
 
 按下面配置完之后，手机哔哩哔哩点击我的-动态，即可获取cookie
 
@@ -38,6 +42,7 @@ cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scrip
 const lk = new ToolKit('哔哩哔哩番剧监控', 'BilibiliBangumiMonitor')
 const vmid = lk.getVal('lkVmidBilibiliBangumiMonitor')
 const bangumiListKey = `lkBilibiliBangumiList`
+const pageSize = !lk.getVal('lkBilibiliBangumiPageSize') ? 15 : lk.getVal('lkBilibiliBangumiPageSize')
 
 if (!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -62,7 +67,7 @@ async function all() {
         lk.execFail()
         lk.appendNotifyInfo(`请获取Cookie之后再试❌`)
     } else {
-        let curList = await getFollowList(1, 15)
+        let curList = await getFollowList(1, pageSize)
         if (!lk.isEmpty(curList) && Object.keys(curList).length > 0) {
             await compareDiff(curList)
         }
