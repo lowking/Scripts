@@ -209,6 +209,7 @@ function getFollowList(pn, ps, preList) {
                 }
             } catch (e) {
                 lk.logErr(e)
+                lk.log(`b站返回数据：${data}`)
                 lk.execFail()
                 lk.appendNotifyInfo(`追番列表数据处理错误❌请带上日志联系作者`)
             } finally {
