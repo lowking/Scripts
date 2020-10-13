@@ -260,6 +260,13 @@
           "val": "",
           "type": "text",
           "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "lkBilibiliBangumiPageSize",
+          "name": "页大小",
+          "val": 15,
+          "type": "number",
+          "desc": "每次请求番剧数量，避免数据太大导致错误"
         }
       ],
       "author": "@lowking",
