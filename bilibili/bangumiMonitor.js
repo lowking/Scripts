@@ -1,5 +1,5 @@
 /*
-哔哩哔哩番剧监控-lowking-v1.5
+哔哩哔哩番剧监控-lowking-v1.6
 
 ⚠️注意，如果频繁出现“追番列表数据处理错误❌请带上日志联系作者”这个提示，多半是返回的数据太长，接收不完整破坏了原有json结构
 只需在BoxJs配置调小“页大小”，即可解决，建议10
@@ -67,9 +67,13 @@ async function all() {
         lk.execFail()
         lk.appendNotifyInfo(`请获取Cookie之后再试❌`)
     } else {
-        let curList = await getFollowList(1, pageSize)
-        if (!lk.isEmpty(curList) && Object.keys(curList).length > 0) {
-            await compareDiff(curList)
+        let resultList = []
+        let bangumi1List = await getFollowList(1, pageSize, {}, 1)
+        let bangumi2List = await getFollowList(1, pageSize, {}, 2)
+        resultList = Object.assign(bangumi1List, resultList)
+        resultList = Object.assign(bangumi2List, resultList)
+        if (!lk.isEmpty(resultList) && Object.keys(resultList).length > 0) {
+            await compareDiff(resultList)
         }
     }
     lk.msg(``)
@@ -155,16 +159,18 @@ function findDifferentElements2(array1, array2) {
     return res
 }
 
-function getFollowList(pn, ps, preList) {
+function getFollowList(pn, ps, preList, type) {
     return new Promise((resolve, reject) => {
-        let listApi = `https://api.bilibili.com/x/space/bangumi/follow/list?type=1&follow_status=0&pn=#{pn}&ps=#{ps}&vmid=#{vmid}&ts=#{ts}`
+        let listApi = `https://api.bilibili.com/x/space/bangumi/follow/list?type=#{type}&follow_status=0&pn=#{pn}&ps=#{ps}&vmid=#{vmid}&ts=#{ts}`
         let param = {
             "pn": pn,
             "ps": ps,
             "vmid": vmid,
+            "type": type,
             "ts": new Date().getTime()
         }
         listApi = lk.customReplace(listApi, param)
+        lk.log(listApi)
         let url = {
             url: listApi,
             headers: {
@@ -205,7 +211,7 @@ function getFollowList(pn, ps, preList) {
                         // lk.log(JSON.stringify(curList))
                         // lk.appendNotifyInfo(`${pn}-${ps}-${total}-${preList.length}-${curList.length}`)
                         if (pn * ps < total) {
-                            curList = await getFollowList(++pn, ps, curList)
+                            curList = await getFollowList(++pn, ps, curList, type)
                         }
                     } else {
                         lk.execFail()
