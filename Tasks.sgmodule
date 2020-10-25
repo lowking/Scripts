@@ -40,7 +40,7 @@ qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,scrip
 
 爱奇艺 = type=cron,cronexp="30 8 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/iQIYI-DailyBonus/iQIYI.js,script-update-interval=0
 
-吾爱破解签到 = type=cron,cronexp="0 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/52pojie-DailyBonus/52pojie.js,script-update-interval=0
+#吾爱破解签到 = type=cron,cronexp="0 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/52pojie-DailyBonus/52pojie.js,script-update-interval=0
 
 取关京东店铺和商品 = type=cron,cronexp="30 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/scripts/master/jd_unsubscribe.js,script-update-interval=0
 
