@@ -1,0 +1,33 @@
+{
+  "id": "others.app.sub",
+  "name": "其他各种脚本",
+  "author": "@others",
+  "icon": "https://avatars0.githubusercontent.com/u/33308659?s=460&u=9223074586cb14f2ae7ee0953515f8781ded8be9&v=4",
+  "repo": "https://github.com/lowking/Scripts/",
+  "apps": [
+    {
+      "id": "others.jdBeanChange",
+      "name": "京豆变动",
+      "keys": [],
+      "author": "@lxk0301",
+      "repo": "https://github.com/lxk0301/scripts",
+      "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_bean_change.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+      ]
+    },
+    {
+      "id": "others.xtg",
+      "name": "星推官",
+      "keys": [],
+      "author": "@lxk0301",
+      "repo": "https://github.com/lxk0301/scripts",
+      "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+      ]
+    }
+  ]
+}
