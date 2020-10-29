@@ -7,14 +7,14 @@
   "apps": [
     {
       "id": "others.lxk0301",
-      "name": "京豆变动",
+      "name": "lxk0301的脚本",
       "keys": [],
       "author": "@lxk0301",
       "repo": "https://github.com/lxk0301/scripts",
       "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_bean_change.js",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
+        "https://avatars2.githubusercontent.com/u/21308593?s=460&u=c679f6e010b6c33ede1ae099c33a3a1152555630&v=4",
+        "https://avatars2.githubusercontent.com/u/21308593?s=460&u=c679f6e010b6c33ede1ae099c33a3a1152555630&v=4"
       ],
       "scripts": [{
         "name": "京东签到",
