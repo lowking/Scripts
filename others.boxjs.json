@@ -6,7 +6,7 @@
   "repo": "https://github.com/lowking/Scripts/",
   "apps": [
     {
-      "id": "others.jdBeanChange",
+      "id": "others.lxk0301",
       "name": "京豆变动",
       "keys": [],
       "author": "@lxk0301",
@@ -15,19 +15,14 @@
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png",
         "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
-      ]
-    },
-    {
-      "id": "others.xtg",
-      "name": "星推官",
-      "keys": [],
-      "author": "@lxk0301",
-      "repo": "https://github.com/lxk0301/scripts",
-      "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/jd.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/jd.png"
-      ]
+      ],
+      "scripts": [{
+        "name": "京东签到",
+        "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js"
+      }, {
+        "name": "京豆变动",
+        "script": "https://raw.githubusercontent.com/lxk0301/scripts/master/jd_bean_change.js"
+      }]
     }
   ]
 }
