@@ -41,6 +41,7 @@ const hours = now.getHours()
 
 const filename = Script.name() + ".jpg"
 const files = FileManager.local()
+const curDateCache = files.joinPath(files.documentsDirectory(), "curDateCache")
 const path = files.joinPath(files.documentsDirectory(), filename)
 // zh_CN, en
 const lang = "zh_CN"
@@ -379,24 +380,37 @@ function decrypt(str, key) {
 
 function isWorkingDays(now){
     return new Promise(async (resolve, reject) => {
+        const mon = (now.getMonth() + 1) > 9 ? (now.getMonth() + 1) : ('0' + (now.getMonth() + 1))
+        const day = now.getDate() > 9 ? now.getDate() : ('0' + now.getDate())
+        const d = `${now.getFullYear()}${mon}${day}`
+        log(d)
         // 0工作日 1休息日 2节假日
         let result = 0
+        // 读取目录下缓存的日期，避免重复请求api
+        let isCurDateCacheExist = files.fileExists(curDateCache)
         try {
-            const mon = (now.getMonth() + 1) > 9 ? (now.getMonth() + 1) : ('0' + (now.getMonth() + 1))
-            const day = now.getDate() > 9 ? now.getDate() : ('0' + now.getDate())
-            const d = `${now.getFullYear()}${mon}${day}`
-            log(d)
-            const url = {
-                url: 'http://tool.bitefu.net/jiari/?d=' + d
+            let curDate = isCurDateCacheExist ? files.readString(curDateCache).split("-")[0] : 'fff'
+            if (d == curDate) {
+                //日期相同说明当天请求过，直接使用上次请求的值
+                result = files.readString(curDateCache).split("-")[1]
+                log('already request')
+            } else {
+                log('send request')
+                const url = {
+                    url: 'http://tool.bitefu.net/jiari/?d=' + d
+                }
+                await $.post(url, (resp, data) => {
+                    result = data
+                    // 写入文件系统
+                    files.writeString(curDateCache, d + "-" + result)
+                })
             }
-            await $.post(url, (resp, data) => {
-                result = data
-            })
         } catch (e) {
             $.logErr(e, resp)
         } finally {
             resolve(result == 0 ? workingDaysFlag : holidayFlag)
         }
+
     })
 }
 
