@@ -16,6 +16,9 @@ const warnFee = 20
 const warnData = 200
 // 语音警告阈值
 const warnVoice = 20
+// 工作日和节假日标志
+const workingDaysFlag = '💡'
+const holidayFlag = '🎈'
 
 const chavy_autologin_cmcc = ``
 
@@ -88,20 +91,24 @@ if (config.runsInWidget || isRunWidget) {
         widget.backgroundImage = files.readImage(path)
 
         // Your code here
-        if (true || minutes >= 0 && minutes <= 20) {
-            $.CryptoJS = $.require(crypto)
-            $.autologin = await getdata($.KEY_autologin)
-            $.getfee = await getdata($.KEY_getfee)
-            await loginapp()
-            await queryfee()
-            await querymeal()
-            await showmsg(widget)
+        if (now.getDate() == 1) {
+            // 每个月1号维护查询不到数据
+            widget = createWidget(widget, "移不动", '-', '-', '-')
+        } else {
+            if (true || minutes >= 0 && minutes <= 20) {
+                $.CryptoJS = $.require(crypto)
+                $.autologin = await getdata($.KEY_autologin)
+                $.getfee = await getdata($.KEY_getfee)
+                await loginapp()
+                await queryfee()
+                await querymeal()
+                widget = await showmsg(widget)
+            }
         }
-
         Script.setWidget(widget)
         Script.complete()
     } catch (e) {
-        // 为了不影响上次正常运行的显示效果，遇到异常不抛出
+        // 为了不影响正常显示
     }
 } else {
 
@@ -209,26 +216,25 @@ function showmsg(w) {
         let widget = createWidget(w, "移不动", $.subt, $.flowRes, $.voiceRes)
 
         log('显示信息end')
-        resolve()
+        resolve(widget)
     })
 }
 
-function createWidget(w, pretitle, title, subtitle, other) {
+async function createWidget(w, pretitle, title, subtitle, other) {
     log('创建widget')
 
     const bgColor = new LinearGradient()
     bgColor.colors = [new Color("#001A27"), new Color("#00334e")]
     bgColor.locations = [0.0, 1.0]
-//     w.backgroundGradient = bgColor
-    //w.setPadding(0, 0, 0, 0)
-//     w.centerAlignContent()
 
+    // 获取当前是否工作日
+    let isWD = await isWorkingDays(now)
     let normalColor = new Color("#ccc")
-    let preTxt = w.addText(pretitle)
+    let preTxt = w.addText(pretitle + isWD)
     let preColor = normalColor
     preTxt.textColor = preColor
     preTxt.font = Font.boldSystemFont(18)
-//     preTxt.applyHeadlineTextStyling()
+    // preTxt.applyHeadlineTextStyling()
     w.addSpacer(7)
     // preTxt.applySubheadlineTextStyling()
 
@@ -369,6 +375,29 @@ function decrypt(str, key) {
         mode: $.CryptoJS.mode.CBC,
         padding: $.CryptoJS.pad.Pkcs7
     }).toString($.CryptoJS.enc.Utf8)
+}
+
+function isWorkingDays(now){
+    return new Promise(async (resolve, reject) => {
+        // 0工作日 1休息日 2节假日
+        let result = 0
+        try {
+            const mon = (now.getMonth() + 1) > 9 ? (now.getMonth() + 1) : ('0' + (now.getMonth() + 1))
+            const day = now.getDate() > 9 ? now.getDate() : ('0' + now.getDate())
+            const d = `${now.getFullYear()}${mon}${day}`
+            log(d)
+            const url = {
+                url: 'http://tool.bitefu.net/jiari/?d=' + d
+            }
+            await $.post(url, (resp, data) => {
+                result = data
+            })
+        } catch (e) {
+            $.logErr(e, resp)
+        } finally {
+            resolve(result == 0 ? workingDaysFlag : holidayFlag)
+        }
+    })
 }
 
 // Generate an alert with the provided array of options.
