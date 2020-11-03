@@ -193,6 +193,17 @@ function phoneSizes() {
             "bottom": 1353
         },
 
+        "2532": {
+            "small":  474,
+            "medium": 1014,
+            "large":  1062,
+            "left":  78,
+            "right": 618,
+            "top":    231,
+            "middle": 819,
+            "bottom": 1407
+        },
+
         "2208": {
             "small":  471,
             "medium": 1044,
