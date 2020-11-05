@@ -228,8 +228,9 @@ async function createWidget(w, pretitle, title, subtitle, other) {
     bgColor.colors = [new Color("#001A27"), new Color("#00334e")]
     bgColor.locations = [0.0, 1.0]
 
-    // 获取当前是否工作日
-    let isWD = await isWorkingDays(now)
+    // 获取第二天是否工作日
+    let targetDate = new Date()
+    let isWD = await isWorkingDays(new Date(targetDate.setDate(now.getDate() + 1)))
     let normalColor = new Color("#ccc")
     let preTxt = w.addText(pretitle + isWD)
     let preColor = normalColor
