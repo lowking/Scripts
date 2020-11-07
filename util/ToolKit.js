@@ -540,11 +540,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         isEmpty(obj) {
-            if (typeof obj == "undefined" || obj == null || obj == "" || obj == "null") {
-                return true
-            } else {
-                return false
-            }
+            return typeof obj == "undefined" || obj == null || obj == "" || obj == "null";
         }
 
         randomString(len) {
