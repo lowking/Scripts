@@ -294,6 +294,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         logErr(message) {
+            this.execStatus = true
             if (this.isEnableLog) {
                 console.log(`${this.logSeparator}${this.name}执行异常:`)
                 console.log(message)
