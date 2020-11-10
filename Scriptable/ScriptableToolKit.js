@@ -38,15 +38,6 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
             //i18n
             this.lang = Device.language()
-
-            //默认脚本开关
-            this.isSaveLog = this.getResultByKey(`${this.prefix}IsSaveLog${this.id}`, true)
-            this.isEnableLog = this.getResultByKey(`${this.prefix}IsEnableLog${this.id}`, true)
-
-            this.logSeparator = '\n██'
-            this.now = new Date().getTime()
-            this.execStatus = true
-            this.notifyInfo = []
             this.msg = {
                 "zh": [
                     "在开始之前，先进入主屏幕，进入图标排列模式。滑到最右边的空白页，并进行截图。",
@@ -60,7 +51,10 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     "小","中","大",
                     "顶部左边","顶部右边","中间左边","中间右边","底部左边","底部右边",
                     "顶部","中间","底部",
-                    "在Scriptable内部使用","导出到相册"
+                    "在Scriptable内部使用","导出到相册",
+                    "填写遮罩层颜色。（格式：#000000）","颜色（格式：#000000）",
+                    "填写遮罩层不透明度（0-1之间）","0-1之间",
+                    "确定","取消"
                 ],
                 "en": [
                     "Before you start, go to your home screen and enter wiggle mode. Scroll to the empty page on the far right and take a screenshot.",
@@ -74,9 +68,22 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     "Small","Medium","Large",
                     "Top left","Top right","Middle left","Middle right","Bottom left","Bottom right",
                     "Top","Middle","Bottom",
-                    "Use in Scriptable","Export to Photos"
+                    "Use in Scriptable","Export to Photos",
+                    "Fill in the mask layer color. (Format: #000000)","Color.(Format: #000000)",
+                    "Fill in the mask layer opacity (between 0-1)","between 0-1",
+                    "Confirm","Cancel"
                 ]
             }
+            this.curLang = this.msg[this.lang] || this.msg.en
+
+            //默认脚本开关
+            this.isSaveLog = this.getResultByKey(`${this.prefix}IsSaveLog${this.id}`, true)
+            this.isEnableLog = this.getResultByKey(`${this.prefix}IsEnableLog${this.id}`, true)
+
+            this.logSeparator = '\n██'
+            this.now = new Date().getTime()
+            this.execStatus = true
+            this.notifyInfo = []
         }
 
         getResultByKey(key, defaultValue) {
@@ -231,6 +238,20 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 this.log(`引用脚本【${scriptName}】`)
                 return importModule(scriptName)
             }
+        }
+
+        async generateInputAlert(message, field, defaultValue) {
+            let result = []
+            let alert = new Alert()
+            alert.message = message
+            alert.addTextField(field, defaultValue);
+
+            alert.addCancelAction(this.curLang[27])
+            alert.addAction(this.curLang[26])
+
+            result[0] = await alert.presentAlert()
+            result[1] = alert.textFieldValue(0)
+            return result
         }
 
         async generateAlert(message, options) {
@@ -471,21 +492,22 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.local.remove(path)
         }
 
-        cropImage(img, rect) {
+        cropImage(img, rect, color, opacity) {
 
             let draw = new DrawContext()
             draw.size = new Size(rect.width, rect.height)
 
             draw.drawImageAtPoint(img, new Point(-rect.x, -rect.y))
+            draw.setFillColor(new Color(color, Number(opacity)))
+            draw.fillRect(new Rect(0, 0, img.size["width"], img.size["height"]))
             return draw.getImage()
         }
 
         async widgetCutBg() {
             // Determine if user has taken the screenshot.
             var message
-            var curLang = this.msg[this.lang] || this.msg.en
-            message = curLang[0]
-            let exitOptions = [curLang[6], curLang[7]]
+            message = this.curLang[0]
+            let exitOptions = [this.curLang[6], this.curLang[7]]
             let shouldExit = await this.generateAlert(message, exitOptions)
             if (shouldExit) return
 
@@ -494,18 +516,18 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             let height = img.size.height
             let phone = this.phoneSizes()[height]
             if (!phone) {
-                message = curLang[1]
+                message = this.curLang[1]
                 await this.generateAlert(message, ["OK"])
                 return
             }
 
             // Prompt for widget size and position.
-            message = curLang[2]
-            let sizes = [curLang[8], curLang[9], curLang[10]]
+            message = this.curLang[2]
+            let sizes = [this.curLang[8], this.curLang[9], this.curLang[10]]
             let size = await this.generateAlert(message, sizes)
 
-            message = curLang[3]
-            message += (height == 1136 ? curLang[4] : "")
+            message = this.curLang[3]
+            message += (height == 1136 ? this.curLang[4] : "")
 
             // Determine image crop based on phone size.
             let crop = {w: "", h: "", x: "", y: ""}
@@ -513,7 +535,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 crop.w = phone.small
                 crop.h = phone.small
                 let positions = ["Top left", "Top right", "Middle left", "Middle right", "Bottom left", "Bottom right"]
-                let positionsString = [curLang[11], curLang[12], curLang[13], curLang[14], curLang[15], curLang[16]]
+                let positionsString = [this.curLang[11], this.curLang[12], this.curLang[13], this.curLang[14], this.curLang[15], this.curLang[16]]
                 let position = await this.generateAlert(message, positionsString)
 
                 // Convert the two words into two keys for the phone size dictionary.
@@ -528,7 +550,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 // Medium and large widgets have a fixed x-value.
                 crop.x = phone.left
                 let positions = ["Top", "Middle", "Bottom"]
-                let positionsString = [curLang[17], curLang[18], curLang[19]]
+                let positionsString = [this.curLang[17], this.curLang[18], this.curLang[19]]
                 let position = await this.generateAlert(message, positionsString)
                 let key = positions[position].toLowerCase()
                 crop.y = phone[key]
@@ -537,24 +559,29 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 crop.w = phone.medium
                 crop.h = phone.large
                 crop.x = phone.left
-                let positionsString = [curLang[17], curLang[19]]
+                let positionsString = [this.curLang[17], this.curLang[19]]
                 let position = await this.generateAlert(message, positionsString)
 
                 // Large widgets at the bottom have the "middle" y-value.
                 crop.y = position ? phone.middle : phone.top
             }
 
-            // Crop image and finalize the widget.
-            let imgCrop = this.cropImage(img, new Rect(crop.x, crop.y, crop.w, crop.h))
+            // set mask layer color
+            let maskLayerColor = await this.generateInputAlert(this.curLang[22], this.curLang[23], '#000000')
+            if(maskLayerColor[0] == -1) return
+            let opacity = await this.generateInputAlert(this.curLang[24], this.curLang[25], '0.1')
+            if(opacity[0] == -1) return
 
-            message = curLang[5]
-            const exportPhotoOptions = [curLang[20], curLang[21]]
+            // Crop image and finalize the widget.
+            let imgCrop = this.cropImage(img, new Rect(crop.x, crop.y, crop.w, crop.h), maskLayerColor[1], opacity[1])
+
+            message = this.curLang[5]
+            const exportPhotoOptions = [this.curLang[20], this.curLang[21]]
             const exportPhoto = await this.generateAlert(message, exportPhotoOptions)
 
             if (exportPhoto) {
                 Photos.save(imgCrop)
             } else {
-                this.log(this.bgImgPath)
                 this.local.writeImage(this.bgImgPath, imgCrop)
             }
 
