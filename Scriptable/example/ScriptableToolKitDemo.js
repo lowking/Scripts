@@ -1,7 +1,19 @@
 const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`)
-const isRunWidget = true
 
-if (config.runsInWidget || isRunWidget) {
+if (config.runsInWidget) {
+    main()
+} else {
+    let enter = await $.widgetEnter()
+    if (enter == -1) {
+        return
+    } else if (enter == 0) {
+        main()
+    } else if (enter == 1) {
+        $.widgetCutBg()
+    }
+}
+
+async function main() {
     let widget = new ListWidget()
     widget.backgroundImage = $.getWidgetBg()
 
@@ -30,9 +42,6 @@ if (config.runsInWidget || isRunWidget) {
     widget.presentSmall()
     Script.setWidget(widget)
     Script.complete()
-} else {
-    $.log($.lang)
-    $.widgetCutBg()
 }
 
 //ScriptableToolKit-start
