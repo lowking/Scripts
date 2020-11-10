@@ -37,7 +37,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.bgImgPath = this.local.joinPath(this.local.documentsDirectory(), this.bgImgPath)
 
             //i18n
-            this.lang = this.getResultByKey(`${this.prefix}Lang${this.id}`,'zh_CN')
+            this.lang = Device.language()
 
             //默认脚本开关
             this.isSaveLog = this.getResultByKey(`${this.prefix}IsSaveLog${this.id}`, true)
@@ -48,7 +48,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.execStatus = true
             this.notifyInfo = []
             this.msg = {
-                "zh_CN": [
+                "zh": [
                     "在开始之前，先进入主屏幕，进入图标排列模式。滑到最右边的空白页，并进行截图。",
                     "看起来你选择的图片不是iPhone的截图，或者你的iPhone不支持。请换一张图片再试一次。",
                     "你想创建什么尺寸的widget？",
@@ -483,7 +483,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         async widgetCutBg() {
             // Determine if user has taken the screenshot.
             var message
-            var curLang = this.msg[this.lang]
+            var curLang = this.msg[this.lang] || this.msg.en
             message = curLang[0]
             let exitOptions = [curLang[6], curLang[7]]
             let shouldExit = await this.generateAlert(message, exitOptions)
