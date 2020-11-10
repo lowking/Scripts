@@ -54,7 +54,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     "在Scriptable内部使用","导出到相册",
                     "填写遮罩层颜色。（格式：#000000）","颜色（格式：#000000）",
                     "填写遮罩层不透明度（0-1之间）","0-1之间",
-                    "确定","取消"
+                    "确定","取消","预览widget","设置widget背景","入口"
                 ],
                 "en": [
                     "Before you start, go to your home screen and enter wiggle mode. Scroll to the empty page on the far right and take a screenshot.",
@@ -71,7 +71,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     "Use in Scriptable","Export to Photos",
                     "Fill in the mask layer color. (Format: #000000)","Color.(Format: #000000)",
                     "Fill in the mask layer opacity (between 0-1)","between 0-1",
-                    "Confirm","Cancel"
+                    "Confirm","Cancel","Preview widget","Setting widget background","ENTER"
                 ]
             }
             this.curLang = this.msg[this.lang] || this.msg.en
@@ -586,6 +586,10 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             }
 
             Script.complete()
+        }
+
+        async widgetEnter(callbacks) {
+            return await this.generateAlert(this.curLang[30], [this.curLang[28], this.curLang[29]])
         }
     })(scriptName, scriptId, options)
 }
