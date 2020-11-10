@@ -1,4 +1,4 @@
-const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`, {lkLangScriptableToolKitDemo: 'en'})
+const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`)
 const isRunWidget = true
 
 if (config.runsInWidget || isRunWidget) {
