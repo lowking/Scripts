@@ -1,4 +1,4 @@
-const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`)
+const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`, {lkIsSaveLogScriptableToolKitDemo: true})
 
 if (config.runsInWidget) {
     main()
@@ -18,6 +18,7 @@ async function main() {
     widget.backgroundImage = $.getWidgetBg()
 
     // Your code here
+    $.log('send request to baidu')
     const url = {
         url: 'http://www.baidu.com'
     }
@@ -28,17 +29,22 @@ async function main() {
 
     // persistence your data
     // get all data content
+    $.log('get data file content')
     $.log(await $.getDataFile())
 
     // get value of key from icloud container('local' or 'icloud'). If there is no value, return 'defaultValue' you passed in
+    $.log('get value of key from icloud')
     $.log(await $.getVal('key', 'icloud', 'defaultValue'))
 
     // set value for key to target container('local' or 'icloud')
+    $.log('set value for key')
     $.setVal('key', 'value', 'icloud')
     $.setVal('key1', 'value1', 'icloud')
     $.log(await $.getVal('key', 'icloud', 'defaultValue'))
     $.log(await $.getDataFile())
 
+    $.log('save log')
+    $.saveLog()
     widget.presentSmall()
     Script.setWidget(widget)
     Script.complete()

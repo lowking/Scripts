@@ -246,7 +246,6 @@ function querymeal() {
         const url = $.getfee ? JSON.parse($.getfee) : JSON.parse(chavy_getfee_cmcc)
         url.url =
             "https://clientaccess.10086.cn/biz-orange/BN/newComboMealResouceUnite/getNewComboMealResource"
-        console.warn('meal')
         const body = JSON.parse(decrypt(url.body, "bAIgvwAuA4tbDr9d"))
         const cellNum = body.reqBody.cellNum
         const bodystr = `{"t":"${$.CryptoJS.MD5(
