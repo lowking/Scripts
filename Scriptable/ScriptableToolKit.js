@@ -116,7 +116,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         }
 
         saveLog() {
-            if (this.isSaveLog) {
+            if (this.isSaveLog && !this.execStatus) {
                 let message
                 if (Array.isArray(this.notifyInfo)) {
                     message = this.notifyInfo.join("")
@@ -301,9 +301,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         isWorkingDays(now){
             return new Promise(async (resolve, reject) => {
-                const mon = (now.getMonth() + 1) > 9 ? (now.getMonth() + 1) : ('0' + (now.getMonth() + 1))
-                const day = now.getDate() > 9 ? now.getDate() : ('0' + now.getDate())
-                const d = `${now.getFullYear()}${mon}${day}`
+                const d = this.formatDate(now, 'yyyyMMdd')
                 // 0工作日 1休息日 2节假日
                 let result = 0
                 try {
