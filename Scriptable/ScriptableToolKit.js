@@ -1,18 +1,26 @@
 /**
- * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
+ * 根据自己的习惯整合各个开发者而形成的工具包
  * 并且加入一些好用的方法
  * 方法如下：
  *      isEmpty： 判断字符串是否是空（undefined，null，空串）
  *      randomString： 生成随机字符串
  *      autoComplete： 自动补齐字符串
  *      customReplace： 自定义替换
+ *      formatDate： 日期格式化
  *
- * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
+ * 基于Scriptable的api封装的方法（用法可以参考该目录下/example中的demo）：
+ *      require({scriptName, url = '', reload = false})： 引入第三方js库
+ *      generateInputAlert： 生成带文本框的弹窗
+ *      generateAlert： 生成弹窗
+ *      widgetCutBg： 设置widget背景
+ *
+ * ⚠请在执行失败的地方执行execFail()
  *
  * @param scriptName 脚本名，用于通知时候的标题
  * @param scriptId 每个脚本唯一的id，用于存储持久化的时候加入key
  * @param options 传入一些参数，目前参数如下；
- *                                      httpApi=ffff@3.3.3.18:6166（这个是默认值，本人surge调试脚本用，可自行修改）
+ *                                      lkIsSaveLog{scriptId} boolean : 保存日志到iCloud（目录：scriptable/lklogs/{scriptId}/）
+ *                                      lkIsEnableLog{scriptId} boolean
  * @constructor
  */
 function ScriptableToolKit(scriptName, scriptId, options) {
@@ -77,11 +85,12 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.curLang = this.msg[this.lang] || this.msg.en
 
             //默认脚本开关
-            this.isSaveLog = this.getResultByKey(`${this.prefix}IsSaveLog${this.id}`, true)
+            this.isSaveLog = this.getResultByKey(`${this.prefix}IsSaveLog${this.id}`, false)
             this.isEnableLog = this.getResultByKey(`${this.prefix}IsEnableLog${this.id}`, true)
 
+            this.logDir = this.icloud.documentsDirectory() + '/lklogs/' + this.id
             this.logSeparator = '\n██'
-            this.now = new Date().getTime()
+            this.now = new Date()
             this.execStatus = true
             this.notifyInfo = []
         }
@@ -102,7 +111,27 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             if (type == 1) {
                 this.notifyInfo = info
             } else {
-                this.notifyInfo.push(info)
+                this.notifyInfo.push(`${this.logSeparator}${this.formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss.S')}█${info}`)
+            }
+        }
+
+        saveLog() {
+            if (this.isSaveLog) {
+                let message
+                if (Array.isArray(this.notifyInfo)) {
+                    message = this.notifyInfo.join("")
+                } else {
+                    message = this.notifyInfo
+                }
+                // 校验lklog目录是否存在
+                if (this.icloud.isDirectory(this.logDir)) {
+                    // write log
+                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
+                } else {
+                    // create dir
+                    this.icloud.createDirectory(this.logDir, true)
+                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
+                }
             }
         }
 
@@ -120,6 +149,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         log(message) {
             if (this.isEnableLog) console.log(`${this.logSeparator}${message}`)
+            this.appendNotifyInfo(message)
         }
 
         logErr(message) {
@@ -311,6 +341,32 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
             }
             return pwd
+        }
+
+        /**
+         *
+         * 示例:$.time('yyyy-MM-dd qq HH:mm:ss.S')
+         *    :$.time('yyyyMMddHHmmssS')
+         *    y:年 M:月 d:日 q:季 H:时 m:分 s:秒 S:毫秒
+         *    其中y可选0-4位占位符、S可选0-1位占位符，其余可选0-2位占位符
+         * @param {*} format 格式化参数
+         *
+         */
+        formatDate(date, format) {
+            let o = {
+                'M+': date.getMonth() + 1,
+                'd+': date.getDate(),
+                'H+': date.getHours(),
+                'm+': date.getMinutes(),
+                's+': date.getSeconds(),
+                'q+': Math.floor((date.getMonth() + 3) / 3),
+                'S': date.getMilliseconds()
+            }
+            if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+            for (let k in o)
+                if (new RegExp('(' + k + ')').test(format))
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+            return format
         }
 
         /**
