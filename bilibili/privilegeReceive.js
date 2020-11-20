@@ -4,7 +4,6 @@
 ⚠️注意，本月领取过如果再执行，会提示"网络繁忙"
 
 按下面配置完之后，手机哔哩哔哩点击我的-我的大会员-卡券包，领取一张券获取Cookie
-或浏览器登录b站之后打开https://big.bilibili.com/mobile/cardBag，领取一张券获取Cookie
 
 hostname = *.bilibili.com
 
@@ -63,8 +62,12 @@ if(!lk.isExecComm) {
 
 function getCookie() {
     if (lk.isGetCookie(/\/x\/vip\/privilege\/receive/)) {
-        lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify($request.headers))
-        lk.msg(``, `获取Cookie成功🎉`)
+        if ($request.headers.hasOwnProperty('X-CSRF-TOKEN')) {
+            lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify($request.headers))
+            lk.msg(``, `🎉获取Cookie成功`)
+        } else {
+            lk.msg(``, `⚠️获取的Cookie未包含CSRF-TOKEN，请通过app获取Cookie`)
+        }
     }
 }
 
@@ -74,41 +77,85 @@ async function all() {
         lk.appendNotifyInfo(`⚠️请先到app中我的-我的大会员-卡券包，领取一张券获取Cookie`)
     } else {
         await getBBTicket()
+        await getVipGoTicket()
     }
     lk.msg(``)
     lk.done()
 }
 
 function getBBTicket() {
-    lk.log('领取每月B币券')
-    let url = {
-        url: 'https://api.bilibili.com/x/vip/privilege/receive',
-        body: `csrf=${requestHeaders['X-CSRF-TOKEN']})&type=1}`,
-        headers: {
-            "User-Agent": requestHeaders
+    return new Promise((resolve, reject) => {
+        lk.log('领取每月B币券')
+        const t = '领取B币券'
+        let url = {
+            url: 'https://api.bilibili.com/x/vip/privilege/receive',
+            body: `csrf=${requestHeaders['X-CSRF-TOKEN']}&type=1`,
+            headers: requestHeaders
         }
-    }
-    lk.post(url, (error, response, data) => {
-        try {
-            lk.log(error)
-            if (error) {
-                lk.execFail()
-                lk.appendNotifyInfo(`领取B币券失败❌请稍后再试`)
-            } else {
-                let ret = JSON.parse(data)
-                if (ret.code == 0) {
-                    lk.appendNotifyInfo(`🎉领取B币券成功`)
-                } else {
+        lk.post(url, (error, response, data) => {
+            try {
+                lk.log(error)
+                if (error) {
                     lk.execFail()
-                    lk.appendNotifyInfo(`❌领取B币券失败：${ret.message}`)
+                    lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
+                } else {
+                    let ret = JSON.parse(data)
+                    if (ret.code == 0) {
+                        lk.appendNotifyInfo(`🎉${t}成功`)
+                    } else {
+                        lk.execFail()
+                        lk.appendNotifyInfo(`❌${t}失败：${ret.message}`)
+                    }
                 }
+                if (!lk.execStatus) {
+                    lk.log(`请求内容：${JSON.stringify(url)}`)
+                }
+                resolve()
+            } catch (e) {
+                lk.logErr(e)
+                lk.log(`b站返回数据：${data}`)
+                lk.execFail()
+                lk.appendNotifyInfo(`${t}错误❌请带上日志联系作者`)
             }
-        } catch (e) {
-            lk.logErr(e)
-            lk.log(`b站返回数据：${data}`)
-            lk.execFail()
-            lk.appendNotifyInfo(`领取B币券错误❌请带上日志联系作者`)
+        })
+    })
+}
+
+function getVipGoTicket() {
+    return new Promise((resolve, reject) => {
+        lk.log('领取每月会员购券')
+        const t = '领取会员购券'
+        let url = {
+            url: 'https://api.bilibili.com/x/vip/privilege/receive',
+            body: `csrf=${requestHeaders['X-CSRF-TOKEN']}&type=1`,
+            headers: requestHeaders
         }
+        lk.post(url, (error, response, data) => {
+            try {
+                lk.log(error)
+                if (error) {
+                    lk.execFail()
+                    lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
+                } else {
+                    let ret = JSON.parse(data)
+                    if (ret.code == 0) {
+                        lk.appendNotifyInfo(`🎉${t}成功`)
+                    } else {
+                        lk.execFail()
+                        lk.appendNotifyInfo(`❌${t}失败：${ret.message}`)
+                    }
+                }
+                if (!lk.execStatus) {
+                    lk.log(`请求内容：${JSON.stringify(url)}`)
+                }
+                resolve()
+            } catch (e) {
+                lk.logErr(e)
+                lk.log(`b站返回数据：${data}`)
+                lk.execFail()
+                lk.appendNotifyInfo(`${t}错误❌请带上日志联系作者`)
+            }
+        })
     })
 }
 
