@@ -4,10 +4,6 @@
 [Script]
 115-cookie = type=http-request,pattern=^https?:\/\/proapi\.115\.com\/ios\/user\/takespc\?,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/115/115.js
 
-微博-cookie = type=http-request,pattern=https:\/\/api\.weibo\.cn\/\d\/video\/machine\?gsid,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/weibo.js
-
-微博-cookie = type=http-request,pattern=https:\/\/pay\.sc\.weibo\.com\/aj\/mobile\/home\/welfare\/signin\/do\?,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/weibo.js
-
 贴吧-cookie = script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.cookie.js,type=http-request,pattern=^https?:\/\/tieba\.baidu\.com\/?.?
 
 万达电影-cookie = type=http-request,pattern=^https:\/\/user-api-prd-mx\.wandafilm\.com\/user\/islogin\.api,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/wanda/wanda.cookie.js,debug=true
@@ -42,4 +38,4 @@ QQ萌宠-cookie = requires-body=1,type=http-response,pattern=https:\/\/qqpet.jwe
 10086-cookie = type=http-request,pattern=^https:\/\/clientaccess.10086.cn\/biz-orange\/BN\/realFeeQuery\/getRealFee,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10086/10086.fee.cookie.js,requires-body=true,debug=true
 
 [MITM]
-hostname = %APPEND% qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, *.iqiyi.com, *.smzdm.com, yuba.douyu.com, api.weibo.cn, pay.sc.weibo.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com
+hostname = %APPEND% qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, *.iqiyi.com, *.smzdm.com, yuba.douyu.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com

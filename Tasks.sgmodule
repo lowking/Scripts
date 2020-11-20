@@ -8,8 +8,6 @@
 
 qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js,script-update-interval=0
 
-微博 = type=cron,cronexp="0 4 6,7 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/Sunert/Scripts/master/Task/weibo.js,script-update-interval=0
-
 微博超话 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboST.js,script-update-interval=0
 
 贴吧 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.js,script-update-interval=0
