@@ -247,6 +247,13 @@ function queryfee() {
                 $.log('查询余额异常')
                 $.logErr(e)
                 $.log(data)
+                try {
+                    data = JSON.parse(data)
+                    if (data.retCode == '400006') {
+                        $.log(`查询余额异常，请求体：${JSON.stringify(url)}`)
+                    }
+                } catch (e) {
+                }
             } finally {
                 resolve()
             }
@@ -279,6 +286,13 @@ function querymeal() {
                 $.log('查询套餐异常')
                 $.logErr(e)
                 $.log(data)
+                try {
+                    data = JSON.parse(data)
+                    if (data.retCode == '400006') {
+                        $.log(`查询套餐异常，请求体：${JSON.stringify(url)}`)
+                    }
+                } catch (e) {
+                }
             } finally {
                 resolve()
             }
