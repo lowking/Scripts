@@ -14,13 +14,13 @@ pasteStr=`pbpaste -Prefer text`
 echo "批量替换.js中ToolKit开始"
 for i in `find $targetPath -name '*.js' ! -path '*node_modules*'`
 do
-	lineno=`grep -n "ToolKit-start" $i`
+	lineno=`grep -n "//ToolKit-start" $i`
 	if [ -n "$lineno" ]; then
 		array=(`echo $lineno | tr ':' ' '` )
 		lineno=$[ ${array[0]} + 0 ]
 		if [ $lineno -ge 1 ]; then
 			# 调用py
-			python ~/bin/replaceAllJs.py $lineno $i
+			python ~/bin/replaceAllJs.py $lineno $i $targetPath/util/ToolKit.min.js
 			echo "$i 已替换【${lineno}】"
 		fi
 	fi

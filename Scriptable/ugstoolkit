@@ -14,7 +14,7 @@ pasteStr=`pbpaste -Prefer text`
 echo "批量替换.js中ScriptableToolKit开始"
 for i in `find $targetPath -name '*.js' ! -path '*node_modules*'`
 do
-	lineno=`grep -n "ScriptableToolKit-start" $i`
+	lineno=`grep -n "//ScriptableToolKit-start" $i`
 	if [ -n "$lineno" ]; then
 		array=(`echo $lineno | tr ':' ' '` )
 		lineno=$[ ${array[0]} + 0 ]
