@@ -14,7 +14,7 @@ Surge 4.2.0+ 脚本配置:
 
 [Script]
 # > 哔哩哔哩大会员特权领取
-哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https?:\/\/app.bilibili.com\/x\/v2\/space\/bangumi,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 哔哩哔哩大会员特权领取 = type=cron,cronexp="0 0 0,1 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 
 
@@ -24,7 +24,7 @@ QuantumultX 本地脚本配置:
 
 [rewrite_local]
 #哔哩哔哩大会员特权领取cookie
-https?:\/\/app.bilibili.com\/x\/v2\/space\/bangumi url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 
 [task_local]
 0 0 0,1 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
@@ -34,7 +34,7 @@ LOON 本地脚本配置:
 ************************
 
 [Script]
-http-request https?:\/\/app.bilibili.com\/x\/v2\/space\/bangumi script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, timeout=10, tag=哔哩哔哩大会员特权领取cookie
+http-request https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, timeout=10, tag=哔哩哔哩大会员特权领取cookie
 cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, tag=哔哩哔哩大会员特权领取
 
 */
