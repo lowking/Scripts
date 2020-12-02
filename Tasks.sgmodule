@@ -42,7 +42,7 @@ qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,scrip
 
 #吾爱破解签到 = type=cron,cronexp="0 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/52pojie-DailyBonus/52pojie.js,script-update-interval=0
 
-取关京东店铺和商品 = type=cron,cronexp="30 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/scripts/master/jd_unsubscribe.js,script-update-interval=0
+取关京东店铺和商品 = type=cron,cronexp="30 9 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_unsubscribe.js,script-update-interval=0
 
 epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js,script-update-interval=0
 
