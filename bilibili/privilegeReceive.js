@@ -39,7 +39,22 @@ cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scrip
 */
 
 const lk = new ToolKit(`哔哩哔哩大会员特权领取`, `BilibiliPrivilegeReceive`)
-const requestHeaders = !lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders') ? '' : JSON.parse(lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders'))
+const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive') ? true : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive'))
+let requestHeaders = !lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders') ? '' : JSON.parse(lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders'))
+
+const headerTemp = {
+    "Host": "api.bilibili.com",
+    "Accept": "*/*",
+    "native_api_from": "h5",
+    "Accept-Language": "zh-cn",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/610.2.11.0.1 (KHTML, like Gecko) Mobile/18B92 BiliApp/10350 os/ios model/iPhone XS mobi_app/iphone build/10350 osVer/14.2 network/2 channel/AppStore Buvid/YD43A7D5F4FAEF7E4551BE51DC357E37908C",
+    "Connection": "keep-alive",
+    "Referer": "https://big.bilibili.com/mobile/cardBag",
+}
+
+let realHeader
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -47,13 +62,22 @@ if(!lk.isExecComm) {
         lk.done()
     } else {
         lk.boxJsJsonBuilder({
-            "settings": {
-                "id": "lkBilibiliPrivilegeReceiveRequestHeaders",
-                "name": "哔哩哔哩大会员特权领取Headers",
-                "val": "",
-                "type": "text",
-                "desc": "哔哩哔哩大会员特权领取Headers"
-            },
+            "settings": [
+                {
+                    "id": "lkBilibiliPrivilegeReceiveRequestHeaders",
+                    "name": "哔哩哔哩大会员特权领取Headers",
+                    "val": "",
+                    "type": "text",
+                    "desc": "哔哩哔哩大会员特权领取Headers"
+                },
+                {
+                    "id": "lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive",
+                    "name": "开启/关闭获取Cookie时的通知",
+                    "val": true,
+                    "type": "boolean",
+                    "desc": "默认开启"
+                }
+            ],
             "keys": ["lkBilibiliPrivilegeReceiveRequestHeaders"]
         })
         all()
@@ -61,12 +85,27 @@ if(!lk.isExecComm) {
 }
 
 function getCookie() {
-    if (lk.isGetCookie(/\/x\/vip\/privilege\/receive/)) {
-        if ($request.headers.hasOwnProperty('X-CSRF-TOKEN')) {
-            lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify($request.headers))
-            lk.msg(``, `🎉获取Cookie成功`)
+    if (lk.isGetCookie(/\/log\/mobile/)) {
+        let cookieStr = ''
+        if ($request.headers.hasOwnProperty('Cookie')) {
+            let header = $request.headers
+            cookieStr = header.Cookie
+
+            if (cookieStr.match(/sid=/g) == null ||
+                cookieStr.match(/DedeUserID=/g) == null ||
+                cookieStr.match(/DedeUserID__ckMd5=/g) == null ||
+                cookieStr.match(/bili_jct=/g) == null ||
+                cookieStr.match(/SESSDATA=/g) == null) {
+                lk.appendNotifyInfo(`❌获取Cookie无效`)
+            } else {
+                lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify(header))
+                lk.appendNotifyInfo(`🎉获取Cookie成功`)
+            }
         } else {
-            lk.msg(``, `⚠️获取的Cookie未包含CSRF-TOKEN，请通过app获取Cookie`)
+            lk.appendNotifyInfo(`❌未获取到Cookie`)
+        }
+        if (isEnableNotifyForGetCookie) {
+            lk.msg(``)
         }
     }
 }
@@ -74,8 +113,23 @@ function getCookie() {
 async function all() {
     if (requestHeaders == '') {
         lk.execFail()
-        lk.appendNotifyInfo(`⚠️请先到app中我的-我的大会员-卡券包，领取一张券获取Cookie`)
+        lk.appendNotifyInfo(`⚠️请先打开哔哩哔哩获取Cookie`)
     } else {
+        realHeader = requestHeaders
+        // 生成X-CSRF-TOKEN
+        let cookieStr = realHeader.Cookie
+        cookieStr = cookieStr.split(";");
+        for (let i = 0; i < cookieStr.length; ++i) {
+            cookieStr[i] = cookieStr[i].trim();
+        }
+        let csrf = "";
+        for (let i = 0; i < cookieStr.length; ++i) {
+            if (cookieStr[i].indexOf("bili_jct=") == 0) {
+                csrf = cookieStr[i].slice(cookieStr[i].indexOf("=") + 1);
+            }
+        }
+        realHeader["X-CSRF-TOKEN"] = csrf
+        Object.assign(realHeader, headerTemp)
         await getBBTicket()
         await getVipGoTicket()
     }
@@ -89,9 +143,11 @@ function getBBTicket() {
         const t = '领取B币券'
         let url = {
             url: 'https://api.bilibili.com/x/vip/privilege/receive',
-            body: `csrf=${requestHeaders['X-CSRF-TOKEN']}&type=1`,
-            headers: requestHeaders
+            body: `csrf=${realHeader['X-CSRF-TOKEN']}&type=1`,
+            headers: realHeader
         }
+        realHeader["Content-Length"] = url.body.length
+        url.headers = realHeader
         lk.post(url, (error, response, data) => {
             try {
                 lk.log(error)
@@ -127,9 +183,11 @@ function getVipGoTicket() {
         const t = '领取会员购券'
         let url = {
             url: 'https://api.bilibili.com/x/vip/privilege/receive',
-            body: `csrf=${requestHeaders['X-CSRF-TOKEN']}&type=1`,
-            headers: requestHeaders
+            body: `csrf=${realHeader['X-CSRF-TOKEN']}`,
+            headers: realHeader
         }
+        realHeader["Content-Length"] = url.body.length
+        url.headers = realHeader
         lk.post(url, (error, response, data) => {
             try {
                 lk.log(error)

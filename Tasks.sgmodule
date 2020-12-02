@@ -58,9 +58,11 @@ epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=
 #QQ萌宠 = type=cron,cronexp="35 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
 
 ##############常开获取cookie##############
+哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https:\/\/data.bilibili.com\/log\/mobile,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+
 qq会员-cookie = type=http-request,pattern=https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js
 
 微博超话-cookie = type=http-request,timeout=360,pattern=https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.weibo\.com\/aj\/super\/checkin,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboSTCookie.js
 
 [MITM]
-hostname = %APPEND% proxy.vac.qq.com, weibo.com
+hostname = %APPEND% data.bilibili.com, proxy.vac.qq.com, weibo.com

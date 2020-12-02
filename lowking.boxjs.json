@@ -44,7 +44,7 @@
           "name": "开启/关闭获取Cookie时的通知",
           "val": true,
           "type": "boolean",
-          "desc": "默认关闭"
+          "desc": "默认开启"
         },
         {
           "id": "lkIsDeleteAllCookie",
@@ -400,6 +400,13 @@
           "val": "",
           "type": "text",
           "desc": "哔哩哔哩大会员特权领取Headers"
+        },
+        {
+          "id": "lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive",
+          "name": "开启/关闭获取Cookie时的通知",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
         }
       ],
       "author": "@lowking",
