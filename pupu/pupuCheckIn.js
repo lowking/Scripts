@@ -144,7 +144,7 @@ function signIn() {
                         data = data.data
                         lk.appendNotifyInfo(`🎉${t}成功，获得【${data['increased_score']}】积分`)
                         let coupons = data['reward_coupon_list']
-                        if (Array.isArray(coupons)) {
+                        if (Array.isArray(coupons) && coupons.length > 0) {
                             lk.appendNotifyInfo(`${t}获得额外奖励如下：`)
                             for (let couponIndex in coupons) {
                                 lk.appendNotifyInfo(coupons[couponIndex])
