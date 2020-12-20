@@ -1,0 +1,29 @@
+{
+  "id": "BoxSetting.lowking",
+  "name": "偏好设置(lowking)",
+  "author": "@lowking",
+  "icon": "https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png",
+  "repo": "https://github.com/lowking/Scripts/",
+  "apps": [
+    {
+      "id": "debuggerWebs",
+      "name": "BoxJs配置",
+      "keys": ["@chavy_boxjs_userCfgs.debugger_webs"],
+      "settings": [
+        {
+          "id": "@chavy_boxjs_userCfgs.debugger_webs",
+          "name": "BoxJs调试页面配置",
+          "val": "",
+          "type": "textarea",
+          "desc": "每行一个配置，用逗号分割每个配置的名字和链接：配置,url"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "icons": [
+        "https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.mini.png",
+        "https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png"
+      ]
+    }
+  ]
+}
