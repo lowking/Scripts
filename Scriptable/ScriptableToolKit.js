@@ -47,40 +47,74 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             //i18n
             this.lang = Device.language()
             this.msg = {
-                "zh": [
-                    "在开始之前，先进入主屏幕，进入图标排列模式。滑到最右边的空白页，并进行截图。",
-                    "看起来你选择的图片不是iPhone的截图，或者你的iPhone不支持。请换一张图片再试一次。",
-                    "你想创建什么尺寸的widget？",
-                    "你想把widget放在哪里？",
-                    " (请注意，您的设备只支持两行小部件，所以中间和底部的选项是一样的)。",
-                    "widget的背景图已裁切完成，想在Scriptable内部使用还是导出到相册？",
-                    "已经截图，继续",
-                    "退出去截图",
-                    "小","中","大",
-                    "顶部左边","顶部右边","中间左边","中间右边","底部左边","底部右边",
-                    "顶部","中间","底部",
-                    "在Scriptable内部使用","导出到相册",
-                    "填写遮罩层颜色。（格式：#000000）","颜色（格式：#000000）",
-                    "填写遮罩层不透明度（0-1之间）","0-1之间",
-                    "确定","取消","预览widget","设置widget背景","入口"
-                ],
-                "en": [
-                    "Before you start, go to your home screen and enter wiggle mode. Scroll to the empty page on the far right and take a screenshot.",
-                    "It looks like you selected an image that isn't an iPhone screenshot, or your iPhone is not supported. Try again with a different image.",
-                    "What size of widget are you creating?",
-                    "What position will it be in?",
-                    " (Note that your device only supports two rows of widgets, so the middle and bottom options are the same.)",
-                    "Your widget background is ready. Would you like to use it in a Scriptable widget or export the image?",
-                    "Continue",
-                    "Exit to Take Screenshot",
-                    "Small","Medium","Large",
-                    "Top left","Top right","Middle left","Middle right","Bottom left","Bottom right",
-                    "Top","Middle","Bottom",
-                    "Use in Scriptable","Export to Photos",
-                    "Fill in the mask layer color. (Format: #000000)","Color.(Format: #000000)",
-                    "Fill in the mask layer opacity (between 0-1)","between 0-1",
-                    "Confirm","Cancel","Preview widget","Setting widget background","ENTER"
-                ]
+                "zh": {
+                    s0:"在开始之前，先进入主屏幕，进入图标排列模式。滑到最右边的空白页，并进行截图。",
+                    s1:"看起来你选择的图片不是iPhone的截图，或者你的iPhone不支持。请换一张图片再试一次。",
+                    s2:"你想创建什么尺寸的widget？",
+                    s3:"你想把widget放在哪里？",
+                    s4:" (请注意，您的设备只支持两行小部件，所以中间和底部的选项是一样的)。",
+                    s5:"widget的背景图已裁切完成，想在Scriptable内部使用还是导出到相册？",
+                    s6:"已经截图，继续",
+                    s7:"退出去截图",
+                    s8:"小",
+                    s9:"中",
+                    s10:"大",
+                    s11:"顶部左边",
+                    s12:"顶部右边",
+                    s13:"中间左边",
+                    s14:"中间右边",
+                    s15:"底部左边",
+                    s16:"底部右边",
+                    s17:"顶部",
+                    s18:"中间",
+                    s19:"底部",
+                    s20:"在Scriptable内部使用",
+                    s21:"导出到相册",
+                    s22:"填写遮罩层颜色。（格式：#000000）",
+                    s23:"颜色（格式：#000000）",
+                    s24:"填写遮罩层不透明度（0-1之间）",
+                    s25:"0-1之间",
+                    s26:"确定",
+                    s27:"取消",
+                    s28:"预览widget",
+                    s29:"设置widget背景",
+                    s30:"入口",
+                    s31:"你用的是哪个型号？"
+                },
+                "en": {
+                    s0:"Before you start, go to your home screen and enter wiggle mode. Scroll to the empty page on the far right and take a screenshot.",
+                    s1:"It looks like you selected an image that isn't an iPhone screenshot, or your iPhone is not supported. Try again with a different image.",
+                    s2:"What size of widget are you creating?",
+                    s3:"What position will it be in?",
+                    s4:" (Note that your device only supports two rows of widgets, so the middle and bottom options are the same.)",
+                    s5:"Your widget background is ready. Would you like to use it in a Scriptable widget or export the image?",
+                    s6:"Continue",
+                    s7:"Exit to Take Screenshot",
+                    s8:"Small",
+                    s9:"Medium",
+                    s10:"Large",
+                    s11:"Top left",
+                    s12:"Top right",
+                    s13:"Middle left",
+                    s14:"Middle right",
+                    s15:"Bottom left",
+                    s16:"Bottom right",
+                    s17:"Top",
+                    s18:"Middle",
+                    s19:"Bottom",
+                    s20:"Use in Scriptable",
+                    s21:"Export to Photos",
+                    s22:"Fill in the mask layer color. (Format: #000000)",
+                    s23:"Color.(Format: #000000)",
+                    s24:"Fill in the mask layer opacity (between 0-1)",
+                    s25:"between 0-1",
+                    s26:"Confirm",
+                    s27:"Cancel",
+                    s28:"Preview widget",
+                    s29:"Setting widget background",
+                    s30:"ENTER",
+                    s31:"What type of iPhone do you have?"
+                }
             }
             this.curLang = this.msg[this.lang] || this.msg.en
 
@@ -276,8 +310,8 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             alert.message = message
             alert.addTextField(field, defaultValue);
 
-            alert.addCancelAction(this.curLang[27])
-            alert.addAction(this.curLang[26])
+            alert.addCancelAction(this.curLang.s27)
+            alert.addAction(this.curLang.s26)
 
             result[0] = await alert.presentAlert()
             result[1] = alert.textFieldValue(0)
@@ -453,91 +487,139 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         phoneSizes() {
             return {
-                "2688": {
-                    "small": 507,
-                    "medium": 1080,
-                    "large": 1137,
-                    "left": 81,
-                    "right": 654,
-                    "top": 228,
-                    "middle": 858,
-                    "bottom": 1488
+                // 12 Pro Max
+                "2778": {
+                    small: 510,
+                    medium: 1092,
+                    large: 1146,
+                    left: 96,
+                    right: 678,
+                    top: 246,
+                    middle: 882,
+                    bottom: 1518
                 },
 
-                "1792": {
-                    "small": 338,
-                    "medium": 720,
-                    "large": 758,
-                    "left": 54,
-                    "right": 436,
-                    "top": 160,
-                    "middle": 580,
-                    "bottom": 1000
-                },
-
-                "2436": {
-                    "small": 465,
-                    "medium": 987,
-                    "large": 1035,
-                    "left": 69,
-                    "right": 591,
-                    "top": 213,
-                    "middle": 783,
-                    "bottom": 1353
-                },
-
+                // 12 and 12 Pro
                 "2532": {
-                    "small": 474,
-                    "medium": 1014,
-                    "large": 1062,
-                    "left": 78,
-                    "right": 618,
-                    "top": 231,
-                    "middle": 819,
-                    "bottom": 1407
+                    small: 474,
+                    medium: 1014,
+                    large: 1062,
+                    left: 78,
+                    right: 618,
+                    top: 231,
+                    middle: 819,
+                    bottom: 1407
                 },
 
+                // 11 Pro Max, XS Max
+                "2688": {
+                    small: 507,
+                    medium: 1080,
+                    large: 1137,
+                    left: 81,
+                    right: 654,
+                    top: 228,
+                    middle: 858,
+                    bottom: 1488
+                },
+
+                // 11, XR
+                "1792": {
+                    small: 338,
+                    medium: 720,
+                    large: 758,
+                    left: 54,
+                    right: 436,
+                    top: 160,
+                    middle: 580,
+                    bottom: 1000
+                },
+
+                // 11 Pro, XS, X, 12 mini
+                "2436": {
+
+                    x: {
+                        small: 465,
+                        medium: 987,
+                        large: 1035,
+                        left: 69,
+                        right: 591,
+                        top: 213,
+                        middle: 783,
+                        bottom: 1353,
+                    },
+
+                    mini: {
+                        small: 465,
+                        medium: 987,
+                        large: 1035,
+                        left: 69,
+                        right: 591,
+                        top: 231,
+                        middle: 801,
+                        bottom: 1371,
+                    }
+
+                },
+
+                // Plus phones
                 "2208": {
-                    "small": 471,
-                    "medium": 1044,
-                    "large": 1071,
-                    "left": 99,
-                    "right": 672,
-                    "top": 114,
-                    "middle": 696,
-                    "bottom": 1278
+                    small: 471,
+                    medium: 1044,
+                    large: 1071,
+                    left: 99,
+                    right: 672,
+                    top: 114,
+                    middle: 696,
+                    bottom: 1278
                 },
 
+                // SE2 and 6/6S/7/8
                 "1334": {
-                    "small": 296,
-                    "medium": 642,
-                    "large": 648,
-                    "left": 54,
-                    "right": 400,
-                    "top": 60,
-                    "middle": 412,
-                    "bottom": 764
+                    small: 296,
+                    medium: 642,
+                    large: 648,
+                    left: 54,
+                    right: 400,
+                    top: 60,
+                    middle: 412,
+                    bottom: 764
                 },
 
+                // SE1
                 "1136": {
-                    "small": 282,
-                    "medium": 584,
-                    "large": 622,
-                    "left": 30,
-                    "right": 332,
-                    "top": 59,
-                    "middle": 399,
-                    "bottom": 399
+                    small: 282,
+                    medium: 584,
+                    large: 622,
+                    left: 30,
+                    right: 332,
+                    top: 59,
+                    middle: 399,
+                    bottom: 399
                 },
+
+                // 11 and XR in Display Zoom mode
                 "1624": {
-                    "small": 310,
-                    "medium": 658,
-                    "large": 690,
-                    "left": 46,
-                    "right": 394,
-                    "top": 142,
-                    "middle": 522,
-                    "bottom": 902
+                    small: 310,
+                    medium: 658,
+                    large: 690,
+                    left: 46,
+                    right: 394,
+                    top: 142,
+                    middle: 522,
+                    bottom: 902
+                },
+
+                // Plus in Display Zoom mode
+                "2001": {
+                    small: 444,
+                    medium: 963,
+                    large: 972,
+                    left: 81,
+                    right: 600,
+                    top: 90,
+                    middle: 618,
+                    bottom: 1146
                 }
             }
         }
@@ -560,8 +642,8 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         async widgetCutBg() {
             // Determine if user has taken the screenshot.
             var message
-            message = this.curLang[0]
-            let exitOptions = [this.curLang[6], this.curLang[7]]
+            message = this.curLang.s0
+            let exitOptions = [this.curLang.s6, this.curLang.s7]
             let shouldExit = await this.generateAlert(message, exitOptions)
             if (shouldExit) return
 
@@ -570,18 +652,27 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             let height = img.size.height
             let phone = this.phoneSizes()[height]
             if (!phone) {
-                message = this.curLang[1]
+                message = this.curLang.s1
                 await this.generateAlert(message, ["OK"])
                 return
             }
 
+            // Extra setup needed for 2436-sized phones.
+            if (height == 2436) {
+                message = this.curLang.s31
+                let types = ["iPhone 12 mini", "iPhone 11 Pro, XS, X"]
+                let typeIndex = await this.generateAlert(message, types)
+                let type = (typeIndex == 0) ? "mini" : "x"
+                phone = phone[type]
+            }
+
             // Prompt for widget size and position.
-            message = this.curLang[2]
-            let sizes = [this.curLang[8], this.curLang[9], this.curLang[10]]
+            message = this.curLang.s2
+            let sizes = [this.curLang.s8, this.curLang.s9, this.curLang.s10]
             let size = await this.generateAlert(message, sizes)
 
-            message = this.curLang[3]
-            message += (height == 1136 ? this.curLang[4] : "")
+            message = this.curLang.s3
+            message += (height == 1136 ? this.curLang.s4 : "")
 
             // Determine image crop based on phone size.
             let crop = {w: "", h: "", x: "", y: ""}
@@ -589,7 +680,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 crop.w = phone.small
                 crop.h = phone.small
                 let positions = ["Top left", "Top right", "Middle left", "Middle right", "Bottom left", "Bottom right"]
-                let positionsString = [this.curLang[11], this.curLang[12], this.curLang[13], this.curLang[14], this.curLang[15], this.curLang[16]]
+                let positionsString = [this.curLang.s11, this.curLang.s12, this.curLang.s13, this.curLang.s14, this.curLang.s15, this.curLang.s16]
                 let position = await this.generateAlert(message, positionsString)
 
                 // Convert the two words into two keys for the phone size dictionary.
@@ -604,7 +695,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 // Medium and large widgets have a fixed x-value.
                 crop.x = phone.left
                 let positions = ["Top", "Middle", "Bottom"]
-                let positionsString = [this.curLang[17], this.curLang[18], this.curLang[19]]
+                let positionsString = [this.curLang.s17, this.curLang.s18, this.curLang.s19]
                 let position = await this.generateAlert(message, positionsString)
                 let key = positions[position].toLowerCase()
                 crop.y = phone[key]
@@ -613,7 +704,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 crop.w = phone.medium
                 crop.h = phone.large
                 crop.x = phone.left
-                let positionsString = [this.curLang[17], this.curLang[19]]
+                let positionsString = [this.curLang.s17, this.curLang.s19]
                 let position = await this.generateAlert(message, positionsString)
 
                 // Large widgets at the bottom have the "middle" y-value.
@@ -621,16 +712,16 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             }
 
             // set mask layer color
-            let maskLayerColor = await this.generateInputAlert(this.curLang[22], this.curLang[23], '#000000')
+            let maskLayerColor = await this.generateInputAlert(this.curLang.s22, this.curLang.s23, '#000000')
             if(maskLayerColor[0] == -1) return
-            let opacity = await this.generateInputAlert(this.curLang[24], this.curLang[25], '0.1')
+            let opacity = await this.generateInputAlert(this.curLang.s24, this.curLang.s25, '0.1')
             if(opacity[0] == -1) return
 
             // Crop image and finalize the widget.
             let imgCrop = this.cropImage(img, new Rect(crop.x, crop.y, crop.w, crop.h), maskLayerColor[1], opacity[1])
 
-            message = this.curLang[5]
-            const exportPhotoOptions = [this.curLang[20], this.curLang[21]]
+            message = this.curLang.s5
+            const exportPhotoOptions = [this.curLang.s20, this.curLang.s21]
             const exportPhoto = await this.generateAlert(message, exportPhotoOptions)
 
             if (exportPhoto) {
@@ -643,7 +734,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         }
 
         async widgetEnter(callbacks) {
-            return await this.generateAlert(this.curLang[30], [this.curLang[28], this.curLang[29]])
+            return await this.generateAlert(this.curLang.s30, [this.curLang.s28, this.curLang.s29])
         }
     })(scriptName, scriptId, options)
 }
