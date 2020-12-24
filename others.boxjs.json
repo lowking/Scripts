@@ -23,6 +23,18 @@
         "name": "京豆变动",
         "script": "https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_bean_change.js"
       }]
+    },
+    {
+      "id": "others.pemgym",
+      "name": "EPIC限免",
+      "keys": [],
+      "author": "@Peng-YM",
+      "repo": "https://github.com/Peng-YM/QuanX",
+      "script": "https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/epic.png",
+        "https://raw.githubusercontent.com/Orz-3/task/master/epic.png"
+      ]
     }
   ]
 }
