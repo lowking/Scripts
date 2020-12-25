@@ -8,8 +8,6 @@
 
 #115 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/115/115.js,script-update-interval=0
 
-贴吧 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.js,script-update-interval=0
-
 #万达电影 = type=cron,cronexp="30 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/wanda/wanda.js,script-update-interval=0
 
 滴滴出行 = type=cron,cronexp="0 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/DiDi/DiDi.js,script-update-interval=0
@@ -41,6 +39,7 @@
 
 朴朴签到 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
 
+贴吧 = type=cron,cronexp="30 10 0 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.js,script-update-interval=0
 
 ##############其他时间特殊的任务##############
 epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js,script-update-interval=0
