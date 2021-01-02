@@ -183,7 +183,7 @@ function getVipGoTicket() {
         const t = '领取会员购券'
         let url = {
             url: 'https://api.bilibili.com/x/vip/privilege/receive',
-            body: `csrf=${realHeader['X-CSRF-TOKEN']}`,
+            body: `csrf=${realHeader['X-CSRF-TOKEN']}&type=2`,
             headers: realHeader
         }
         realHeader["Content-Length"] = url.body.length
