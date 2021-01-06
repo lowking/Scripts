@@ -340,7 +340,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 let result = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
-                    if (d == curDate.split("-")[0]) {
+                    if (d == curDate.split("-")[0] && curDate.split("-")[1].length == 1) {
                         //日期相同说明当天请求过，直接使用上次请求的值
                         result = curDate.split("-")[1]
                         this.log('already request')
