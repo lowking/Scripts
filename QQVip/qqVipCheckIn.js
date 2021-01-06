@@ -285,7 +285,7 @@ function qqVipSignIn(index, obj) {
                     lk.execFail()
                 }
                 lk.appendNotifyInfo(notifyInfo)
-                lk.appendNotifyInfo(result.msg.indexOf(`火爆`) != -1 ? `cookie失效，请重新获取` : `${result.msg}`)
+                lk.appendNotifyInfo(result.msg.indexOf(`火爆`) != -1 ? `cookie失效，请重新获取` : result.msg.replace(/<[^>]+>/g, "").replace("{number}", "2"))
             } finally {
                 resolve()
             }
