@@ -89,7 +89,7 @@ function ToolKit(scriptName, scriptId, options) {
                         if (this.isEmpty(this.options)) {
                             this.options = {}
                         }
-                        this.options.httpApi = `ffff@3.3.3.18:6166`
+                        this.options.httpApi = `ffff@10.0.0.9:6166`
                     } else {
                         //判断格式
                         if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
