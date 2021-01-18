@@ -1,6 +1,11 @@
-const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`, {lkIsSaveLogScriptableToolKitDemo: true})
+const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`, {lkIsSaveLogScriptableToolKitDemo: true, lkRunLimitNum10086: 300000})
 
 if (config.runsInWidget) {
+    if (await $.checkLimit()) {
+        $.execFail()
+        $.saveLog()
+        return false;
+    }
     main()
 } else {
     let enter = await $.widgetEnter()
