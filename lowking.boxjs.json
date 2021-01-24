@@ -267,6 +267,31 @@
           "val": 15,
           "type": "number",
           "desc": "每次请求番剧数量，避免数据太大导致错误"
+        },
+        {
+          "id": "lkBilibiliBangumiFollowStatus",
+          "name": "追番筛选",
+          "val": "2",
+          "type": "radios",
+          "items": [
+            {
+              "key": "0",
+              "label": "全部"
+            },
+            {
+              "key": "1",
+              "label": "想看"
+            },
+            {
+              "key": "2",
+              "label": "在看"
+            },
+            {
+              "key": "3",
+              "label": "看过"
+            }
+          ],
+          "desc": "默认-在看"
         }
       ],
       "author": "@lowking",
