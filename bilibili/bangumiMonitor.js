@@ -41,9 +41,9 @@ cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scrip
 */
 const lk = new ToolKit('哔哩哔哩番剧监控', 'BilibiliBangumiMonitor')
 const vmid = lk.getVal('lkVmidBilibiliBangumiMonitor')
-const bangumiListKey = `lkBilibiliBangumiList`
-const pageSize = !lk.getVal('lkBilibiliBangumiPageSize') ? 15 : lk.getVal('lkBilibiliBangumiPageSize')
 const followStatus = !lk.getVal('lkBilibiliBangumiFollowStatus') ? 2 : lk.getVal('lkBilibiliBangumiFollowStatus')
+const bangumiListKey = `lkBilibiliBangumiList${followStatus}`
+const pageSize = !lk.getVal('lkBilibiliBangumiPageSize') ? 15 : lk.getVal('lkBilibiliBangumiPageSize')
 
 if (!lk.isExecComm) {
     if (lk.isRequest()) {
