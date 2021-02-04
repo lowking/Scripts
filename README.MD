@@ -7,7 +7,7 @@
 
 ## [English](https://github.com/lowking/Scripts/blob/master/README_en.MD)
 
-## Maintenance List
+## 维护列表
 🟢在用&nbsp;&nbsp;🟡未在用&nbsp;&nbsp;🔴有问题
 ### Scripts(Surge, Quantumult X, Loon, nodeJs)
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/bilibili.png" style="border-radius: 5px;" width="5%">🟢</a>
