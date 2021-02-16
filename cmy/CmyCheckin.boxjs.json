@@ -1,6 +1,6 @@
 {
-	"id": "lowking.app.sub",
-	"name": "lowking应用订阅",
+	"id": "lowking.personal.app.sub",
+	"name": "lowking个人应用订阅",
 	"author": "@lowking",
 	"icon": "https://avatars0.githubusercontent.com/u/33308659?s=460&u=9223074586cb14f2ae7ee0953515f8781ded8be9&v=4",
 	"repo": "https://github.com/lowking/Scripts/",
