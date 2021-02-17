@@ -140,10 +140,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 if (this.now.getTime() - lastRunningTime <= runLimitNum) {
                     this.isLimited = true
                     this.appendNotifyInfo('限制运行')
-                } else {
-                    await this.setVal('lastRunningTime', this.now.getTime(), 'local')
                 }
             }
+            await this.setVal('lastRunningTime', this.now.getTime(), 'local')
             return this.isLimited
         }
 
