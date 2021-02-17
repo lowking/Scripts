@@ -751,8 +751,22 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             Script.complete()
         }
 
-        async widgetEnter(callbacks) {
-            return await this.generateAlert(this.curLang.s30, [this.curLang.s28, this.curLang.s29])
+        /**
+         * 自定义操作入口
+         * @param customEnter   ["操作1"，"操作2"]
+         * @param isReset       true：清空自带的操作
+         *                      false：在自带的操作后面补充
+         */
+        async widgetEnter(customEnter, isReset) {
+            let options = [this.curLang.s28, this.curLang.s29]
+            if (Array.isArray(customEnter)) {
+                if (isReset) {
+                    options = customEnter
+                } else {
+                    options = options.concat(customEnter)
+                }
+            }
+            return await this.generateAlert(this.curLang.s30, options)
         }
     })(scriptName, scriptId, options)
 }
