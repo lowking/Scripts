@@ -130,7 +130,7 @@ async function checkUpdate(item) {
                         const { published_at, body } = releases[0];
                         const notificationURL = {
                             "open-url": `https://github.com/${repository.owner}/${repository.repo}/releases`,
-                            "media-url": `https://raw.githubusercontent.com/Orz-3/task/master/github.png`
+                            "media-url": `https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png`
                         }
                         if (needUpdate(url, published_at)) {
                             $.write(published_at, hash(url));
@@ -160,7 +160,7 @@ async function checkUpdate(item) {
             $.log({ author, body, published_at, file_url });
             const notificationURL = {
                 "open-url": `https://github.com/${repository.owner}/${repository.repo}/commits/${repository.branch}`,
-                "media-url": `https://raw.githubusercontent.com/Orz-3/task/master/github.png`
+                "media-url": `https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png`
             }
             //监控仓库是否有更新
             if (!item.hasOwnProperty("file_names")) {
