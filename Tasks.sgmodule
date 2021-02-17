@@ -42,6 +42,8 @@ qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,scrip
 
 滴滴遗忘福利金 = type=cron,cronexp="59 23 * * *",wake-system=1,script-path=https://raw.githubusercontent.com/zZPiglet/Task/master/DiDi/DiDi_reward.js,script-update-interval=0
 
+CMY机场签到 = type=cron,cronexp="5 59 23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js,script-update-interval=0
+
 #-彩云天气 = type=cron,cronexp="0 6-20 * * *",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/caiyun.js,script-update-interval=0
 
 
