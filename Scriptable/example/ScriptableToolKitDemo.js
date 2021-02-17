@@ -3,6 +3,9 @@
 // icon-color: yellow; icon-glyph: magic;
 const $ = new ScriptableToolKit(`工具包使用示例`, `ScriptableToolKitDemo`, {lkIsSaveLogScriptableToolKitDemo: true, lkRunLimitNum10086: 300000})
 
+let widget = new ListWidget()
+widget.backgroundImage = $.getWidgetBg()
+
 if (config.runsInWidget) {
     if (await $.checkLimit()) {
         $.execFail()
@@ -27,9 +30,6 @@ if (config.runsInWidget) {
 }
 
 async function main() {
-    let widget = new ListWidget()
-    widget.backgroundImage = $.getWidgetBg()
-
     // Your code here
     $.log('send request to baidu')
     const url = {
