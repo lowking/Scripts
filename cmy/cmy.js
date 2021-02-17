@@ -8,7 +8,7 @@ Surge 4.2.0+ 脚本配置:
 ************************
 [Script]
 # > CMY机场签到
-CMY机场签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js
+CMY机场签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
 
 
 
@@ -17,7 +17,7 @@ CMY机场签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=http
 QuantumultX 脚本配置:
 ************************
 [task_local]
-0 0 0 * * ? http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js
+0 0 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
 
 
 
@@ -26,7 +26,7 @@ QuantumultX 脚本配置:
 LOON 脚本配置:
 ************************
 [Script]
-cron "0 0 0 * * *" script-path=http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js, tag=CMY机场签到
+cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js, tag=CMY机场签到
 
 */
 var token = ""
@@ -51,8 +51,8 @@ if(!lk.isExecComm) {
                 "desc": "密码"
             }
         ],
-        script: "http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js?type=raw",
-        desc_html: "⚠️使用说明</br>详情【<a href='http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js?raw=true'><font class='red--text'>点我查看</font></a>】"
+        script: "https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?type=raw",
+        desc_html: "⚠️使用说明</br>详情【<a href='https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?raw=true'><font class='red--text'>点我查看</font></a>】"
     })
     all()
 }

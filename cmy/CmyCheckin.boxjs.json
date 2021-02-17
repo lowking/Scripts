@@ -8,7 +8,7 @@
 		{
 			"id": "lkCmyCheckin",
 			"name": "CMY机场签到",
-			"desc_html": "⚠️使用说明</br>详情【<a href='http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+			"desc_html": "⚠️使用说明</br>详情【<a href='https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js'><font class='red--text'>点我查看</font></a>】",
 			"icons": [
 				"https://cmy.network/favicon.ico",
 				"https://cmy.network/favicon.ico"
@@ -63,7 +63,7 @@
 			],
 			"author": "@lowking",
 			"repo": "https://github.com/lowking/Scripts",
-			"script": "http://gogs.mynetgear.com:8888/lowking/Scripts/raw/personal/cmy/cmy.js?type=raw"
+			"script": "https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js"
 		}
 	]
 }
