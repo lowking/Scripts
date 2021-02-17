@@ -72,8 +72,8 @@
       "repo": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js",
       "script": "https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/qqvip.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/qqvip.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/qqvip.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/qqvip.png"
       ]
     },
     {
@@ -136,8 +136,8 @@
       "repo": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js",
       "script": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/weibo.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/weibo.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/weibo.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/weibo.png"
       ]
     },
     {
@@ -156,8 +156,8 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/WIFI.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/WIFI.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/WIFI.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/WIFI.png"
       ]
     },
     {
@@ -219,8 +219,8 @@
       "repo": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js",
       "script": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js?raw=true",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/SONY.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/SONY.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/SONY.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/SONY.png"
       ]
     },
     {
@@ -228,8 +228,8 @@
       "name": "哔哩哔哩番剧监控",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/bilibili.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/bilibili.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/bilibili.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/bilibili.png"
       ],
       "keys": ["lkVmidBilibiliBangumiMonitor", "lkBilibiliBangumiList"],
       "settings": [
@@ -303,8 +303,8 @@
       "name": "斗鱼鱼吧签到",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/douyu.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/douyu.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/douyu.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png"
       ],
       "keys": ["CookieDY", "GroupDY"],
       "settings": [
@@ -374,8 +374,8 @@
       "author": "@Peng-YM, @lowking",
       "repo": "https://github.com/lowking/Scripts",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/github.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/github.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/github.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png"
       ],
       "script": "https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js?raw=true"
     },
@@ -384,8 +384,8 @@
       "name": "哔哩哔哩大会员特权领取",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/bilibili/privilegeReceive.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/bilibili.png",
-        "https://raw.githubusercontent.com/Orz-3/task/master/bilibili.png"
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/bilibili.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/bilibili.png"
       ],
       "keys": [
         "lkBilibiliPrivilegeReceiveRequestHeaders"
