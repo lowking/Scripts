@@ -133,8 +133,8 @@ async function checkIn() {
                 lk.log(data)
                 const result = JSON.parse(data)
                 if (result.ret == 1) {
-                    //登录成功，调用签到
-                    let accessToken = result.data.token
+                    //签到成功
+                    lk.appendNotifyInfo(`🎉签到${result.msg}\n今天使用：${result.trafficInfo.todayUsedTraffic}\n总共使用：${result.trafficInfo.lastUsedTraffic}\n剩余流量：${result.trafficInfo.unUsedTraffic}`)
                     lk.log(`签到成功`)
                 } else {
                     lk.appendNotifyInfo(`❌签到失败：${result.msg}`)
