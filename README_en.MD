@@ -22,6 +22,7 @@
 
 ### Scriptable
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10086.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10086.png" style="border-radius: 5px;" width="5%">🟡</a>
+&nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🟢</a>
 
 ## ChangeLogs
 View the changelog [here](https://github.com/lowking/Scripts/blob/master/CHANGELOGS.MD).
