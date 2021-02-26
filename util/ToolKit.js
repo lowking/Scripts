@@ -516,11 +516,12 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         done(value) {
-            this.costTime()
             let key = `body`
             if (this.isRequest()) {
                 if (this.isQuanX()) key = `content`
                 if (this.isSurge()) key = `body`
+            } else {
+                this.costTime()
             }
             let obj = {}
             obj[key] = value
