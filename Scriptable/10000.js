@@ -231,7 +231,7 @@ function querymeal() {
                         flowRes = '0MB'
                     }
                     flowRes = '[流量] ' + flowRes
-                    voiceRes = data.hasOwnProperty("voiceBalance") ? data.voiceBalance : '[语音] 0分钟'
+                    voiceRes = data.hasOwnProperty("voiceBalance") ? `[语音] ${data.voiceBalance}分钟` : '[语音] 0分钟'
                 } else {
                     throw new Error("查询套餐失败")
                 }
@@ -268,7 +268,7 @@ async function renderWebView() {
     const response = await request.loadJSON()
     $.log(JSON.stringify(response))
     if (response.result === -10001) {
-        const index = await this.generateAlert('未获取到用户信息', [
+        const index = await $.generateAlert('未获取到用户信息', [
             '取消',
             '重试',
         ])
