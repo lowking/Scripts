@@ -167,7 +167,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         }
 
         saveLog() {
-            if (this.isSaveLog && !this.execStatus) {
+            if (this.isSaveLog) {
                 let message
                 if (Array.isArray(this.notifyInfo)) {
                     message = this.notifyInfo.join("")
@@ -757,6 +757,8 @@ function ScriptableToolKit(scriptName, scriptId, options) {
          *                      false：在自带的操作后面补充
          */
         async widgetEnter(customEnter, isReset) {
+            // 清空上次运行时间，防止第一次运行小组件不成功导致无法继续调整
+            await this.setVal('lastRunningTime', 0, 'local')
             let options = [this.curLang.s28, this.curLang.s29]
             if (Array.isArray(customEnter)) {
                 if (isReset) {
