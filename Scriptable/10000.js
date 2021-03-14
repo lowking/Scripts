@@ -124,7 +124,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
 
     $.log('设置话费')
     let titleTxt = w.addText(subt)
-    let warnColor = new Color("#82632C")
+    let warnColor = new Color(await $.getVal("title", "icloud", "#ee632C"))
     let normalFontSize = 14
     const sp = 3
     preColor = normalColor
