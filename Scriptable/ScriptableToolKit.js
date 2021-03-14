@@ -83,7 +83,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     s28:"预览widget",
                     s29:"设置widget背景",
                     s30:"入口",
-                    s31:"你用的是哪个型号？"
+                    s31:"你用的是哪个型号？",
+                    s32:"退出",
+                    s33:"清除缓存",
+                    s34:"开始清除缓存",
+                    s35:"清除缓存完成"
                 },
                 "en": {
                     s0:"Before you start, go to your home screen and enter wiggle mode. Scroll to the empty page on the far right and take a screenshot.",
@@ -117,7 +121,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     s28:"Preview widget",
                     s29:"Setting widget background",
                     s30:"ENTER",
-                    s31:"What type of iPhone do you have?"
+                    s31:"What type of iPhone do you have?",
+                    s32:"Exit",
+                    s33:"Clean cache",
+                    s34:"Clean cache started",
+                    s35:"Clean cache finished"
                 }
             }
             this.curLang = this.msg[this.lang] || this.msg.en
@@ -131,6 +139,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.now = new Date()
             this.execStatus = true
             this.notifyInfo = []
+            this.operations = []
         }
 
         async checkLimit() {
@@ -752,22 +761,51 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         /**
          * 自定义操作入口
-         * @param customEnter   ["操作1"，"操作2"]
+         * @param customEnter   [{name:"操作1", callback: function(){}}]
          * @param isReset       true：清空自带的操作
          *                      false：在自带的操作后面补充
          */
         async widgetEnter(customEnter, isReset) {
             // 清空上次运行时间，防止第一次运行小组件不成功导致无法继续调整
             await this.setVal('lastRunningTime', 0, 'local')
-            let options = [this.curLang.s28, this.curLang.s29]
+            let options = [this.curLang.s28, this.curLang.s29, this.curLang.s33]
             if (Array.isArray(customEnter)) {
+                let customEnterNames = customEnter.map((item, index) => {
+                    return item.name[this.lang]
+                })
+                let customEnterCallback = customEnter.map((item, index) => {
+                    return item.callback
+                })
                 if (isReset) {
-                    options = customEnter
+                    options = customEnterNames
                 } else {
-                    options = options.concat(customEnter)
+                    this.operations.push({callback: main})
+                    this.operations.push({callback: function(){$.widgetCutBg()}})
+                    this.operations.push({callback: function(){$.cleanCache()}})
+                    options = options.concat(customEnterNames)
                 }
+                customEnterCallback.forEach((callback)=>{this.operations.push({callback: callback})})
             }
+            options.push(this.curLang.s32)
+            this.operations.push({callback: function(){}})
             return await this.generateAlert(this.curLang.s30, options)
+        }
+
+        async handleOperations(index){
+            await this.operations[index].callback()
+        }
+
+        cleanCache(){
+            this.log(this.curLang.s34)
+            let filePath = this.local.joinPath(this.local.documentsDirectory(), this.dataFile)
+            if (this.local.fileExists(filePath)) {
+                this.local.remove(filePath)
+            }
+            filePath = this.bgImgPath
+            if (this.local.fileExists(filePath)) {
+                this.local.remove(filePath)
+            }
+            this.log(this.curLang.s35)
         }
     })(scriptName, scriptId, options)
 }
