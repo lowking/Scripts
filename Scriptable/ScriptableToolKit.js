@@ -236,6 +236,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             try {
                 let realDataFile = containerInstance.joinPath(containerInstance.documentsDirectory(), this.dataFile)
                 if (!containerInstance.fileExists(realDataFile)) {
+                    await this.setVal(key, defaultValue, container)
                     return Promise.resolve(defaultValue)
                 }
                 data = await containerInstance.readString(realDataFile)
@@ -243,7 +244,12 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             } catch (e) {
                 throw e
             }
-            return Promise.resolve(data.hasOwnProperty(key) ? data[key] : defaultValue)
+            if (data.hasOwnProperty(key)) {
+                return Promise.resolve(data[key])
+            } else {
+                await this.setVal(key, defaultValue, container)
+                return Promise.resolve(defaultValue)
+            }
         }
 
         /**
