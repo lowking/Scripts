@@ -147,11 +147,12 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             const runLimitNum = this.getResultByKey(`${this.prefix}RunLimitNum${this.id}`, 300000)
             if (lastRunningTime > 0) {
                 if (this.now.getTime() - lastRunningTime <= runLimitNum) {
-                    this.isLimited = true
                     this.appendNotifyInfo('限制运行')
+                    this.isLimited = true
+                } else {
+                    await this.setVal('lastRunningTime', this.now.getTime(), 'local')
                 }
             }
-            await this.setVal('lastRunningTime', this.now.getTime(), 'local')
             return this.isLimited
         }
 
