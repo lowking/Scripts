@@ -11,8 +11,6 @@
 
 智行火车票 = type=cron,cronexp="50 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/zxhc/zxhc.js,script-update-interval=0
 
-斗鱼鱼吧 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/yubaSign.js,script-update-interval=0
-
 爱奇艺 = type=cron,cronexp="30 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/iQIYI-DailyBonus/iQIYI.js,script-update-interval=0
 
 朴朴签到 = type=cron,cronexp="40 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js

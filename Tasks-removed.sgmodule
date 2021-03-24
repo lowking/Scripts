@@ -2,24 +2,26 @@
 #!desc=无需安装该模块，用于记录已移除的任务
 
 [Script]
-#-京东多合一签到 = type=cron,cronexp="20 1 0,20 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js,script-update-interval=0,max-size=-1
+京东多合一签到 = type=cron,cronexp="20 1 0,20 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js,script-update-interval=0,max-size=-1
 
-#-取关京东店铺和商品 = type=cron,cronexp="20 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_unsubscribe.js,script-update-interval=0
+取关京东店铺和商品 = type=cron,cronexp="20 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_unsubscribe.js,script-update-interval=0
 
-#-微博超话 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboST.js,script-update-interval=0
+微博超话 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboST.js,script-update-interval=0
 
-#-腾讯视频 = type=cron,cronexp="0 4 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/videoqq/videoqq.js,script-update-interval=0
+腾讯视频 = type=cron,cronexp="0 4 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/videoqq/videoqq.js,script-update-interval=0
+
+斗鱼鱼吧 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/yubaSign.js,script-update-interval=0
 
 ##############其他时间特殊的任务##############
-#-彩云天气 = type=cron,cronexp="0 6-20 * * *",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/caiyun.js,script-update-interval=0
+彩云天气 = type=cron,cronexp="0 6-20 * * *",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/caiyun.js,script-update-interval=0
 
 
 ##############需要BoxJs多会话切换的##############
-#-QQ萌宠 = type=cron,cronexp="30 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
+QQ萌宠 = type=cron,cronexp="30 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
 
-#-会话切换1 = type=cron,cronexp="30 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
+会话切换1 = type=cron,cronexp="30 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
 
-#-QQ萌宠 = type=cron,cronexp="35 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
+QQ萌宠 = type=cron,cronexp="35 11 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQPet/lkQQPet.js,script-update-interval=0
 
 
 ##############常开获取cookie##############
