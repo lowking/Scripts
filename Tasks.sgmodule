@@ -21,6 +21,8 @@
 
 索尼俱乐部 = type=cron,cronexp="10 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js,script-update-interval=0
 
+京东保价 = type=cron,cronexp="20 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/id77/QuantumultX/master/task/jdGuaranteedPrice.js,script-update-interval=0
+
 ##############其他时间特殊的任务##############
 epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js,script-update-interval=0
 
