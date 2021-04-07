@@ -10,6 +10,7 @@
  *      randomString： 生成随机字符串
  *      autoComplete： 自动补齐字符串
  *      customReplace： 自定义替换
+ *      hash： 字符串做hash
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
@@ -634,6 +635,18 @@ function ToolKit(scriptName, scriptId, options) {
                 }
             }
             return tmp
+        }
+
+        hash(str) {
+            let h = 0,
+                i,
+                chr
+            for (i = 0; i < str.length; i++) {
+                chr = str.charCodeAt(i)
+                h = (h << 5) - h + chr
+                h |= 0 // Convert to 32bit integer
+            }
+            return String(h)
         }
     })(scriptName, scriptId, options)
 }
