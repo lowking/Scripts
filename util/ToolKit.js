@@ -23,7 +23,7 @@
 function ToolKit(scriptName, scriptId, options) {
     return new (class {
         constructor(scriptName, scriptId, options) {
-            this.tgEscapeCharMapping = {'&':'＆'}
+            this.tgEscapeCharMapping = {'&':'＆', '#':'＃'}
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
