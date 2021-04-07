@@ -388,6 +388,14 @@ function nobyda() {
             + content + "\n"
             + "at " + time + "\n"
             + (!url ? "" : "· [点击查看](" + url + ")")
+        let tgEscapeCharMapping = {'&':'＆', '#':'＃'}
+        for (let key in tgEscapeCharMapping) {
+            if (!tgEscapeCharMapping.hasOwnProperty(key)) {
+                continue
+            }
+            notifyInfo = notifyInfo.replace(key, tgEscapeCharMapping[key])
+        }
+
         log(encodeURI(tgNotifyUrl + notifyInfo))
         get({
             url: encodeURI(tgNotifyUrl + notifyInfo)
