@@ -516,18 +516,11 @@ function ToolKit(scriptName, scriptId, options) {
             // this.setVal(this.costTotalMsKey, JSON.stringify(0))
         }
 
-        done(value) {
-            let key = `body`
-            if (this.isRequest()) {
-                if (this.isQuanX()) key = `content`
-                if (this.isSurge()) key = `body`
-            } else {
-                this.costTime()
+        done(value = {}) {
+            this.costTime()
+            if (this.isSurge() || this.isQuanX() || this.isLoon()) {
+                $done(value)
             }
-            let obj = {}
-            obj[key] = value
-            if (this.isQuanX()) this.isRequest() ? $done(obj) : null
-            if (this.isSurge()) this.isRequest() ? $done(obj) : $done()
         }
 
         getRequestUrl() {
