@@ -3,11 +3,14 @@ CMY机场签到-lowking-v1.0
 
 ⚠️需要订阅BoxJs之后填写帐号密码
 
+hostname = cmy.network
+
 ************************
 Surge 4.2.0+ 脚本配置:
 ************************
 [Script]
 # > CMY机场签到
+朴朴签到cookie = type=http-request,pattern=https:\/\/cmy.network\/api\/user,script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
 CMY机场签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
 
 
@@ -16,6 +19,11 @@ CMY机场签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=http
 ************************
 QuantumultX 脚本配置:
 ************************
+
+[rewrite_local]
+#朴朴签到cookie
+https:\/\/cmy.network\/api\/user url script-request-header https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
+
 [task_local]
 0 0 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js
 
@@ -26,47 +34,79 @@ QuantumultX 脚本配置:
 LOON 脚本配置:
 ************************
 [Script]
+http-request https:\/\/cmy.network\/api\/user script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js, timeout=10, tag=朴朴签到cookie
 cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js, tag=CMY机场签到
 
 */
-var token = ""
+var token = ''
 const lk = new ToolKit(`CMY机场签到`, `CmyCheckin`)
+const cmyCookieKey = 'lkCmyCheckinCookie'
+const cmyCookie = !lk.getVal(cmyCookieKey) ? '' : lk.getVal(cmyCookieKey)
 
 if(!lk.isExecComm) {
-    lk.boxJsJsonBuilder({
-        keys: ["lkCmyCheckinLoginId", "lkCmyCheckinPassword"],
-        settings:[
-            {
-                "id": "lkCmyCheckinLoginId",
-                "name": "账号",
-                "val": "",
-                "type": "text",
-                "desc": "账号"
-            },
-            {
-                "id": "lkCmyCheckinPassword",
-                "name": "密码",
-                "val": "",
-                "type": "text",
-                "desc": "密码"
-            }
-        ],
-        script: "https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?type=raw",
-        desc_html: "⚠️使用说明</br>详情【<a href='https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?raw=true'><font class='red--text'>点我查看</font></a>】"
-    })
-    all()
+    if (lk.isRequest()) {
+        getCookie()
+        lk.done()
+    } else {
+        lk.boxJsJsonBuilder({
+            keys: ["lkCmyCheckinCookie", "lkCmyCheckinLoginId", "lkCmyCheckinPassword"],
+            settings:[
+                {
+                    "id": "lkCmyCheckinCookie",
+                    "name": "cookie",
+                    "val": "",
+                    "type": "text",
+                    "desc": "cookie"
+                },
+                {
+                    "id": "lkCmyCheckinLoginId",
+                    "name": "账号",
+                    "val": "",
+                    "type": "text",
+                    "desc": "账号"
+                },
+                {
+                    "id": "lkCmyCheckinPassword",
+                    "name": "密码",
+                    "val": "",
+                    "type": "text",
+                    "desc": "密码"
+                }
+            ],
+            icons: [
+                "https://cmy.network/favicon.ico",
+                "https://cmy.network/favicon.ico"
+            ],
+            script: "https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?type=raw",
+            desc_html: "⚠️使用说明</br>详情【<a href='https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js?raw=true'><font class='red--text'>点我查看</font></a>】"
+        })
+        all()
+    }
+}
+
+function getCookie() {
+    if (lk.isGetCookie(/cmy\.network\/api\/user/)) {
+        if ($request.headers.hasOwnProperty('access-token')) {
+            lk.setVal(cmyCookieKey, JSON.stringify($request.headers))
+            lk.appendNotifyInfo('🎉成功获取CMY-Cookie，可以关闭相应脚本')
+        } else {
+            lk.appendNotifyInfo('❌获取CMY-Cookie失败')
+        }
+        lk.msg('')
+    }
 }
 
 async function all() {
-    let result = await login()
-    lk.log(`test${result}`)
-    if (result == "ok") {
+    if (lk.isEmpty(cmyCookie)) {
+        lk.appendNotifyInfo('❌请获取Cookie后再运行')
+    } else {
         await checkIn()
     }
     lk.msg(``)
     lk.done()
 }
 
+//添加了极验证，取消自动登录
 function login(type) {
     return new Promise( (resolve, reject) => {
         let loginId = lk.getVal("lkCmyCheckinLoginId")
@@ -118,14 +158,7 @@ async function checkIn() {
     return new Promise(async (resolve, reject) => {
         let checkInUrl = {
             url: `https://cmy.network/api/checkin`,
-            headers: {
-                "accept": "application/json, text/plain, */*",
-                "accept-language": "zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7,ja;q=0.6",
-                "access-token": token,
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin"
-            }
+            headers: cmyCookie
         }
         lk.log(JSON.stringify(checkInUrl))
         lk.get(checkInUrl, async (error, response, data) => {

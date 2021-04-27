@@ -14,6 +14,7 @@
 				"https://cmy.network/favicon.ico"
 			],
 			"keys": [
+				"lkCmyCheckinCookie",
 				"lkCmyCheckinLoginId",
 				"lkCmyCheckinPassword"
 			],
@@ -45,6 +46,13 @@
 					"val": "",
 					"type": "text",
 					"desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+				},
+				{
+					"id": "lkCmyCheckinCookie",
+					"name": "cookie",
+					"val": "",
+					"type": "text",
+					"desc": "cookie"
 				},
 				{
 					"id": "lkCmyCheckinLoginId",
