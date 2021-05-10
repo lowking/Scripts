@@ -13,7 +13,9 @@ URL-REGEX,https://api.bilibili.com/x/v2/dm/ad,REJECT
 [Script]
 # > yichahucha
 # > 京东比价
-jd_price.js = type=http-response,pattern=^https?://api\.m\.jd\.com/client\.action\?functionId=(serverConfig|wareBusiness|basicConfig),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/yichahucha/surge/master/jd_price.js,script-update-interval=0
+#jd_price.js = type=http-response,pattern=^https?://api\.m\.jd\.com/client\.action\?functionId=(serverConfig|wareBusiness|basicConfig),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/yichahucha/surge/master/jd_price.js,script-update-interval=0
+
+京粉比价 = type=http-response,pattern=^https?://api\.m\.jd\.com/(client\.action|api)\?functionId=(wareBusiness|serverConfig|basicConfig|lite_wareBusiness|pingou_item),requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/Fokit/Quantumult-X/main/scripts/jd_price_lite.js,use-local-host-item-for-proxy = true,script-update-interval=0
 
 # > 淘宝比价
 # 不生效或失效的需要卸载 tb 重装，注意不开脚本进 tb 会失效
