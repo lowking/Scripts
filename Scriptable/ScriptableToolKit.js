@@ -368,30 +368,48 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         isWorkingDays(now){
             return new Promise(async (resolve, reject) => {
-                const d = this.formatDate(now, 'yyyyMMdd')
+                let sp = "≈"
+                const d = this.formatDate(now, 'yyyy-MM-dd')
                 // 0工作日 1休息日 2节假日
+                // enum(0, 1, 2, 3), // 节假日类型，分别表示 工作日、周末、节日、调休。
                 let result = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
-                    if (d == curDate.split("-")[0] && curDate.split("-")[1].length == 1) {
+                    if (d == curDate.split(sp)[0] && curDate.split(sp)[1].length == 1) {
                         //日期相同说明当天请求过，直接使用上次请求的值
-                        result = curDate.split("-")[1]
+                        result = curDate.split(sp)[1]
                         this.log('already request')
                     } else {
                         this.log('send request')
                         const url = {
-                            url: 'http://tool.bitefu.net/jiari/?d=' + d
+                            url: 'http://timor.tech/api/holiday/info/' + d
                         }
-                        await this.post(url, (resp, data) => {
-                            result = data
-                            // 写入文件系统
-                            this.setVal('curDateCache', `${d + "-" + result}`, 'local')
+                        await this.get(url, (resp, data) => {
+                            if (data.indexOf("<") == 0) {
+                                result = "❌"
+                            } else {
+                                result = JSON.parse(data)
+                                if (result.code == -1) {
+                                    // 接口错误
+                                    result = "❌"
+                                } else {
+                                    result = result.type.type
+                                }
+                            }
                         })
                     }
                 } catch (e) {
+                    result = "❌"
                     this.logErr(e)
                 } finally {
-                    resolve(result == 0 ? workingDaysFlag : holidayFlag)
+                    this.log(JSON.stringify(result))
+                    // 写入文件系统
+                    this.setVal('curDateCache', `${d + sp + result}`, 'local')
+                    if (result == "❌") {
+                        resolve(result)
+                    } else {
+                        resolve(result == 0 ? workingDaysFlag : holidayFlag)
+                    }
                 }
 
             })
