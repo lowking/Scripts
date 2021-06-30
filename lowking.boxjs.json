@@ -344,9 +344,44 @@
     {
       "id": "lkGithubMonitorPushTg",
       "name": "GitHub 监控（tg通知版）",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js?raw=true'><font class='red--text'>点我查看</font></a>】",
-      "keys": ["lkGithubMonitorRepo", "lkGithubMonitorToken"],
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://raw.githubusercontent.com/lowking/Scripts/master/github/githubMonitor.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/github.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png"
+      ],
+      "keys": [
+        "lkGithubMonitorRepo",
+        "lkGithubMonitorToken"
+      ],
       "settings": [
+        {
+          "id": "lkIsEnableLogGithubMonitorPushTg",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailGithubMonitorPushTg",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyGithubMonitorPushTg",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlGithubMonitorPushTg",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
         {
           "id": "lkGithubMonitorRepo",
           "name": "仓库地址",
@@ -362,22 +397,11 @@
           "val": "784a03feb07989d3339dfa41c7eb41777436cbfa",
           "type": "text",
           "desc": "Github Token"
-        },
-        {
-          "id": "lkGithubMonitorTgNotifyUrl",
-          "name": "Tg的通知地址",
-          "val": "",
-          "type": "text",
-          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         }
       ],
       "author": "@Peng-YM, @lowking",
       "repo": "https://github.com/lowking/Scripts",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/github.png",
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png"
-      ],
-      "script": "https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js?raw=true"
+      "script": "https://raw.githubusercontent.com/lowking/Scripts/master/github/githubMonitor.js?raw=true"
     },
     {
       "id": "lkBilibiliPrivilegeReceive",

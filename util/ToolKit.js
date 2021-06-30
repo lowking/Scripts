@@ -191,11 +191,14 @@ function ToolKit(scriptName, scriptId, options) {
                 let needAppendKeys = ["keys", "settings"]
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
                 let boxJsJson = {}
-                let scritpUrl = this.isEmpty(param['script_url']) ? "script_url" : param['script_url']
+                let scritpUrl = 'script_url'
+                if (param && param.hasOwnProperty('script_url')) {
+                    scritpUrl = this.isEmpty(param['script_url']) ? "script_url" : param['script_url']
+                }
                 boxJsJson.id = `${this.prefix}${this.id}`
                 boxJsJson.name = this.name
                 boxJsJson.desc_html = `⚠️使用说明</br>详情【<a href='${scritpUrl}?raw=true'><font class='red--text'>点我查看</font></a>】`
-                boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
+                boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`,`${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
                 boxJsJson.keys = []
                 boxJsJson.settings = [
                     {
