@@ -95,7 +95,7 @@ function parseURL(url) {
                 branch: results[3] === undefined ? "HEAD" : results[4],
             };
         }
-        $.log(repo);
+        lk.log(JSON.stringify(repo));
         return repo;
     } catch (error) {
         $.notify("Github 监控", "", `❌ URL ${url} 解析错误！`);
@@ -125,23 +125,27 @@ async function checkUpdate(item) {
                 headers,
             })
                 .then((response) => {
-                    const releases = JSON.parse(response.body);
-                    if (releases.length > 0) {
-                        // the first one is the latest release
-                        const release_name = releases[0].name;
-                        const author = releases[0].author.login;
-                        const { published_at, body } = releases[0];
-                        const notificationURL = {
-                            "open-url": `https://github.com/${repository.owner}/${repository.repo}/releases`,
-                            "media-url": `https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png`
-                        }
-                        if (needUpdate(url, published_at)) {
-                            $.write(published_at, hash(url));
-                            lk.appendNotifyInfo(name)
-                            lk.appendNotifyInfo("📌" + body)
-                            lk.appendNotifyInfo(formatTime(published_at))
-                            lk.appendNotifyInfo(notificationURL["open-url"])
-                            // lk.tgNotify(name, "📌" + body, formatTime(published_at), notificationURL["open-url"])
+                    if (response.statusCode == 200) {
+                        const releases = JSON.parse(response.body);
+                        if (releases.length > 0) {
+                            // the first one is the latest release
+                            const release_name = releases[0].name;
+                            const author = releases[0].author.login;
+                            const {published_at, body} = releases[0];
+                            const notificationURL = {
+                                "open-url": `https://github.com/${repository.owner}/${repository.repo}/releases`,
+                                "media-url": `https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png`
+                            }
+                            if (needUpdate(url, published_at)) {
+                                $.write(published_at, hash(url));
+                                lk.appendNotifyInfo(name)
+                                lk.appendNotifyInfo("📌" + body)
+                                lk.appendNotifyInfo(formatTime(published_at))
+                                lk.appendNotifyInfo(notificationURL["open-url"])
+                                // lk.tgNotify(name, "📌" + body, formatTime(published_at), notificationURL["open-url"])
+                            }
+                        } else if (response.statusCode == 404) {
+                            lk.appendNotifyInfo(`【${name}】不存在，请及时删除相关配置！`)
                         }
                     }
                 })
@@ -154,17 +158,21 @@ async function checkUpdate(item) {
                 headers,
             })
                 .then((response) => {
-                    const { commit } = JSON.parse(response.body);
-                    const author = commit.committer.name;
-                    const body = commit.message;
-                    const published_at = commit.committer.date;
-                    const file_url = commit.tree.url;
-                    return { author, body, published_at, file_url };
+                    if (response.statusCode == 200) {
+                        const { commit } = JSON.parse(response.body);
+                        const author = commit.committer.name
+                        const body = commit.message
+                        const published_at = commit.committer.date
+                        const file_url = commit.tree.url
+                        return {author, body, published_at, file_url}
+                    } else if (response.statusCode == 404) {
+                        lk.appendNotifyInfo(`【${name}】不存在，请及时删除相关配置！`)
+                    }
                 })
                 .catch((e) => {
                     $.error(e);
                 });
-            $.log({ author, body, published_at, file_url });
+            lk.log(JSON.stringify({ author, body, published_at, file_url }));
             const notificationURL = {
                 "open-url": `https://github.com/${repository.owner}/${repository.repo}/commits/${repository.branch}`,
                 "media-url": `https://raw.githubusercontent.com/Orz-3/mini/master/Color/github.png`
@@ -185,9 +193,8 @@ async function checkUpdate(item) {
             else {
                 const file_names = item.file_names;
                 for (let i in file_names) {
-
                     paths = parserPath(file_names[i])
-                    $.log(paths)
+                    lk.log(`查找文件：${JSON.stringify(paths)}`)
                     await findFile(name, file_url, paths, 0, notificationURL["open-url"])
                 }
             }
@@ -201,7 +208,8 @@ async function checkUpdate(item) {
 function findFile(name, tree_url, paths, current_pos, openUrl) {
 
     if (current_pos == paths.length) {
-        $.notify(`🐬 [${name}]`, "", `🚫 仓库中没有该文件：${paths[paths.length-1]}`);
+        lk.appendNotifyInfo(name)
+        lk.appendNotifyInfo(`🚫 仓库中没有该文件：${paths[paths.length-1]}`)
     }
     $.get({
         url: tree_url,
@@ -216,36 +224,43 @@ function findFile(name, tree_url, paths, current_pos, openUrl) {
 
                     fileType = file_list[i].type
                     isDir = paths[current_pos].match(/\.(js|py|cpp|c|cpp|html|css|jar|png|jpg|bmp|exe)/) == null ? true : false;
-                    $.log(`🔍正在判断：${paths[current_pos]} is a ${isDir?"directory":"file"}`)
+                    lk.log(`🔍正在判断：${paths[current_pos]} is a ${isDir?"directory":"file"}`)
                     if (current_pos == paths.length - 1 && fileType == 'blob' && !isDir) {
                         isFind = true;
                         let file_hash = file_list[i].sha;
-                        let last_sha = $.read(hash(name + paths[current_pos]));
+                        let key = name + paths.join("-");
+                        let last_sha = $.read(hash(key));
+                        lk.log(`${key}\n${last_sha}\n${file_hash}\n${file_hash != last_sha}`)
                         if (file_hash != last_sha) {
-                            $.write(file_hash, hash(name + paths[current_pos]));
+                            $.write(file_hash, hash(key))
                             lk.appendNotifyInfo(name)
                             lk.appendNotifyInfo(`📌 ${paths[current_pos]}有更新`)
                             lk.appendNotifyInfo(openUrl)
                             // lk.tgNotify(`${name}`, `📌 ${paths[current_pos]}有更新`, ``, openUrl)
+                        } else {
+                            lk.log(
+                                `🐬 ${paths[current_pos]}：\n\tlast sha: ${last_sha}\n\tlatest sha: ${file_hash}\n\t${file_hash == last_sha ? "✅当前已是最新" : "🔅需要更新"}`
+                            );
                         }
-                        $.log(
-                            `🐬 ${paths[current_pos]}：\n\tlast sha: ${last_sha}\n\tlatest sha: ${file_hash}\n\t${file_hash == last_sha ? "✅当前已是最新" : "🔅需要更新"}`
-                        );
                     }
                     else if (current_pos == paths.length - 1 && fileType == 'tree' && isDir) {
                         isFind = true;
                         let file_hash = file_list[i].sha;
-                        let last_sha = $.read(hash(name + paths[current_pos]));
+                        let key = name + paths.join("-");
+                        let last_sha = $.read(hash(key));
+                        lk.log(`${key}\n${last_sha}\n${file_hash}\n${file_hash != last_sha}`)
                         if (file_hash != last_sha) {
-                            $.write(file_hash, hash(name + paths[current_pos]));
+                            $.write(file_hash, hash(key))
                             lk.appendNotifyInfo(name)
                             lk.appendNotifyInfo(`📌 ${paths[current_pos]}有更新`)
+                            lk.log(JSON.stringify(lk.notifyInfo))
                             lk.appendNotifyInfo(openUrl)
                             // lk.tgNotify(`${name}`, `📌 ${paths[current_pos]}有更新`, ``, openUrl)
+                        } else {
+                            lk.log(
+                                `🐬 ${paths[current_pos]}：\n\tlast sha: ${last_sha}\n\tlatest sha: ${file_hash}\n\t${file_hash == last_sha ? "✅当前已是最新" : "🔅需要更新"}`
+                            );
                         }
-                        $.log(
-                            `🐬 ${paths[current_pos]}：\n\tlast sha: ${last_sha}\n\tlatest sha: ${file_hash}\n\t${file_hash == last_sha ? "✅当前已是最新" : "🔅需要更新"}`
-                        );
                     } else if (fileType == 'tree') {
                         isFind = true;
                         tree_url = file_list[i].url
@@ -255,7 +270,9 @@ function findFile(name, tree_url, paths, current_pos, openUrl) {
 
             }
             if (isFind == false) {
-                $.notify(`🐬 [${name}]`, "", `🚫 仓库中没有该文件：${paths[paths.length-1]}\n🚫 请检查你的路径是否填写正确`);
+                lk.appendNotifyInfo(name)
+                lk.appendNotifyInfo(`🚫 仓库中没有该文件：${paths[paths.length - 1]}`)
+                lk.appendNotifyInfo(`🚫 请检查你的路径是否填写正确`)
             }
         },
         (error) => {
@@ -292,15 +309,13 @@ if(!lk.isExecComm) {
         "author": "@Peng-YM, @lowking"
     }, {'script_url': 'https://raw.githubusercontent.com/lowking/Scripts/master/github/githubMonitor.js'})
     Promise.all(
-        repositories.map(async (item) => {
-            await checkUpdate(item)
-            lk.log(JSON.stringify(lk.notifyInfo))
-            lk.msg(``)
-        })
+        repositories.map(async (item) => await checkUpdate(item)),
     ).finally(() => {
-        $.done()
+        lk.log(JSON.stringify(lk.notifyInfo))
+        lk.msg(``)
         lk.done()
-    });
+        $.done()
+    })
 }
 
 // prettier-ignore

@@ -27,6 +27,9 @@
 ## ChangeLogs
 View the changelog [here](https://github.com/lowking/Scripts/blob/master/CHANGELOGS.MD).
 
+## To-do
+- [ ] Rewrite GithubMonitor.js（something wrong）
+
 ## Contribute +/-
 Corrections to existing codes.
 
