@@ -375,7 +375,10 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 let result = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
-                    if (d == curDate.split(sp)[0] && curDate.split(sp)[1].length == 1) {
+                    //判断上一次是否请求错误
+                    let curDateErrorTime = await this.getVal('curDateCacheErrorTime', 'local', this.now.getTime())
+                    let isPreError = !this.isEmpty(curDateErrorTime) && Number(curDateErrorTime) + (5 * 60 * 1000) < this.now.getTime()
+                    if (!isPreError && d == curDate.split(sp)[0] && curDate.split(sp)[1].length == 1) {
                         //日期相同说明当天请求过，直接使用上次请求的值
                         result = curDate.split(sp)[1]
                         this.log('already request')
@@ -407,6 +410,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     this.setVal('curDateCache', `${d + sp + result}`, 'local')
                     if (result == "❌") {
                         resolve(result)
+                        // 写入错误时间，便于5分钟后重新请求
+                        this.log('写入运行错误时间，5分钟后重新请求！')
+                        this.setVal('curDateCacheErrorTime', `${this.now.getTime()}`, 'local')
                     } else {
                         resolve(result == 0 ? workingDaysFlag : holidayFlag)
                     }
