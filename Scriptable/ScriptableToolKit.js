@@ -396,6 +396,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                                     // 接口错误
                                     result = "❌"
                                 } else {
+                                    this.setVal('curDateCacheErrorTime', '', 'local')
                                     result = result.type.type
                                 }
                             }
