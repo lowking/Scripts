@@ -101,6 +101,10 @@ function showmsg(w) {
 async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     $.log('创建widget')
 
+    // 获取第二天是否工作日
+    let targetDate = new Date()
+    let isWD = await $.isWorkingDays(new Date(targetDate.setDate(now.getDate() + 1)))
+
     // 保存成功执行的数据
     if (subt != '-') {
         $.setVal('subt', subt, 'local')
@@ -111,10 +115,6 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     const bgColor = new LinearGradient()
     bgColor.colors = [new Color("#001A27"), new Color("#00334e")]
     bgColor.locations = [0.0, 1.0]
-
-    // 获取第二天是否工作日
-    let targetDate = new Date()
-    let isWD = await $.isWorkingDays(new Date(targetDate.setDate(now.getDate() + 1)))
     $.log(`设置标题-${pretitle}${isWD}`)
     let normalColor = new Color("#ccc")
     let preTxt = w.addText(pretitle + isWD)
