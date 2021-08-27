@@ -209,7 +209,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         }
 
         log(message) {
-            if (this.isEnableLog) console.log(`${this.logSeparator}${message}`)
+            if (this.isEnableLog) console.log(`${this.logSeparator}${JSON.stringify(message)}`)
             this.appendNotifyInfo(message)
         }
 
@@ -372,16 +372,17 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 const d = this.formatDate(now, 'yyyy-MM-dd')
                 // 0工作日 1休息日 2节假日
                 // enum(0, 1, 2, 3), // 节假日类型，分别表示 工作日、周末、节日、调休。
-                let result = 0
+                let resultStr = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
                     //判断上一次是否请求错误
                     let curDateErrorTime = await this.getVal('curDateCacheErrorTime', 'local', this.now.getTime())
                     let isPreError = !this.isEmpty(curDateErrorTime) && Number(curDateErrorTime) + (5 * 60 * 1000) < this.now.getTime()
-                    if (!isPreError && d == curDate.split(sp)[0] && curDate.split(sp)[1].length == 1) {
+                    if (!isPreError && d == curDate.split(sp)[0] && curDate.split(sp)[1] != "❌") {
                         //日期相同说明当天请求过，直接使用上次请求的值
-                        result = curDate.split(sp)[1]
+                        resultStr = curDate.split(sp)[1]
                         this.log('already request')
+                        // this.setVal('curDateCache', '', 'local')
                     } else {
                         this.log('send request')
                         const url = {
@@ -389,33 +390,34 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                         }
                         await this.get(url, (resp, data) => {
                             if (data.indexOf("<") == 0) {
-                                result = "❌"
+                                resultStr = "❌"
                             } else {
-                                result = JSON.parse(data)
-                                if (result.code == -1) {
+                                resultStr = JSON.parse(data)
+                                if (resultStr.code == -1) {
                                     // 接口错误
-                                    result = "❌"
+                                    resultStr = "❌"
                                 } else {
                                     this.setVal('curDateCacheErrorTime', '', 'local')
-                                    result = result.type.type
+                                    resultStr = resultStr.type.type
+                                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                                 }
                             }
                         })
                     }
                 } catch (e) {
-                    result = "❌"
+                    resultStr = "❌"
                     this.logErr(e)
                 } finally {
-                    this.log(JSON.stringify(result))
                     // 写入文件系统
-                    this.setVal('curDateCache', `${d + sp + result}`, 'local')
-                    if (result == "❌") {
-                        resolve(result)
+                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
+                    if (resultStr == "❌") {
+                        resolve(resultStr)
                         // 写入错误时间，便于5分钟后重新请求
                         this.log('写入运行错误时间，5分钟后重新请求！')
+                        this.setVal('curDateCache', '', 'local')
                         this.setVal('curDateCacheErrorTime', `${this.now.getTime()}`, 'local')
                     } else {
-                        resolve(result == 0 ? workingDaysFlag : holidayFlag)
+                        resolve(resultStr == 0 ? workingDaysFlag : holidayFlag)
                     }
                 }
 
