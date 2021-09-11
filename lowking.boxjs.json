@@ -355,34 +355,6 @@
       ],
       "settings": [
         {
-          "id": "lkIsEnableLogGithubMonitorPushTg",
-          "name": "开启/关闭日志",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
-        },
-        {
-          "id": "lkNotifyOnlyFailGithubMonitorPushTg",
-          "name": "只当执行失败才通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkIsEnableTgNotifyGithubMonitorPushTg",
-          "name": "开启/关闭Telegram通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkTgNotifyUrlGithubMonitorPushTg",
-          "name": "Telegram通知地址",
-          "val": "",
-          "type": "text",
-          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
-        },
-        {
           "id": "lkGithubMonitorRepo",
           "name": "仓库地址",
           "val": "[\n\t\t{\n\t\t\t\t\"name\": \"NZW9314 脚本\",\n\t\t\t\t\"url\": \"https://github.com/nzw9314/QuantumultX/tree/master\"\n\t\t},\n\t\t{\n\t\t\t\t\"name\": \"Chavy 脚本\",\n\t\t\t\t\"url\": \"https://github.com/chavyleung/scripts\"\n\t\t},\n\t\t{\n\t\t\t\t\"name\": \"NobyDa\",\n\t\t\t\t\"file_names\": [\"JD-DailyBonus/JD_DailyBonus.js\", \"52pojie-DailyBonus\"],\n\t\t\t\t\"url\": \"https://github.com/NobyDa/Script/tree/master\"\n\t\t}\n]",
@@ -397,6 +369,13 @@
           "val": "784a03feb07989d3339dfa41c7eb41777436cbfa",
           "type": "text",
           "desc": "Github Token"
+        },
+        {
+          "id": "lkGithubMonitorTgNotifyUrl",
+          "name": "Tg的通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         }
       ],
       "author": "@Peng-YM, @lowking",
