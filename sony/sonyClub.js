@@ -57,7 +57,7 @@ if (!lk.isExecComm) {
                 lk.post(url, async (error, response, data) => {
                     try {
                         lk.log(data)
-                        if (data == undefined) {
+                        if (data == undefined || data.startsWith("<")) {
                             lk.log(`进入自动登录`)
                             // 不通知直接登录获取token
                             if (loginCount > 3) {
