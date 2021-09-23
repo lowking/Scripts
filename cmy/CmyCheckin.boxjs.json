@@ -109,6 +109,13 @@
 					"val": "",
 					"type": "text",
 					"desc": "用于京粉转链的ck"
+				},
+				{
+					"id": "lkJdHelperApiDomain",
+					"name": "接口url",
+					"val": "",
+					"type": "text",
+					"desc": "用于京粉转链请求的接口"
 				}
 			],
 			"author": "@lowking",
