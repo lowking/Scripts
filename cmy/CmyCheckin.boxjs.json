@@ -88,13 +88,6 @@
 			"settings": [
 				{
 					"id": "lkJdHelperSidebarHorizontal",
-					"name": "开启/关闭日志",
-					"val": true,
-					"type": "boolean",
-					"desc": "默认开启"
-				},
-				{
-					"id": "lkJdHelperSidebarHorizontal",
 					"name": "京东助手显示位置",
 					"val": "left",
 					"type": "radios",
