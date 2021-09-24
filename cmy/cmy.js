@@ -179,6 +179,11 @@ async function checkIn(count = 0) {
                     lk.appendNotifyInfo(`🎉签到${result.msg}\n今天使用：${result.trafficInfo.todayUsedTraffic}\n总共使用：${result.trafficInfo.lastUsedTraffic}\n剩余流量：${result.trafficInfo.unUsedTraffic}`)
                     lk.log(`签到成功`)
                     lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
+                } else if (result.ret == 0) {
+                    //签到成功
+                    lk.appendNotifyInfo(`🔁${result.msg}`)
+                    lk.log(`重复签到`)
+                    lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
                 } else {
                     lk.appendNotifyInfo(`❌签到失败：${result.msg}`)
                     lk.setVal(cmyCookieKey, "")
