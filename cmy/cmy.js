@@ -97,16 +97,15 @@ function getCookie() {
 }
 
 async function all() {
-    if (lk.isEmpty(cmyCookie)) {
-        lk.appendNotifyInfo('❌请获取Cookie后再运行')
-    } else {
+    let result = await login()
+    lk.log(`test${result}`)
+    if (result == "ok") {
         await checkIn()
     }
     lk.msg(``)
     lk.done()
 }
 
-//添加了极验证，取消自动登录
 function login(type) {
     return new Promise( (resolve, reject) => {
         let loginId = lk.getVal("lkCmyCheckinLoginId")
@@ -158,7 +157,14 @@ async function checkIn() {
     return new Promise(async (resolve, reject) => {
         let checkInUrl = {
             url: `https://cmy.network/api/checkin`,
-            headers: cmyCookie
+            headers: {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "zh-CN,zh;q=0.9,zh-TW;q=0.8,en;q=0.7,ja;q=0.6",
+                "access-token": token,
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin"
+            }
         }
         lk.log(JSON.stringify(checkInUrl))
         lk.get(checkInUrl, async (error, response, data) => {
