@@ -97,7 +97,10 @@ function getCookie() {
 }
 
 async function all() {
-    let result = await login()
+    let result = ""
+    if (lk.isEmpty(cmyCookie)) {
+        result = await login()
+    }
     lk.log(`test${result}`)
     if (result == "ok") {
         await checkIn()
@@ -153,7 +156,7 @@ function login(type) {
     })
 }
 
-async function checkIn() {
+async function checkIn(count = 0) {
     return new Promise(async (resolve, reject) => {
         let checkInUrl = {
             url: `https://cmy.network/api/checkin`,
@@ -175,10 +178,20 @@ async function checkIn() {
                     //签到成功
                     lk.appendNotifyInfo(`🎉签到${result.msg}\n今天使用：${result.trafficInfo.todayUsedTraffic}\n总共使用：${result.trafficInfo.lastUsedTraffic}\n剩余流量：${result.trafficInfo.unUsedTraffic}`)
                     lk.log(`签到成功`)
+                    lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
                 } else {
                     lk.appendNotifyInfo(`❌签到失败：${result.msg}`)
-                    lk.execFail()
-                    resolve()
+                    lk.setVal(cmyCookieKey, "")
+                    if (count > 0) {
+                        lk.execFail()
+                        resolve()
+                    } else {
+                        count++
+                        let result = await login()
+                        if (result == "ok") {
+                            await checkIn(count)
+                        }
+                    }
                 }
             } catch (e) {
                 lk.logErr(e)
