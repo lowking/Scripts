@@ -10,6 +10,7 @@
  *      randomString： 生成随机字符串
  *      autoComplete： 自动补齐字符串
  *      customReplace： 自定义替换
+ *      hash： 字符串做hash
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
@@ -22,14 +23,14 @@
 function ToolKit(scriptName, scriptId, options) {
     return new (class {
         constructor(scriptName, scriptId, options) {
-            this.tgEscapeCharMapping = {'&':'＆'}
+            this.tgEscapeCharMapping = {'&':'＆', '#':'＃'}
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
             this.id = scriptId
             this.data = null
-            this.dataFile = `${this.prefix}${this.id}.dat`
-            this.boxJsJsonFile = `${this.prefix}${this.id}.boxjs.json`
+            this.dataFile = this.getRealPath(`${this.prefix}${this.id}.dat`)
+            this.boxJsJsonFile = this.getRealPath(`${this.prefix}${this.id}.boxjs.json`)
 
             //surge http api等一些扩展参数
             this.options = options
@@ -74,15 +75,26 @@ function ToolKit(scriptName, scriptId, options) {
             this.execComm()
         }
 
+        //当执行命令的目录不是脚本所在目录时，自动把文件路径改成指令传入的路径并返回完整文件路径
+        getRealPath(fileName) {
+            if (this.isNode()) {
+                let targetPath = process.argv.slice(1, 2)[0].split("/")
+                targetPath[targetPath.length - 1] = fileName
+
+                return targetPath.join("/")
+            }
+            return fileName
+        }
+
         async execComm() {
             //支持node命令，实现发送手机测试
             if (this.isNode()) {
-                this.comm = process.argv.slice(2)
+                this.comm = process.argv.slice(1)
                 let isHttpApiErr = false
-                if (this.comm[0] == "p") {
+                if (this.comm[1] == "p") {
                     this.isExecComm = true
                     //phone
-                    this.log(`开始执行指令【${this.comm[0]}】=> 发送到手机测试脚本！`)
+                    this.log(`开始执行指令【${this.comm[1]}】=> 发送到手机测试脚本！`)
                     if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
                         this.log(`未设置options，使用默认值`)
                         //设置默认值
@@ -99,14 +111,16 @@ function ToolKit(scriptName, scriptId, options) {
                         }
                     }
                     if (!isHttpApiErr) {
-                        await this.callApi(this.comm[1]);
+                        await this.callApi(this.comm[2]);
                     }
                 }
             }
         }
 
         callApi(timeout) {
-            let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
+            // 直接用接收到文件路径，解决在不同目录下都可以使用 node xxxx/xxx.js p 指令发送脚本给手机执行
+            // let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
+            let fname = this.comm[0]
             this.log(`获取【${fname}】内容传给手机`)
             let scriptStr = ''
             this.fs = this.fs ? this.fs : require('fs')
@@ -171,16 +185,20 @@ function ToolKit(scriptName, scriptId, options) {
             return ret;
         }
 
-        boxJsJsonBuilder(info) {
+        boxJsJsonBuilder(info, param) {
             if (this.isNode()) {
                 this.log('using node')
                 let needAppendKeys = ["keys", "settings"]
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
                 let boxJsJson = {}
+                let scritpUrl = 'script_url'
+                if (param && param.hasOwnProperty('script_url')) {
+                    scritpUrl = this.isEmpty(param['script_url']) ? "script_url" : param['script_url']
+                }
                 boxJsJson.id = `${this.prefix}${this.id}`
                 boxJsJson.name = this.name
-                boxJsJson.desc_html = "⚠️使用说明</br>详情【<a href='script_url?raw=true'><font class='red--text'>点我查看</font></a>】"
-                boxJsJson.icons = [`${domain}/mini/master/${this.id.toLocaleLowerCase()}.png`,`${domain}/task/master/${this.id.toLocaleLowerCase()}.png`]
+                boxJsJson.desc_html = `⚠️使用说明</br>详情【<a href='${scritpUrl}?raw=true'><font class='red--text'>点我查看</font></a>】`
+                boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`,`${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
                 boxJsJson.keys = []
                 boxJsJson.settings = [
                     {
@@ -214,7 +232,7 @@ function ToolKit(scriptName, scriptId, options) {
                 ]
                 boxJsJson.author = "@lowking"
                 boxJsJson.repo = "https://github.com/lowking/Scripts"
-                boxJsJson.script = "script_url?raw=true"
+                boxJsJson.script = `${scritpUrl}?raw=true`
                 //除了settings和keys追加，其他的都覆盖
                 if (!this.isEmpty(info)) {
                     for (let i in needAppendKeys) {
@@ -502,7 +520,7 @@ function ToolKit(scriptName, scriptId, options) {
         costTime() {
             let info = `${this.name}执行完毕！`
             if (this.isNode() && this.isExecComm) {
-                info = `指令【${this.comm[0]}】执行完毕！`
+                info = `指令【${this.comm[1]}】执行完毕！`
             }
             const endTime = new Date().getTime()
             const ms = endTime - this.startTime
@@ -515,17 +533,11 @@ function ToolKit(scriptName, scriptId, options) {
             // this.setVal(this.costTotalMsKey, JSON.stringify(0))
         }
 
-        done(value) {
+        done(value = {}) {
             this.costTime()
-            let key = `body`
-            if (this.isRequest()) {
-                if (this.isQuanX()) key = `content`
-                if (this.isSurge()) key = `body`
+            if (this.isSurge() || this.isQuanX() || this.isLoon()) {
+                $done(value)
             }
-            let obj = {}
-            obj[key] = value
-            if (this.isQuanX()) this.isRequest() ? $done(obj) : null
-            if (this.isSurge()) this.isRequest() ? $done(obj) : $done()
         }
 
         getRequestUrl() {
@@ -633,6 +645,18 @@ function ToolKit(scriptName, scriptId, options) {
                 }
             }
             return tmp
+        }
+
+        hash(str) {
+            let h = 0,
+                i,
+                chr
+            for (i = 0; i < str.length; i++) {
+                chr = str.charCodeAt(i)
+                h = (h << 5) - h + chr
+                h |= 0 // Convert to 32bit integer
+            }
+            return String(h)
         }
     })(scriptName, scriptId, options)
 }
