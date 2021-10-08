@@ -141,6 +141,8 @@ function login(type) {
                     token = result.data.token
                     lk.log(`登录成功，token：${token}`)
                     lk.execStatus = true
+                    loginUrl.headers["access-token"] = token
+                    lk.setVal(cmyCookieKey, JSON.stringify(loginUrl.headers))
                     resolve("ok")
                 } else {
                     lk.log(result.msg)
