@@ -98,11 +98,13 @@ function getCookie() {
 
 async function all() {
     let result = ""
-    if (!lk.isEmpty(cmyCookie)) {
+    if (lk.isEmpty(cmyCookie)) {
         result = await login()
-    }
-    lk.log(`test${result}`)
-    if (result == "ok") {
+        lk.log(`test${result}`)
+        if (result == "ok") {
+            await checkIn()
+        }
+    } else {
         await checkIn()
     }
     lk.msg(``)
