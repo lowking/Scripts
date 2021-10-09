@@ -177,7 +177,7 @@ async function checkIn(count = 0) {
                     lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
                 } else if (result.ret == 0) {
                     if (result.msg == "token is null") {
-                        cmyCookieKey = ""
+                        cmyCookie = ""
                         lk.setVal(cmyCookieKey, "")
                         await all()
                     } else {
