@@ -108,7 +108,7 @@
 					"name": "ck",
 					"val": "",
 					"type": "text",
-					"desc": "用于京粉转链的ck"
+					"desc": "用于京粉转链的ck，格式：pt_key=xxx;pt_pin=xxx;wskey=xxx;"
 				},
 				{
 					"id": "lkJdHelperApiDomain",
@@ -116,6 +116,13 @@
 					"val": "",
 					"type": "text",
 					"desc": "用于京粉转链请求的接口"
+				},
+				{
+					"id": "lkJdHelperCallKey",
+					"name": "调用接口的callKey",
+					"val": "",
+					"type": "text",
+					"desc": "用于京粉转链请求接口的callKey"
 				}
 			],
 			"author": "@lowking",
