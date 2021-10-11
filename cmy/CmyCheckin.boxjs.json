@@ -72,62 +72,6 @@
 			"author": "@lowking",
 			"repo": "https://github.com/lowking/Scripts",
 			"script": "https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js"
-		},
-		{
-			"id": "lkJdHelper",
-			"name": "京东助手",
-			"desc_html": "⚠️个人使用",
-			"icons": [
-				"https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/jd.png",
-				"https://raw.githubusercontent.com/Orz-3/mini/master/Color/jd.png"
-			],
-			"keys": [
-				"lkJdHelperSidebarHorizontal",
-				"lkJdHelperCk",
-				"lkJdHelperCallKey"
-			],
-			"settings": [
-				{
-					"id": "lkJdHelperSidebarHorizontal",
-					"name": "京东助手显示位置",
-					"val": "left",
-					"type": "radios",
-					"items": [
-						{
-							"key": "left",
-							"label": "左边"
-						},
-						{
-							"key": "right",
-							"label": "右边"
-						}
-					],
-					"desc": "默认-左边"
-				},
-				{
-					"id": "lkJdHelperCk",
-					"name": "ck",
-					"val": "",
-					"type": "text",
-					"desc": "用于京粉转链的ck，格式：pt_key=xxx;pt_pin=xxx;wskey=xxx;"
-				},
-				{
-					"id": "lkJdHelperApiDomain",
-					"name": "接口url",
-					"val": "",
-					"type": "text",
-					"desc": "用于京粉转链请求的接口"
-				},
-				{
-					"id": "lkJdHelperCallKey",
-					"name": "调用接口的callKey",
-					"val": "",
-					"type": "text",
-					"desc": "用于京粉转链请求接口的callKey"
-				}
-			],
-			"author": "@lowking",
-			"repo": "https://github.com/lowking/Scripts"
 		}
 	]
 }
