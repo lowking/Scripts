@@ -172,6 +172,7 @@ async function checkIn(count = 0) {
                 const result = JSON.parse(data)
                 if (result.ret == 1) {
                     //签到成功
+                    lk.notifyInfo = []
                     lk.appendNotifyInfo(`🎉签到${result.msg}\n今天使用：${result.trafficInfo.todayUsedTraffic}\n总共使用：${result.trafficInfo.lastUsedTraffic}\n剩余流量：${result.trafficInfo.unUsedTraffic}`)
                     lk.log(`签到成功`)
                     lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
@@ -182,6 +183,7 @@ async function checkIn(count = 0) {
                         await all()
                     } else {
                         //签到成功
+                        lk.notifyInfo = []
                         lk.appendNotifyInfo(`🔁${result.msg}`)
                         lk.log(`重复签到`)
                         lk.setVal(cmyCookieKey, JSON.stringify(checkInUrl.headers))
