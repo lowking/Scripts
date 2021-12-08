@@ -1,7 +1,7 @@
 /*
 hifini签到-lowking-v1.0
 
-按下面配置完之后，手机朴朴点击我的获取token
+按下面配置完之后，打开https://www.hifini.com/my.htm获取cookie
 
 hostname = *.hifini.com
 
