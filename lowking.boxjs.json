@@ -492,6 +492,58 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/pupu/pupuCheckIn.js?raw=true"
+    },
+    {
+      "id": "lkHifiniSignIn",
+      "name": "hifini签到",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin.png"
+      ],
+      "keys": [
+        "lkHifiniCookieKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogHifiniSignIn",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailHifiniSignIn",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyHifiniSignIn",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlHifiniSignIn",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "lkHifiniCookieKey",
+          "name": "hifini cookie",
+          "val": "",
+          "type": "text",
+          "desc": "hifini cookie"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js?raw=true"
     }
   ]
 }
