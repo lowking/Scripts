@@ -498,7 +498,7 @@
       "name": "hifini签到",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin-dark.png",
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin.png"
       ],
       "keys": [
