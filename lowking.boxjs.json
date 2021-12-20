@@ -539,6 +539,13 @@
           "val": "",
           "type": "text",
           "desc": "hifini cookie"
+        },
+        {
+          "id": "lkHifiniIsTakeTheFirst",
+          "name": "是否抢签到第一",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
         }
       ],
       "author": "@lowking",
