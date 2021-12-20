@@ -546,6 +546,13 @@
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
+        },
+        {
+          "id": "lkHifiniTakeTheFirstCount",
+          "name": "抢签到第一并发数",
+          "val": 20,
+          "type": "number",
+          "desc": "默认20"
         }
       ],
       "author": "@lowking",
