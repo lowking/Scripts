@@ -37,7 +37,11 @@ cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Script
 
 const lk = new ToolKit(`hifini签到`, `HifiniSignIn`)
 const hifiniCookieKey = 'lkHifiniCookieKey'
+const hifiniIsTakeTheFirst = 'lkHifiniIsTakeTheFirst'
+const hifiniTakeTheFirstCount = 'lkHifiniTakeTheFirstCount'
 const hifiniCookie = !lk.getVal(hifiniCookieKey) ? '' : lk.getVal(hifiniCookieKey)
+const isTakeTheFirst = !lk.getVal(hifiniIsTakeTheFirst) ? false : JSON.parse(lk.getVal(hifiniIsTakeTheFirst))
+const takeTheFirstCount = !lk.getVal(hifiniTakeTheFirstCount) ? 20 : lk.getVal(hifiniTakeTheFirstCount)
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -52,6 +56,18 @@ if(!lk.isExecComm) {
                     "val": "",
                     "type": "text",
                     "desc": "hifini cookie"
+                }, {
+                    "id": hifiniIsTakeTheFirst,
+                    "name": "是否抢签到第一",
+                    "val": false,
+                    "type": "boolean",
+                    "desc": "默认关闭"
+                }, {
+                    "id": hifiniTakeTheFirstCount,
+                    "name": "抢签到第一并发数",
+                    "val": 20,
+                    "type": "number",
+                    "desc": "默认20"
                 }
             ],
             "keys": [hifiniCookieKey]
@@ -79,7 +95,28 @@ async function all() {
         lk.execFail()
         lk.appendNotifyInfo(`⚠️请先先根据脚本注释获取cookie`)
     } else {
-        await signIn()
+        if (isTakeTheFirst) {
+            let execArr = []
+            // 尝试同时请求20次，抢签到第一
+            for (let i = 0; i < takeTheFirstCount; i++) {
+                execArr.push(signIn())
+            }
+            await Promise.all(execArr).then(async (res) => {
+                console.log(`${res}`)
+                let sucList = res.filter(str => {
+                    return str !== undefined && str.indexOf("suc") != -1
+                })
+                // 只要有一个成功，就算成功
+                if (sucList.length >= 1) {
+                    lk.execStatus = true
+                    lk.appendNotifyInfo([sucList[0].substring(3)], 1)
+                } else {
+                    lk.execFail()
+                }
+            })
+        } else {
+            await signIn()
+        }
     }
     lk.msg(``)
     lk.done()
@@ -104,6 +141,7 @@ function signIn() {
                     let msg = data.split(`<h4 class="card-title text-center mb-0">`)[1].split(`</i>`)[1].split("<")[0]
                     if (msg) {
                         lk.appendNotifyInfo(`🎉${msg.trim()}`)
+                        resolve(`suc🎉${msg.trim()}`)
                     } else {
                         lk.execFail()
                         lk.appendNotifyInfo(data)
