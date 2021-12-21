@@ -43,7 +43,7 @@ const hifiniRunType = 'lkHifiniRunType'
 const hifiniCookie = !lk.getVal(hifiniCookieKey) ? '' : lk.getVal(hifiniCookieKey)
 const isTakeTheFirst = !lk.getVal(hifiniIsTakeTheFirst) ? false : JSON.parse(lk.getVal(hifiniIsTakeTheFirst))
 const takeTheFirstCount = !lk.getVal(hifiniTakeTheFirstCount) ? 20 : lk.getVal(hifiniTakeTheFirstCount)
-const runType = !lk.getVal(hifiniRunType) ? 1 : lk.getVal(hifiniRunType)
+const runType = !lk.getVal(hifiniRunType) ? "1" : lk.getVal(hifiniRunType)
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -117,9 +117,9 @@ async function all() {
             let execArr = []
             // 尝试同时请求20次，抢签到第一
             for (let i = 0; i < takeTheFirstCount; i++) {
-                if (runType == 1) {
+                if (runType == "1") {
                     execArr.push(signIn())
-                } else if (runType == 2) {
+                } else if (runType == "2") {
                     let res = await signIn()
                     if (res.indexOf("suc") > -1) {
                         lk.execStatus = true
@@ -128,7 +128,7 @@ async function all() {
                     }
                 }
             }
-            if (runType == 1) {
+            if (runType == "1") {
                 await Promise.all(execArr).then(async (res) => {
                     console.log(`${res}`)
                     let sucList = res.filter(str => {
