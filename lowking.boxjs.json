@@ -553,6 +553,23 @@
           "val": 20,
           "type": "number",
           "desc": "默认20"
+        },
+        {
+          "id": "lkHifiniRunType",
+          "name": "运行脚本方式",
+          "val": 1,
+          "type": "radios",
+          "items": [
+            {
+              "key": 1,
+              "label": "并发执行"
+            },
+            {
+              "key": 2,
+              "label": "顺序执行"
+            }
+          ],
+          "desc": "默认并发执行"
         }
       ],
       "author": "@lowking",

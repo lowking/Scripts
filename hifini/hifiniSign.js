@@ -39,9 +39,11 @@ const lk = new ToolKit(`hifini签到`, `HifiniSignIn`)
 const hifiniCookieKey = 'lkHifiniCookieKey'
 const hifiniIsTakeTheFirst = 'lkHifiniIsTakeTheFirst'
 const hifiniTakeTheFirstCount = 'lkHifiniTakeTheFirstCount'
+const hifiniRunType = 'lkHifiniRunType'
 const hifiniCookie = !lk.getVal(hifiniCookieKey) ? '' : lk.getVal(hifiniCookieKey)
 const isTakeTheFirst = !lk.getVal(hifiniIsTakeTheFirst) ? false : JSON.parse(lk.getVal(hifiniIsTakeTheFirst))
 const takeTheFirstCount = !lk.getVal(hifiniTakeTheFirstCount) ? 20 : lk.getVal(hifiniTakeTheFirstCount)
+const runType = !lk.getVal(hifiniRunType) ? 1 : lk.getVal(hifiniRunType)
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -68,6 +70,22 @@ if(!lk.isExecComm) {
                     "val": 20,
                     "type": "number",
                     "desc": "默认20"
+                }, {
+                    "id": hifiniRunType,
+                    "name": "运行脚本方式",
+                    "val": 1,
+                    "type": "radios",
+                    "items": [
+                        {
+                            "key": 1,
+                            "label": "并发执行"
+                        },
+                        {
+                            "key": 2,
+                            "label": "顺序执行"
+                        }
+                    ],
+                    "desc": "默认并发执行"
                 }
             ],
             "keys": [hifiniCookieKey]
@@ -99,21 +117,32 @@ async function all() {
             let execArr = []
             // 尝试同时请求20次，抢签到第一
             for (let i = 0; i < takeTheFirstCount; i++) {
-                execArr.push(signIn())
-            }
-            await Promise.all(execArr).then(async (res) => {
-                console.log(`${res}`)
-                let sucList = res.filter(str => {
-                    return str !== undefined && str.indexOf("suc") != -1
-                })
-                // 只要有一个成功，就算成功
-                if (sucList.length >= 1) {
-                    lk.execStatus = true
-                    lk.appendNotifyInfo([sucList[0].substring(3)], 1)
-                } else {
-                    lk.execFail()
+                if (runType == 1) {
+                    execArr.push(signIn())
+                } else if (runType == 2) {
+                    let res = await signIn()
+                    if (res.indexOf("suc") > -1) {
+                        lk.execStatus = true
+                        lk.appendNotifyInfo([res.substring(3)], 1)
+                        break
+                    }
                 }
-            })
+            }
+            if (runType == 1) {
+                await Promise.all(execArr).then(async (res) => {
+                    console.log(`${res}`)
+                    let sucList = res.filter(str => {
+                        return str !== undefined && str.indexOf("suc") != -1
+                    })
+                    // 只要有一个成功，就算成功
+                    if (sucList.length >= 1) {
+                        lk.execStatus = true
+                        lk.appendNotifyInfo([sucList[0].substring(3)], 1)
+                    } else {
+                        lk.execFail()
+                    }
+                })
+            }
         } else {
             await signIn()
         }
@@ -152,6 +181,7 @@ function signIn() {
                 lk.log(`返回数据：${data}`)
                 lk.execFail()
                 lk.appendNotifyInfo(`❌${t}错误，请带上日志联系作者，或稍后再试`)
+                resolve(`fail`)
             } finally {
                 resolve()
             }
