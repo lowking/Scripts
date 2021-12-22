@@ -114,6 +114,15 @@ async function all() {
         lk.appendNotifyInfo(`⚠️请先先根据脚本注释获取cookie`)
     } else {
         if (isTakeTheFirst) {
+            // 如果时间是23点，就等待0点的时候再继续
+            while (new Date().getMinutes() > 57) {
+                let now = new Date()
+                if (now.getHours() != 23) {
+                    break
+                }
+                lk.log("等待中。。。")
+                await lk.sleep(100)
+            }
             let execArr = []
             // 尝试同时请求20次，抢签到第一
             for (let i = 0; i < takeTheFirstCount; i++) {
