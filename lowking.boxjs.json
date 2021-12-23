@@ -9,7 +9,9 @@
       "id": "lk.qqvip",
       "name": "QQ会员成长值签到",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
-      "keys": ["lkQQSignHeaderKey"],
+      "keys": [
+        "lkQQSignHeaderKey"
+      ],
       "settings": [
         {
           "id": "lkIsEnableLogQQVipCheckIn",
@@ -80,7 +82,10 @@
       "id": "lk.weiboST",
       "name": "微博超话",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true'><font class='red--text'>点我查看</font></a>】",
-      "keys": ["lkWeiboSTSignHeaderKey", "lkUserFollowSTKey"],
+      "keys": [
+        "lkWeiboSTSignHeaderKey",
+        "lkUserFollowSTKey"
+      ],
       "settings": [
         {
           "id": "lkIsEnableLogWeiboSTSign",
@@ -152,7 +157,9 @@
           "desc": "填写SSID（数组），如果需要流量直连，请把“cellular”加到数组"
         }
       ],
-      "keys": ["lkWifiSsids"],
+      "keys": [
+        "lkWifiSsids"
+      ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "icons": [
@@ -163,7 +170,9 @@
     {
       "id": "lk.sony.club",
       "name": "索尼俱乐部",
-      "keys": ["lkSonyClubToken"],
+      "keys": [
+        "lkSonyClubToken"
+      ],
       "settings": [
         {
           "id": "lkIsEnableLogSonyClub",
@@ -231,7 +240,10 @@
         "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/bilibili.png",
         "https://raw.githubusercontent.com/Orz-3/mini/master/Color/bilibili.png"
       ],
-      "keys": ["lkVmidBilibiliBangumiMonitor", "lkBilibiliBangumiList"],
+      "keys": [
+        "lkVmidBilibiliBangumiMonitor",
+        "lkBilibiliBangumiList"
+      ],
       "settings": [
         {
           "id": "lkIsEnableLogBilibiliBangumiMonitor",
@@ -306,7 +318,10 @@
         "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/douyu.png",
         "https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png"
       ],
-      "keys": ["CookieDY", "GroupDY"],
+      "keys": [
+        "CookieDY",
+        "GroupDY"
+      ],
       "settings": [
         {
           "id": "lkIsEnableLogDouyuYubaSign",
@@ -553,6 +568,20 @@
           "val": 20,
           "type": "number",
           "desc": "默认20"
+        },
+        {
+          "id": "lkHifiniSec",
+          "name": "抢签到等待至xx秒",
+          "val": 59,
+          "type": "number",
+          "desc": "默认59"
+        },
+        {
+          "id": "lkHifiniMsec",
+          "name": "抢签到等待至xxx毫秒",
+          "val": 0,
+          "type": "number",
+          "desc": "默认0"
         },
         {
           "id": "lkHifiniRunType",
