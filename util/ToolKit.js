@@ -187,6 +187,10 @@ function ToolKit(scriptName, scriptId, options) {
 
         boxJsJsonBuilder(info, param) {
             if (this.isNode()) {
+                if (!this.isJsonObject(info) || !this.isJsonObject(param)) {
+                    this.log("构建BoxJsJson传入参数格式错误，请传入json对象")
+                    return
+                }
                 this.log('using node')
                 let needAppendKeys = ["keys", "settings"]
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
@@ -259,8 +263,28 @@ function ToolKit(scriptName, scriptId, options) {
                     } else {
                         this.fs.writeFileSync(curDirDataFilePath, jsondata)
                     }
+                    // 写到项目的boxjs订阅json中
+                    let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
+                    if (param.hasOwnProperty("target_boxjs_json_path")) {
+                        boxjsJsonPath = param["target_boxjs_json_path"]
+                    }
+                    let boxjsJson = JSON.parse(this.fs.readFileSync(boxjsJsonPath))
+                    if (boxjsJson.hasOwnProperty("apps") && Array.isArray(boxjsJson["apps"]) && boxjsJson["apps"].length > 0) {
+                        let apps = boxjsJson.apps
+                        let targetIdx = apps.indexOf(apps.filter((app) => {
+                            return app.id == boxJsJson.id
+                        })[0])
+                        if (targetIdx >= 0) {
+                            boxjsJson.apps[targetIdx] = boxJsJson
+                            this.fs.writeFileSync(boxjsJsonPath, JSON.stringify(boxjsJson, null, 2))
+                        }
+                    }
                 }
             }
+        }
+
+        isJsonObject(obj) {
+            return typeof (obj) == "object" && Object.prototype.toString.call(obj).toLowerCase() == "[object object]" && !obj.length
         }
 
         appendNotifyInfo(info, type) {
