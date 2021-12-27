@@ -574,14 +574,21 @@
           "name": "抢签到等待至xx秒",
           "val": 59,
           "type": "number",
-          "desc": "默认59"
+          "desc": "默认59s"
         },
         {
           "id": "lkHifiniMsec",
           "name": "抢签到等待至xxx毫秒",
           "val": 0,
           "type": "number",
-          "desc": "默认0"
+          "desc": "默认0ms"
+        },
+        {
+          "id": "lkHifiniTimeInterval",
+          "name": "设定固定时间间隔",
+          "val": 100,
+          "type": "number",
+          "desc": "默认100ms"
         },
         {
           "id": "lkHifiniRunType",
@@ -596,6 +603,10 @@
             {
               "key": "2",
               "label": "顺序执行"
+            },
+            {
+              "key": "3",
+              "label": "固定时间间隔顺序执行"
             }
           ],
           "desc": "默认并发执行"
