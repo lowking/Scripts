@@ -42,12 +42,14 @@ const hifiniTakeTheFirstCount = 'lkHifiniTakeTheFirstCount'
 const hifiniRunType = 'lkHifiniRunType'
 const hifiniSec = 'lkHifiniSec'
 const hifiniMsec = 'lkHifiniMsec'
+const timeIntervalKey = 'lkHifiniTimeInterval'
 const hifiniCookie = !lk.getVal(hifiniCookieKey) ? '' : lk.getVal(hifiniCookieKey)
 const isTakeTheFirst = !lk.getVal(hifiniIsTakeTheFirst) ? false : JSON.parse(lk.getVal(hifiniIsTakeTheFirst))
 const takeTheFirstCount = !lk.getVal(hifiniTakeTheFirstCount) ? 20 : lk.getVal(hifiniTakeTheFirstCount)
 const runType = !lk.getVal(hifiniRunType) ? "1" : lk.getVal(hifiniRunType)
 const sec = !lk.getVal(hifiniSec) ? 59 : lk.getVal(hifiniSec)
 const msec = !lk.getVal(hifiniMsec) ? 0 : lk.getVal(hifiniMsec)
+const timeInterval = !lk.getVal(timeIntervalKey) ? 100 : lk.getVal(timeIntervalKey)
 
 if (!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -84,13 +86,19 @@ if (!lk.isExecComm) {
                     "name": "抢签到等待至xx秒",
                     "val": 59,
                     "type": "number",
-                    "desc": "默认59"
+                    "desc": "默认59s"
                 }, {
                     "id": hifiniMsec,
                     "name": "抢签到等待至xxx毫秒",
                     "val": 0,
                     "type": "number",
-                    "desc": "默认0"
+                    "desc": "默认0ms"
+                }, {
+                    "id": timeIntervalKey,
+                    "name": "设定固定时间间隔",
+                    "val": 100,
+                    "type": "number",
+                    "desc": "默认100ms"
                 }, {
                     "id": hifiniRunType,
                     "name": "运行脚本方式",
@@ -104,6 +112,10 @@ if (!lk.isExecComm) {
                         {
                             "key": "2",
                             "label": "顺序执行"
+                        },
+                        {
+                            "key": "3",
+                            "label": "固定时间间隔顺序执行"
                         }
                     ],
                     "desc": "默认并发执行"
@@ -134,9 +146,9 @@ async function all() {
         lk.execFail()
         lk.appendNotifyInfo(`⚠️请先先根据脚本注释获取cookie`)
     } else {
-        if (isTakeTheFirst) {
+        let now = new Date()
+        if (isTakeTheFirst && now.getHours() == 23) {
             // 如果时间是23点，就等待0点的时候再继续
-            let now = new Date()
             if (now.getMinutes() > 57) {
                 while (1) {
                     if (now.getHours() != 23 || (now.getSeconds() >= sec && now.getMilliseconds() >= msec)) {
@@ -152,17 +164,27 @@ async function all() {
             // 尝试同时请求20次，抢签到第一
             for (let i = 0; i < takeTheFirstCount; i++) {
                 if (runType == "1") {
+                    // 并发执行
                     execArr.push(signIn())
                 } else if (runType == "2") {
+                    // 顺序执行
                     let res = await signIn()
                     if (res.indexOf("suc") > -1) {
                         lk.execStatus = true
                         lk.appendNotifyInfo([res.substring(3)], 1)
                         break
                     }
+                } else if (runType == "3") {
+                    // 固定间隔时间执行
+                    let finalTimeInterval = timeInterval * i
+                    execArr.push(new Promise((resolve, reject) => {
+                        setTimeout(async function () {
+                            resolve(await signIn())
+                        }, finalTimeInterval)
+                    }))
                 }
             }
-            if (runType == "1") {
+            if (runType == "1" || runType == "3") {
                 await Promise.all(execArr).then(async (res) => {
                     console.log(`${res}`)
                     let sucList = res.filter(str => {
@@ -205,6 +227,7 @@ function signIn() {
                     let msg = data.split(`<h4 class="card-title text-center mb-0">`)[1].split(`</i>`)[1].split("<")[0]
                     if (msg) {
                         lk.appendNotifyInfo(`🎉${msg.trim()}`)
+                        lk.log(msg.trim())
                         resolve(`suc🎉${msg.trim()}`)
                     } else {
                         lk.execFail()
