@@ -2,7 +2,7 @@
 #!desc=该模块自用，脚本签到合集
 
 [Script]
-hifini签到 = type=cron,cronexp="10 0 0 * * ?",script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js,script-update-interval=0
+hifini签到 = type=cron,cronexp="55 59 23 * * ?",script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js,script-update-interval=0
 
 10000 = type=cron,cronexp="0 1 0 * * ?",script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10000/10000.js,script-update-interval=0
 
@@ -19,8 +19,6 @@ hifini签到 = type=cron,cronexp="10 0 0 * * ?",script-path=https://raw.githubus
 索尼俱乐部 = type=cron,cronexp="10 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js,script-update-interval=0
 
 ##############其他时间特殊的任务##############
-epic = type=cron,cronexp="0 0 10 * * 6",wake-system=1,control-api=1,script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/epic.js,script-update-interval=0
-
 哔哩哔哩番剧监控 = type=cron,cronexp="*/29 6-23 * * *",wake-system=1,timeout=360,control-api=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/bangumiMonitor.js,script-update-interval=0
 
 哔哩哔哩大会员特权领取 = type=cron,cronexp="0 1 0 1 * ?",script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js,script-update-interval=0
