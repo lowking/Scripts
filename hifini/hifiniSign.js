@@ -193,7 +193,21 @@ async function all() {
                     // 只要有一个成功，就算成功
                     if (sucList.length >= 1) {
                         lk.execStatus = true
-                        lk.appendNotifyInfo([sucList[0].substring(3)], 1)
+                        // 获取返回排名最靠前的
+                        const regExp = new RegExp("排名(\\d+)", '')
+                        let m
+                        let min = 9999999
+                        let minStr = sucList[0].substring(3)
+                        sucList.forEach((info) => {
+                            if ((m = regExp.exec(info + "")) !== null) {
+                                let number = Number(m[1])
+                                if (number < min) {
+                                    min = number
+                                    minStr = info.substring(3)
+                                }
+                            }
+                        })
+                        lk.appendNotifyInfo([minStr], 1)
                     } else {
                         lk.execFail()
                     }
