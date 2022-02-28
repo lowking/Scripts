@@ -8,7 +8,7 @@
     {
       "id": "lk.qqvip",
       "name": "QQ会员成长值签到",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "desc_html": "因为接口失效，列表点赞功能移除，只有签到</br>⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "keys": [
         "lkQQSignHeaderKey"
       ],

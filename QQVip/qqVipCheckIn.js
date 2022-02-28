@@ -177,6 +177,9 @@ function signIn() {
                     if (!lk.execStatus) {
                         continue
                     }
+                    continue
+                    // 接口被移除，取消列表点赞
+                    // todo 待解决排名列表点赞
                     let list = await praise(i, accounts[i])
                     if (list != null && list.length > 0) {
                         pcount = 0

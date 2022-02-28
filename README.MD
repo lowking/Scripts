@@ -29,8 +29,7 @@
 查看更新日志 [here](https://github.com/lowking/Scripts/blob/master/CHANGELOGS.MD).
 
 ## 待办
-- [ ] 重写GitHub监控（目前有点问题）
-- [ ] 朴朴改版cookie有效期太短，尝试找解决办法
+- [ ] 朴朴改版cookie有效期太短，尝试找解决办法（不用朴朴了，有用的人可以解决，欢迎pr）
 
 ## 贡献 +/-
 对现有代码进行更正
