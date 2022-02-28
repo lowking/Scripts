@@ -80,7 +80,7 @@ if (!lk.isExecComm) {
 async function all() {
     lk.boxJsJsonBuilder()
     await signIn() //签到
-    await withdrawRemind() //成长值储值提醒（由于每35天一次，ck有效期短，所以只做提醒）
+    // await withdrawRemind() //成长值储值提醒（由于每35天一次，ck有效期短，所以只做提醒）
     lk.msg(``)
     lk.done()
 }
