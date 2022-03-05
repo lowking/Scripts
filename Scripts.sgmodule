@@ -29,4 +29,4 @@ http-response https://api.live.bilibili.com/xlive/app-room/v1/index/getInfoByRoo
 
 
 [MITM]
-hostname = %APPEND% ap?.bilibili.com, api.live.bilibili.com, www.bilibili.com, api.m.jd.com, trade-acs.m.taobao.com, weather-data.apple.com
+hostname = %APPEND% ap?.bilibili.com, ap?.biliapi.net, api.live.bilibili.com, www.bilibili.com, api.m.jd.com, trade-acs.m.taobao.com, weather-data.apple.com
