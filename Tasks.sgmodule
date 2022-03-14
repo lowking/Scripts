@@ -21,8 +21,6 @@ hifini签到 = type=cron,cronexp="55 59 23 * * ?",script-path=https://raw.github
 
 qq会员签到 = type=cron,cronexp="0 3 12 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/QQVip/qqVipCheckIn.js,script-update-interval=0
 
-CMY机场签到 = type=cron,cronexp="5 59 23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/personal/cmy/cmy.js,script-update-interval=0
-
 同步京东账号 = type=cron,cronexp="0 5 6,14,23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/ql_sync_box.js,script-update-interval=0
 登录辅助初始化 = type=cron,cronexp="0 10 6,14,23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/jd_cookie_search.js,script-update-interval=0
 
