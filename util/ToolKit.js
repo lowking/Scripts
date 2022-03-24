@@ -323,6 +323,10 @@ function ToolKit(scriptName, scriptId, options) {
             return typeof $app != "undefined" && typeof $http != "undefined"
         }
 
+        isStash() {
+            return 'undefined' !== typeof $environment && $environment['stash-version']
+        }
+       
         isNode() {
             return typeof require == "function" && !this.isJSBox()
         }
