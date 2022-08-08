@@ -192,12 +192,12 @@ function ToolKit(scriptName, scriptId, options) {
                     return
                 }
                 this.log('using node')
-                let needAppendKeys = ["keys", "settings"]
+                let needAppendKeys = ["settings", "keys"]
                 const domain = 'https://raw.githubusercontent.com/Orz-3'
                 let boxJsJson = {}
-                let scritpUrl = 'script_url'
+                let scritpUrl = '#lk{script_url}'
                 if (param && param.hasOwnProperty('script_url')) {
-                    scritpUrl = this.isEmpty(param['script_url']) ? "script_url" : param['script_url']
+                    scritpUrl = this.isEmpty(param['script_url']) ? "#lk{script_url}" : param['script_url']
                 }
                 boxJsJson.id = `${this.prefix}${this.id}`
                 boxJsJson.name = this.name
@@ -234,14 +234,27 @@ function ToolKit(scriptName, scriptId, options) {
                         "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
                     }
                 ]
-                boxJsJson.author = "@lowking"
-                boxJsJson.repo = "https://github.com/lowking/Scripts"
+                boxJsJson.author = "#lk{author}"
+                boxJsJson.repo = "#lk{repo}"
                 boxJsJson.script = `${scritpUrl}?raw=true`
-                //除了settings和keys追加，其他的都覆盖
+                // 除了settings和keys追加，其他的都覆盖
                 if (!this.isEmpty(info)) {
                     for (let i in needAppendKeys) {
                         let key = needAppendKeys[i]
                         if (!this.isEmpty(info[key])) {
+                            // 处理传入的每项设置
+                            if (key === 'settings') {
+                                for (let i = 0; i < info[key].length; i++) {
+                                    let input = info[key][i];
+                                    for (let j = 0; j < boxJsJson.settings.length; j++) {
+                                        let def = boxJsJson.settings[j];
+                                        if (input.id === def.id) {
+                                            // id相同，就使用外部传入的配置
+                                            boxJsJson.settings.splice(j, 1)
+                                        }
+                                    }
+                                }
+                            }
                             boxJsJson[key] = boxJsJson[key].concat(info[key])
                         }
                         delete info[key]
@@ -265,6 +278,7 @@ function ToolKit(scriptName, scriptId, options) {
                     }
                     // 写到项目的boxjs订阅json中
                     let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
+                    // 从传入参数param读取配置的boxjs的json文件路径
                     if (param.hasOwnProperty("target_boxjs_json_path")) {
                         boxjsJsonPath = param["target_boxjs_json_path"]
                     }
@@ -276,8 +290,38 @@ function ToolKit(scriptName, scriptId, options) {
                         })[0])
                         if (targetIdx >= 0) {
                             boxjsJson.apps[targetIdx] = boxJsJson
-                            this.fs.writeFileSync(boxjsJsonPath, JSON.stringify(boxjsJson, null, 2))
+                        } else {
+                            boxjsJson.apps.push(boxJsJson)
                         }
+                        let ret = JSON.stringify(boxjsJson, null, 2)
+                        if (!this.isEmpty(param)) {
+                            for (const key in param) {
+                                let val = ''
+                                if (param.hasOwnProperty(key)) {
+                                    val = param[key]
+                                } else if (key === 'author') {
+                                    val = '@lowking'
+                                } else if (key === 'repo') {
+                                    val = 'https://github.com/lowking/Scripts'
+                                }
+                                ret = ret.replace(`#lk{${key}}`, val)
+                            }
+                        }
+                        // 全部处理完毕检查是否有漏掉未配置的参数，进行提醒
+                        const regex = /(?<=#lk\{)(.+?)(?=\})/;
+                        let m = regex.exec(ret);
+                        if (m !== null) {
+                            this.log(`生成BoxJs还有未配置的参数，请参考https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js#L17-L18传入参数：\n`)
+                        }
+                        let loseParamSet = new Set()
+                        while ((m = regex.exec(ret)) !== null) {
+                            loseParamSet.add(m[0])
+                            ret = ret.replace(`#lk{${m[0]}}`, ``)
+                        }
+                        loseParamSet.forEach(p => {
+                            console.log(`${p} `)
+                        });
+                        this.fs.writeFileSync(boxjsJsonPath, ret)
                     }
                 }
             }
