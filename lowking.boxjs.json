@@ -281,6 +281,13 @@
           "desc": "每次请求番剧数量，避免数据太大导致错误"
         },
         {
+          "id": "lkBilibiliBangumiLimitNo",
+          "name": "番剧异常通知限制数量",
+          "val": 10,
+          "type": "number",
+          "desc": "有时候B站番剧会更新数据，导致大量番剧更新，设置一个数字，番剧更新数量超过这个数字不通知"
+        },
+        {
           "id": "lkBilibiliBangumiFollowStatus",
           "name": "追番筛选",
           "val": "2",
@@ -307,7 +314,7 @@
         }
       ],
       "author": "@lowking",
-      "repo": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js",
+      "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true"
     },
     {
