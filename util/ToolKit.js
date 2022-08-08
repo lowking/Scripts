@@ -308,15 +308,15 @@ function ToolKit(scriptName, scriptId, options) {
                             }
                         }
                         // 全部处理完毕检查是否有漏掉未配置的参数，进行提醒
-                        const regex = /(?<=#lk\{)(.+?)(?=\})/;
+                        const regex = /(?:#lk\{)(.+?)(?=\})/;
                         let m = regex.exec(ret);
                         if (m !== null) {
                             this.log(`生成BoxJs还有未配置的参数，请参考https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js#L17-L18传入参数：\n`)
                         }
                         let loseParamSet = new Set()
                         while ((m = regex.exec(ret)) !== null) {
-                            loseParamSet.add(m[0])
-                            ret = ret.replace(`#lk{${m[0]}}`, ``)
+                            loseParamSet.add(m[1])
+                            ret = ret.replace(`#lk{${m[1]}}`, ``)
                         }
                         loseParamSet.forEach(p => {
                             console.log(`${p} `)
