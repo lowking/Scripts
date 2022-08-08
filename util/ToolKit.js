@@ -111,7 +111,7 @@ function ToolKit(scriptName, scriptId, options) {
                         }
                     }
                     if (!isHttpApiErr) {
-                        await this.callApi(this.comm[2]);
+                        this.callApi(this.comm[2]);
                     }
                 }
             }
@@ -151,7 +151,7 @@ function ToolKit(scriptName, scriptId, options) {
                 },
                 json: true
             }
-            this.post(options, (error, response, data) => {
+            this.post(options, (_error, _response, _data) => {
                 this.log(`已将脚本【${fname}】发给手机！`)
                 this.done()
             })
@@ -415,7 +415,7 @@ function ToolKit(scriptName, scriptId, options) {
                         }
                         this.get({
                             url: encodeURI(`${this.tgNotifyUrl}📌${this.name}\n${message}`)
-                        }, (error, statusCode, body) => {
+                        }, (_error, _statusCode, _body) => {
                             this.log(`Tg通知完毕`)
                         })
                     } else {

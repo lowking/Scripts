@@ -41,3 +41,5 @@ lk*.boxjs.json
 github.json
 .wakatime-project
 test/*
+*.bak
+jd/
