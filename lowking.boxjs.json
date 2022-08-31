@@ -472,7 +472,8 @@
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/pupu.png"
       ],
       "keys": [
-        "lkPuPuTokenKey"
+        "lkPuPuTokenKey",
+        "lkPuPuRefreshTokenKey"
       ],
       "settings": [
         {
@@ -509,6 +510,13 @@
           "val": "",
           "type": "text",
           "desc": "朴朴token"
+        },
+        {
+          "id": "lkPuPuRefreshTokenKey",
+          "name": "朴朴refresh_token",
+          "val": "",
+          "type": "text",
+          "desc": "朴朴refresh_token"
         }
       ],
       "author": "@lowking",

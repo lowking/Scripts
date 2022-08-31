@@ -22,6 +22,8 @@ hifini签到 = type=cron,cronexp="55 59 23 * * ?",script-path=https://raw.github
 同步京东账号 = type=cron,cronexp="0 5 6,14,23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/ql_sync_box.js,script-update-interval=0
 登录辅助初始化 = type=cron,cronexp="0 10 6,14,23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/jd_cookie_search.js,script-update-interval=0
 
+朴朴签到 = type=cron,cronexp="0 0 7,9,13,15,19 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
+
 ##############常开获取cookie##############
 哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https:\/\/data.bilibili.com\/log\/mobile,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 

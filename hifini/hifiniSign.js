@@ -123,7 +123,9 @@ if (!lk.isExecComm) {
             ],
             "keys": [hifiniCookieKey]
         }, {
-            "script_url": "https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js"
+            "script_url": "https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js",
+            "author": "@lowking",
+            "repo": "https://github.com/lowking/Scripts",
         })
         all()
     }

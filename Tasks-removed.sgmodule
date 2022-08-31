@@ -20,8 +20,6 @@
 
 京东保价 = type=cron,cronexp="20 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/id77/QuantumultX/master/task/jdGuaranteedPrice.js,script-update-interval=0
 
-朴朴签到 = type=cron,cronexp="40 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
-
 哔哩哔哩 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/bilibili/bilibili.js,script-update-interval=0
 哔哩哔哩硬币 = type=cron,cronexp="40 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/bilibili/bilibili.silver2coin.js,script-update-interval=0
 
