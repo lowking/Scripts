@@ -589,6 +589,46 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
+        put(options, callback = () => {}) {
+            if (this.isQuanX()) {
+                // no test
+                if (typeof options == "string") options = {
+                    url: options
+                }
+                options["method"] = "PUT"
+                $task.fetch(options).then(response => {
+                    callback(null, this.adapterStatus(response), response.body)
+                }, reason => callback(reason.error, null, null))
+            }
+            if (this.isSurge()) {
+                options.method = "PUT"
+                $httpClient.put(options, (error, response, body) => {
+                    callback(error, this.adapterStatus(response), body)
+                })
+            }
+            if (this.isNode()) {
+                options.method = "PUT"
+                this.node.request.put(options, (error, response, body) => {
+                    callback(error, this.adapterStatus(response), body)
+                })
+            }
+            if (this.isJSBox()) {
+                // no test
+                if (typeof options == "string") options = {
+                    url: options
+                }
+                options["header"] = options["headers"]
+                options["handler"] = function (resp) {
+                    let error = resp.error
+                    if (error) error = JSON.stringify(resp.error)
+                    let body = resp.data
+                    if (typeof body == "object") body = JSON.stringify(resp.data)
+                    callback(error, this.adapterStatus(resp.response), body)
+                }
+                $http.post(options)
+            }
+        }
+
         costTime() {
             let info = `${this.name}执行完毕！`
             if (this.isNode() && this.isExecComm) {
