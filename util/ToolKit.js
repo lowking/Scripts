@@ -770,5 +770,25 @@ function ToolKit(scriptName, scriptId, options) {
             }
             return String(h)
         }
+
+        /**
+         * formatDate  y:年 M:月 d:日 q:季 H:时 m:分 s:秒 S:毫秒
+         */
+        formatDate(date, format) {
+            let o = {
+                'M+': date.getMonth() + 1,
+                'd+': date.getDate(),
+                'H+': date.getHours(),
+                'm+': date.getMinutes(),
+                's+': date.getSeconds(),
+                'q+': Math.floor((date.getMonth() + 3) / 3),
+                'S': date.getMilliseconds()
+            }
+            if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+            for (let k in o)
+                if (new RegExp('(' + k + ')').test(format))
+                    format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+            return format
+        }
     })(scriptName, scriptId, options)
 }
