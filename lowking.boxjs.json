@@ -517,6 +517,27 @@
           "val": "",
           "type": "text",
           "desc": "朴朴refresh_token"
+        },
+        {
+          "id": "lkPuPuSec",
+          "name": "抢券等待至xx秒",
+          "val": 59,
+          "type": "number",
+          "desc": "默认59s"
+        },
+        {
+          "id": "lkPuPuMsec",
+          "name": "抢券等待至xxx毫秒",
+          "val": 0,
+          "type": "number",
+          "desc": "默认0ms"
+        },
+        {
+          "id": "pupuRunCount",
+          "name": "抢签到第一并发数",
+          "val": 2,
+          "type": "number",
+          "desc": "默认2"
         }
       ],
       "author": "@lowking",

@@ -44,6 +44,12 @@ const pupuRefreshTokenKey = 'lkPuPuRefreshTokenKey'
 let pupuRefreshToken = !lk.getVal(pupuRefreshTokenKey) ? '' : lk.getVal(pupuRefreshTokenKey)
 lk.userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 D/C501C6D2-FAF6-4DA8-B65B-7B8B392901EB"
 const storeId = "f8f0656f-d30e-497a-a536-e9edec17b74d"
+const pupuSec = "lkPuPuSec"
+const pupuMsec = "lkPuPuMsec"
+const sec = !lk.getVal(pupuSec) ? 59 : lk.getVal(pupuSec)
+const msec = !lk.getVal(pupuMsec) ? 0 : lk.getVal(pupuMsec)
+const pupuRunCountKey = 'pupuRunCount'
+const pupuRunCount = !lk.getVal(pupuRunCountKey) ? 2 : lk.getVal(pupuRunCountKey)
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -62,15 +68,31 @@ if(!lk.isExecComm) {
                     "val": "",
                     "type": "text",
                     "desc": "朴朴token"
-                },
-                {
+                }, {
                     "id": pupuRefreshTokenKey,
                     "name": "朴朴refresh_token",
                     "val": "",
                     "type": "text",
                     "desc": "朴朴refresh_token"
-                }
-            ],
+                }, {
+                    "id": pupuSec,
+                    "name": "抢券等待至xx秒",
+                    "val": 59,
+                    "type": "number",
+                    "desc": "默认59s"
+                }, {
+                    "id": pupuMsec,
+                    "name": "抢券等待至xxx毫秒",
+                    "val": 0,
+                    "type": "number",
+                    "desc": "默认0ms"
+                }, {
+                    "id": pupuRunCountKey,
+                    "name": "抢签到第一并发数",
+                    "val": 2,
+                    "type": "number",
+                    "desc": "默认2"
+                }            ],
             "keys": [pupuTokenKey, pupuRefreshTokenKey]
         }, {
             "script_url": "https://github.com/lowking/Scripts/blob/master/pupu/pupuCheckIn.js",
@@ -104,9 +126,9 @@ async function all() {
     } else {
         await refreshToken()
         await getCouponList()
-        // await signIn()
+        await signIn()
         // await share()
-        // await getScore()
+        await getScore()
     }
     lk.msg(``)
     lk.done()
@@ -131,14 +153,59 @@ function getCouponList() {
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
+                        // 等待到整点执行
+                        let now = new Date()
+                        if (now.getMinutes() > 57) {
+                            while (1) {
+                                let nsec = now.getSeconds()
+                                let nmsec = now.getMilliseconds()
+                                if (nsec >= sec && nmsec >= msec) {
+                                    lk.log("跳出等待")
+                                    break
+                                }
+                                lk.log(`${nsec}.${nmsec}等待中。。。`)
+                                await lk.sleep(50)
+                                now = new Date()
+                            }
+                        }
                         let couponListFunc = []
-                        for (let i = 0; i  < dataObj.items.length; i++) {
-                            const item = dataObj.items[i];
-                            lk.log(JSON.stringify(item))
-                            couponListFunc.push(getCoupon(item["discount_id"], item["discount_group_id"], item["style_info"]["condition_amount_desc"], item["discount_amount"]/100))
+                        for (let curCount = 0; curCount < pupuRunCount; curCount++) {
+                            for (let i = 0; i  < dataObj.items.length; i++) {
+                                const item = dataObj.items[i];
+                                lk.log(JSON.stringify(item))
+                                couponListFunc.push(getCoupon(item["discount_id"], item["discount_group_id"], item["style_info"]["condition_amount_desc"], item["discount_amount"]/100))
+                            }
                         }
                         await Promise.all(couponListFunc).then(res => {
-                            lk.appendNotifyInfo(res)
+                            res.sort()
+                            let preCounponName = ""
+                            let toNextCoupon = false
+                            let getResSet = new Set()
+                            for (let i = 0; i < res.length; i++) {
+                                const ret = res[i];
+                                let msg = ret.split("\n")
+                                let counponName = msg[0]
+                                let getRes = msg[1]
+                                if (counponName != preCounponName) {
+                                    getResSet.forEach((s) => {
+                                        lk.appendNotifyInfo(s)
+                                    })
+                                    lk.appendNotifyInfo(counponName)
+                                }
+                                getResSet.add(getRes)
+                                if (getRes.indexOf("成功")) {
+                                    toNextCoupon = true
+                                } else if (toNextCoupon) {
+                                    continue
+                                }
+
+                                preCounponName = counponName
+                                if (i >= res.length - 1) {
+                                    getResSet.forEach((s) => {
+                                        lk.appendNotifyInfo(s)
+                                    })
+                                }
+                            }
                         })
                     } else {
                         lk.execFail()
@@ -182,10 +249,10 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
-                        resolve(`🎉【${discountAmount}元-${discountName}】\n ${dataObj.data}`)
+                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}`)
                     } else {
                         lk.execFail()
-                        resolve(`❌【${discountAmount}元-${discountName}】\n ${dataObj.errmsg}`)
+                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.errmsg}`)
                     }
                 }
             } catch (e) {
@@ -284,7 +351,7 @@ function signIn() {
     return new Promise((resolve, reject) => {
         const t = '签到'
         let url = {
-            url: 'https://j.pupuapi.com/client/game/sign',
+            url: 'https://j1.pupuapi.com/client/game/sign/v2?city_zip=350100&supplement_id=',
             headers: {
                 Authorization: pupuToken,
                 "User-Agent": lk.userAgent
@@ -299,17 +366,10 @@ function signIn() {
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
-                        lk.appendNotifyInfo(`🎉${t}成功，获得【${dataObj['increased_score']}】积分`)
-                        let coupons = dataObj['reward_coupon_list']
-                        if (Array.isArray(coupons) && coupons.length > 0) {
-                            lk.appendNotifyInfo(`${t}获得额外奖励如下：`)
-                            for (let couponIndex in coupons) {
-                                lk.appendNotifyInfo(coupons[couponIndex])
-                            }
-                        }
+                        lk.prependNotifyInfo(`🎉${t}成功，获得【${dataObj['daily_sign_coin']}】积分`)
                     } else {
                         lk.execFail()
-                        lk.appendNotifyInfo(dataObj.errmsg)
+                        lk.prependNotifyInfo(dataObj.errmsg)
                     }
                 }
             } catch (e) {
