@@ -1,5 +1,5 @@
 /*
-朴朴签到-lowking-v2.0.2
+朴朴签到-lowking-v2.0.3
 
 按下面配置完之后，手机朴朴点击我的获取token
 ⚠️只测试过surge没有其他app自行测试
@@ -188,6 +188,7 @@ function getCouponList() {
                         }
                         await Promise.all(couponListFunc).then(res => {
                             res.sort()
+                            res.reverse()
                             let preCounponName = ""
                             let toNextCoupon = false
                             let getResSet = new Set()
