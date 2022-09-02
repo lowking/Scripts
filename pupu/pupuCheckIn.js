@@ -158,14 +158,16 @@ function getCouponList() {
                         // 等待到整点执行
                         let now = new Date()
                         if (now.getMinutes() > 57) {
+                            let preSec = -1
                             while (1) {
                                 let nsec = now.getSeconds()
                                 let nmsec = now.getMilliseconds()
-                                if (nsec >= sec && nmsec >= msec) {
+                                if (nsec >= sec && nmsec >= msec || nsec < preSec) {
                                     lk.log("跳出等待")
                                     break
                                 }
                                 lk.log(`${nsec}.${nmsec}等待中。。。`)
+                                preSec = nsec
                                 await lk.sleep(50)
                                 now = new Date()
                             }
@@ -249,6 +251,7 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
+                    lk.log(data)
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
