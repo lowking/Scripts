@@ -1,5 +1,5 @@
 /*
-朴朴签到-lowking-v2.0.1
+朴朴签到-lowking-v2.0.2
 
 按下面配置完之后，手机朴朴点击我的获取token
 ⚠️只测试过surge没有其他app自行测试
@@ -52,6 +52,8 @@ const pupuRunCountKey = 'pupuRunCount'
 const pupuRunCount = !lk.getVal(pupuRunCountKey) ? 2 : lk.getVal(pupuRunCountKey)
 const checkSignInRepeatKey = 'pupuSignInRepeat'
 const checkSignInRepeat = !lk.getVal(checkSignInRepeatKey) ? '' : lk.getVal(checkSignInRepeatKey)
+const todayAlreadyGetCouponIdsKey = 'pupuTodayAlreadyGetCouponIds'
+let todayAlreadyGetCouponIds = !lk.getVal(todayAlreadyGetCouponIdsKey) ? '' : `,${lk.getVal(todayAlreadyGetCouponIdsKey)},`
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -177,6 +179,10 @@ function getCouponList() {
                             for (let i = 0; i  < dataObj.items.length; i++) {
                                 const item = dataObj.items[i];
                                 lk.log(JSON.stringify(item))
+                                if (todayAlreadyGetCouponIds.indexOf(`,${item["discount_id"]},`) != -1) {
+                                    lk.log(`该券今天已经领取，跳过`)
+                                    continue
+                                }
                                 couponListFunc.push(getCoupon(item["discount_id"], item["discount_group_id"], item["style_info"]["condition_amount_desc"], item["discount_amount"]/100))
                             }
                         }
@@ -185,11 +191,13 @@ function getCouponList() {
                             let preCounponName = ""
                             let toNextCoupon = false
                             let getResSet = new Set()
+                            let todayAlreadyGetCouponIdSet = new Set()
                             for (let i = 0; i < res.length; i++) {
                                 const ret = res[i];
                                 let msg = ret.split("\n")
                                 let counponName = msg[0]
                                 let getRes = msg[1]
+                                let discountId = msg[2]
                                 if (counponName != preCounponName) {
                                     toNextCoupon = false
                                     getResSet.forEach((s) => {
@@ -198,8 +206,11 @@ function getCouponList() {
                                     lk.appendNotifyInfo(counponName)
                                 }
                                 getResSet.add(getRes)
-                                if (getRes.indexOf("成功")) {
+                                if (getRes.indexOf("成功") != -1) {
                                     toNextCoupon = true
+                                    if (todayAlreadyGetCouponIds.indexOf(`,${discountId},`) == -1) {
+                                        todayAlreadyGetCouponIdSet.add(discountId)
+                                    }
                                 } else if (toNextCoupon) {
                                     continue
                                 }
@@ -210,6 +221,9 @@ function getCouponList() {
                                         lk.appendNotifyInfo(s)
                                     })
                                 }
+                            }
+                            if (todayAlreadyGetCouponIdSet.size > 0) {
+                                lk.setVal(todayAlreadyGetCouponIdsKey, Array.from(todayAlreadyGetCouponIdSet).join(","))
                             }
                         })
                     } else {
@@ -254,10 +268,10 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     lk.log(data)
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
-                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}`)
+                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}\n${discount}`)
                     } else {
                         lk.execFail()
-                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.errmsg}`)
+                        resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.errmsg}\n${discount}`)
                     }
                 }
             } catch (e) {
@@ -378,6 +392,8 @@ function signIn() {
                         dataObj = dataObj.data
                         lk.prependNotifyInfo(`🎉${t}成功，获得【${dataObj['daily_sign_coin']}】积分`)
                         lk.setVal(checkSignInRepeatKey, nowString)
+                        // 签到成功之后清除已领取券id
+                        lk.setVal(todayAlreadyGetCouponIdsKey, "")
                     } else {
                         lk.execFail()
                         lk.prependNotifyInfo(dataObj.errmsg)
