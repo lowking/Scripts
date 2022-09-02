@@ -254,7 +254,6 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     lk.log(data)
                     let dataObj = JSON.parse(data)
                     if (dataObj.errcode == 0) {
-                        dataObj = dataObj.data
                         resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}`)
                     } else {
                         lk.execFail()
