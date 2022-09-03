@@ -1,5 +1,5 @@
 /*
-朴朴签到-lowking-v2.0.3
+朴朴签到-lowking-v2.0.5
 
 按下面配置完之后，手机朴朴点击我的获取token
 ⚠️只测试过surge没有其他app自行测试
@@ -124,23 +124,33 @@ function getCookie() {
 }
 
 async function all() {
+    let hasNeedSendNotify = true
     if (pupuRefreshToken == '') {
         lk.execFail()
         lk.appendNotifyInfo(`⚠️请先打开朴朴短信验证码登录获取refresh_token`)
     } else {
         await refreshToken()
-        await getCouponList()
-        await signIn()
+        lk.log(`已领取券：${todayAlreadyGetCouponIds}`)
+        let hasAlreadySignIn = await signIn()
+        let requestCount = await getCouponList()
         // await share()
-        await getScore()
+        lk.log(`是否已经签到：${hasAlreadySignIn == 1}`)
+        lk.log(`请求领券次数：${requestCount}`)
+        hasNeedSendNotify = !(requestCount == 0 && hasAlreadySignIn == 1)
+        if (hasNeedSendNotify) {
+            await getScore()
+        }
     }
-    lk.msg(``)
+    if (hasNeedSendNotify) {
+        lk.msg(``)
+    }
     lk.done()
 }
 
 function getCouponList() {
     return new Promise((resolve, reject) => {
         const t = '获取券列表'
+        let requestCount = 0
         let url = {
             url: 'https://j1.pupuapi.com/client/coupon?type=1&store_id=' + storeId,
             headers: {
@@ -183,6 +193,7 @@ function getCouponList() {
                                     lk.log(`该券今天已经领取，跳过`)
                                     continue
                                 }
+                                requestCount++
                                 couponListFunc.push(getCoupon(item["discount_id"], item["discount_group_id"], item["style_info"]["condition_amount_desc"], item["discount_amount"]/100))
                             }
                         }
@@ -244,7 +255,7 @@ function getCouponList() {
                 lk.execFail()
                 lk.appendNotifyInfo(`❌${t}错误，请带上日志联系作者，或稍后再试`)
             } finally {
-                resolve()
+                resolve(requestCount)
             }
         })
     })
@@ -378,7 +389,8 @@ function signIn() {
         let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
         if (nowString == checkSignInRepeat) {
             lk.prependNotifyInfo('今日已经签到，无法重复签到～～')
-            resolve()
+            resolve(1)
+            return
         }
         const t = '签到'
         let url = {
