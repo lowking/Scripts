@@ -204,17 +204,23 @@ function getCouponList() {
                                     getResSet.forEach((s) => {
                                         lk.appendNotifyInfo(s)
                                     })
+                                    getResSet = new Set()
                                     lk.appendNotifyInfo(counponName)
                                 }
-                                getResSet.add(getRes)
                                 if (getRes.indexOf("成功") != -1) {
                                     toNextCoupon = true
                                     if (todayAlreadyGetCouponIds.indexOf(`,${discountId},`) == -1) {
                                         todayAlreadyGetCouponIdSet.add(discountId)
                                     }
                                 } else if (toNextCoupon) {
+                                    if (i >= res.length - 1) {
+                                        getResSet.forEach((s) => {
+                                            lk.appendNotifyInfo(s)
+                                        })
+                                    }
                                     continue
                                 }
+                                getResSet.add(getRes)
 
                                 preCounponName = counponName
                                 if (i >= res.length - 1) {
