@@ -130,8 +130,8 @@ async function all() {
         lk.appendNotifyInfo(`⚠️请先打开朴朴短信验证码登录获取refresh_token`)
     } else {
         await refreshToken()
-        lk.log(`已领取券：${todayAlreadyGetCouponIds}`)
         let hasAlreadySignIn = await signIn()
+        lk.log(`已领取券：${todayAlreadyGetCouponIds}`)
         let requestCount = await getCouponList()
         // await share()
         lk.log(`是否已经签到：${hasAlreadySignIn == 1}`)
