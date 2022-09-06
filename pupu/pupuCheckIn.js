@@ -1,5 +1,5 @@
 /*
-朴朴签到-lowking-v2.0.5
+朴朴签到-lowking-v2.0.6
 
 按下面配置完之后，手机朴朴点击我的获取token
 ⚠️只测试过surge没有其他app自行测试
@@ -413,6 +413,7 @@ function signIn() {
                         lk.setVal(checkSignInRepeatKey, nowString)
                         // 签到成功之后清除已领取券id
                         lk.setVal(todayAlreadyGetCouponIdsKey, "")
+                        todayAlreadyGetCouponIds = ""
                     } else {
                         lk.execFail()
                         lk.prependNotifyInfo(dataObj.errmsg)
