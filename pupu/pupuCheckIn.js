@@ -96,7 +96,8 @@ if(!lk.isExecComm) {
                     "val": 2,
                     "type": "number",
                     "desc": "默认2"
-                }            ],
+                }
+            ],
             "keys": [pupuTokenKey, pupuRefreshTokenKey]
         }, {
             "script_url": "https://github.com/lowking/Scripts/blob/master/pupu/pupuCheckIn.js",
@@ -148,7 +149,7 @@ async function all() {
 }
 
 function getCouponList() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const t = '获取券列表'
         let requestCount = 0
         let url = {
@@ -158,7 +159,7 @@ function getCouponList() {
                 "Content-Type": "application/json; charset=utf-8",
             },
         }
-        lk.get(url, async (error, response, data) => {
+        lk.get(url, async (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -262,7 +263,7 @@ function getCouponList() {
 }
 
 function getCoupon(discount, discountGroup, discountName, discountAmount) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const t = '抢券'
         let url = {
             url: 'https://j1.pupuapi.com/client/coupon/entity',
@@ -277,7 +278,7 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                 "store_id": storeId,
             }),
         }
-        lk.post(url, (error, response, data) => {
+        lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -305,7 +306,7 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
 }
 
 function refreshToken() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const t = '获取token'
         let url = {
             url: 'https://cauth.pupuapi.com/clientauth/user/refresh_token',
@@ -316,7 +317,7 @@ function refreshToken() {
                   "refresh_token": pupuRefreshToken
             })
         }
-        lk.put(url, (error, response, data) => {
+        lk.put(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -348,7 +349,7 @@ function refreshToken() {
 }
 
 function getScore() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const t = '获取积分'
         let url = {
             url: 'https://j1.pupuapi.com/client/account/asserts',
@@ -357,7 +358,7 @@ function getScore() {
                 "User-Agent": lk.userAgent
             }
         }
-        lk.get(url, (error, response, data) => {
+        lk.get(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -385,7 +386,7 @@ function getScore() {
 }
 
 function signIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
         if (nowString == checkSignInRepeat) {
             lk.prependNotifyInfo('今日已经签到，无法重复签到～～')
@@ -400,7 +401,7 @@ function signIn() {
                 "User-Agent": lk.userAgent
             }
         }
-        lk.post(url, (error, response, data) => {
+        lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -432,7 +433,7 @@ function signIn() {
 }
 
 function share() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
         const t = '分享'
         let url = {
             url: 'https://j1.pupuapi.com/client/game/sign/share',
@@ -441,7 +442,7 @@ function share() {
                 "User-Agent": lk.userAgent
             }
         }
-        lk.post(url, (error, response, data) => {
+        lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
