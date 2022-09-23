@@ -529,7 +529,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge()) $httpClient.get(options, (error, response, body) => {
+            if (this.isSurge() || this.isLoon()) $httpClient.get(options, (error, response, body) => {
                 callback(error, this.adapterStatus(response), body)
             })
             if (this.isNode()) {
@@ -563,7 +563,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge()) {
+            if (this.isSurge() || this.isLoon()) {
                 $httpClient.post(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
                 })
@@ -600,7 +600,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge()) {
+            if (this.isSurge() || this.isLoon()) {
                 options.method = "PUT"
                 $httpClient.put(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)

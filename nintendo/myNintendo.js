@@ -1,20 +1,17 @@
+
 /*
-哔哩哔哩大会员特权领取-lowking-v1.0
+任天堂签到-lowking-v1.0.0
 
-⚠️注意，本月领取过如果再执行，会提示"网络繁忙"。由于每个月一次，未验证Cookie存活时间
-
-按下面配置完之后，手机哔哩哔哩点击我的-我的大会员-卡券包，领取一张券获取Cookie
-
-hostname = *.bilibili.com
+hostname = my.nintendo.com
 
 ************************
 Surge 4.2.0+ 脚本配置:
 ************************
 
 [Script]
-# > 哔哩哔哩大会员特权领取
-哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
-哔哩哔哩大会员特权领取 = type=cron,cronexp="0 1 0 1 * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+# > 任天堂签到
+任天堂签到cookie = type=http-request,pattern=https:\/\/my.nintendo.com\/api\/missions\/login_bonus\/progress,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js
+任天堂签到 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js
 
 
 ************************
@@ -22,39 +19,26 @@ QuantumultX 本地脚本配置:
 ************************
 
 [rewrite_local]
-#哔哩哔哩大会员特权领取cookie
-https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+#任天堂签到cookie
+https:\/\/my.nintendo.com\/api\/missions\/login_bonus\/progress url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js
 
 [task_local]
-0 1 0 1 * ? https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
+0 10 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js
 
 ************************
 LOON 本地脚本配置:
 ************************
 
 [Script]
-http-request https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, timeout=10, tag=哔哩哔哩大会员特权领取cookie
-cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, tag=哔哩哔哩大会员特权领取
+http-request https:\/\/my.nintendo.com\/api\/missions\/login_bonus\/progress script-path=https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js, timeout=10, tag=任天堂签到cookie
+cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/nintendo/myNintendo.js, tag=任天堂签到
 
 */
 
-const lk = new ToolKit(`哔哩哔哩大会员特权领取`, `BilibiliPrivilegeReceive`)
-const isEnableNotifyForGetCookie = !lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive') ? true : JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive'))
-let requestHeaders = !lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders') ? '' : JSON.parse(lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders'))
-
-const headerTemp = {
-    "Host": "api.bilibili.com",
-    "Accept": "*/*",
-    "native_api_from": "h5",
-    "Accept-Language": "zh-cn",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Content-Type": "application/x-www-form-urlencoded",
-    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_2 like Mac OS X) AppleWebKit/610.2.11.0.1 (KHTML, like Gecko) Mobile/18B92 BiliApp/10350 os/ios model/iPhone XS mobi_app/iphone build/10350 osVer/14.2 network/2 channel/AppStore Buvid/YD43A7D5F4FAEF7E4551BE51DC357E37908C",
-    "Connection": "keep-alive",
-    "Referer": "https://big.bilibili.com/mobile/cardBag",
-}
-
-let realHeader
+const lk = new ToolKit(`任天堂签到`, `NintendoCheckIn`, {})
+const nintendoCookieKey = 'lkNintendoCookieKey'
+let nintendoCookie = !lk.getVal(nintendoCookieKey) ? 'MTID=xx0oxXdIgCv-dGD8xNaMw5P8v46HZ09h0MkHio5z; GMNASS=b8c3ddd29a46a79ca106e3b37a845c515eae4adbb852134de7ea072af5d13d63; GMLS=ece63351-b3ad-4e63-93bc-5abcc5c3537e; _abck=C85B398607301F63D283D8A6FA5A4EFB~0~YAAQHy43F28yjf+CAQAAubsCFgjEUY9ONEa6PedT7Z5owyh6nIgHgZxftcFshOucrNly4JJun3GSI6kA8CM13vv57QCz+Rxf4bU2kexx3+RfQJ/dyse7claKPjnlD5eTPDkTG9MlF5nvV5tcJ4i/527msS4QPGt/+kAz7MkyVSgIVBMXb0RHRU2FoBDSuyMokC5266SlejA8f8AqHFgRFCpSAH3HcAre3KJn3OYGSkmlAvrLTbfGRpK814HMaC0+PKut4FBntCZAavc9QYCQMB7ecouvsgAM/4+DwpeMlra2zlP//U1UCG3v/e5tcGHzoe1rOQiL+YRXMV4zwaWDyaZm0piggiPkYInNFNl2/uxC+qur8MNUA9WhuC5VD8FmizyzsxygFt8cwOcJ2iARiywWFLBMsalCzo8=~-1~-1~-1; bm_sz=D694B4E5F7DCE2645390B87766ECD564~YAAQHy43F3Ayjf+CAQAAubsCFhE3Xdt+Jk+Ey+ElG8QiC6oOCxcx5qP4pUIwMVabKR21u2P7DVjsevXYtBfchD/D9vyCJAWgXmcUfnKEpuTBtBIE2Xf2pSvCEdiCJ7s9AwngPPAGcTQ667YXJZfz5H1iooUgNpcQyrYPzB9TK3EPYFaEaFNjwYG3+M1XBAhl8cIUuys0rmFw6H1lQsQifqJR+QSnfMeocwTOeihS+ksyPWKEHRe3YKUOomaBMmJzXdM4Qjca+Vyq3tPBveSIau+wJmt7GQ6GCuznIyJoR9OS3t8IwA==~3228997~4273204' : lk.getVal(nintendoCookieKey)
+lk.userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.96 Safari/537.36"
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -62,156 +46,94 @@ if(!lk.isExecComm) {
         lk.done()
     } else {
         lk.boxJsJsonBuilder({
+            "icons": [
+                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/nintendo.jpg",
+                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/nintendo.jpg"
+            ],
             "settings": [
                 {
-                    "id": "lkBilibiliPrivilegeReceiveRequestHeaders",
-                    "name": "哔哩哔哩大会员特权领取Headers",
+                    "id": nintendoCookieKey,
+                    "name": "任天堂Cookie",
                     "val": "",
                     "type": "text",
-                    "desc": "哔哩哔哩大会员特权领取Headers"
-                },
-                {
-                    "id": "lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive",
-                    "name": "开启/关闭获取Cookie时的通知",
-                    "val": true,
-                    "type": "boolean",
-                    "desc": "默认开启"
+                    "desc": "任天堂Cookie"
                 }
             ],
-            "keys": ["lkBilibiliPrivilegeReceiveRequestHeaders"]
+            "keys": [nintendoCookieKey]
+        }, {
+            "script_url": "https://github.com/lowking/Scripts/blob/master/nintendo/myNintendo.js",
+            "author": "@lowking",
+            "repo": "https://github.com/lowking/Scripts",
         })
         all()
     }
 }
 
 function getCookie() {
-    if (lk.isGetCookie(/\/log\/mobile/)) {
-        let cookieStr = ''
-        if ($request.headers.hasOwnProperty('Cookie')) {
-            let header = $request.headers
-            cookieStr = header.Cookie
-
-            if (cookieStr.match(/sid=/g) == null ||
-                cookieStr.match(/DedeUserID=/g) == null ||
-                cookieStr.match(/DedeUserID__ckMd5=/g) == null ||
-                cookieStr.match(/bili_jct=/g) == null ||
-                cookieStr.match(/SESSDATA=/g) == null) {
-                lk.appendNotifyInfo(`❌获取Cookie无效`)
-            } else {
-                lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify(header))
-                lk.appendNotifyInfo(`🎉获取Cookie成功`)
-            }
-        } else {
-            lk.appendNotifyInfo(`❌未获取到Cookie`)
+    if (lk.isGetCookie(/\/api\/missions\/login_bonus\/progress/)) {
+        lk.log(`开始获取cookie`)
+        try {
+            const data = JSON.stringify($request.headers.Cookie)
+            lk.log(`获取到的cookie：${data}`)
+        } catch (e) {
+            lk.appendNotifyInfo('❌获取任天堂Cookie失败')
         }
-        if (isEnableNotifyForGetCookie) {
-            lk.msg(``)
-        }
+        lk.msg('')
     }
 }
 
 async function all() {
-    if (requestHeaders == '') {
+    if (nintendoCookie == '') {
         lk.execFail()
-        lk.appendNotifyInfo(`⚠️请先打开哔哩哔哩获取Cookie`)
+        lk.appendNotifyInfo(`⚠️请先打开https://my.nintendo.com/登录获取Cookie`)
     } else {
-        realHeader = requestHeaders
-        // 生成X-CSRF-TOKEN
-        let cookieStr = realHeader.Cookie
-        cookieStr = cookieStr.split(";");
-        for (let i = 0; i < cookieStr.length; ++i) {
-            cookieStr[i] = cookieStr[i].trim();
-        }
-        let csrf = "";
-        for (let i = 0; i < cookieStr.length; ++i) {
-            if (cookieStr[i].indexOf("bili_jct=") == 0) {
-                csrf = cookieStr[i].slice(cookieStr[i].indexOf("=") + 1);
-            }
-        }
-        realHeader["X-CSRF-TOKEN"] = csrf
-        Object.assign(realHeader, headerTemp)
-        await getBBTicket()
-        await getVipGoTicket()
+        await loginBonus()
     }
     lk.msg(``)
     lk.done()
 }
 
-function getBBTicket() {
-    return new Promise((resolve, reject) => {
-        lk.log('领取每月B币券')
-        const t = '领取B币券'
+function loginBonus() {
+    return new Promise((resolve, _reject) => {
+        const t = '签到奖励'
         let url = {
-            url: 'https://api.bilibili.com/x/vip/privilege/receive',
-            body: `csrf=${realHeader['X-CSRF-TOKEN']}&type=1`,
-            headers: realHeader
+            url: 'https://my.nintendo.com/api/missions/login_bonus/progress',
+            headers: {
+                "content-type": "application/json",
+                "Cookie": nintendoCookie,
+                "User-Agent": lk.userAgent,
+            },
+            "body": JSON.stringify({
+                "csrfToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTM2MjAsImlhdCI6MTY2MjUyMTYyMCwiaXNzIjoiaHR0cHM6Ly9teS5uaW50ZW5kby5jb20iLCJzdWIiOiJhNjAzZjk0YmY5NWQzNWJiIiwidHlwIjoiY3NyZl90b2tlbiJ9.jecVoZuaaE97c9jXkPvzBWi_cMIAq5ZN91vdWrzuwiU"
+            })
         }
-        realHeader["Content-Length"] = url.body.length
-        url.headers = realHeader
         lk.post(url, (error, response, data) => {
             try {
-                lk.log(error)
                 if (error) {
                     lk.execFail()
-                    lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
+                    lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let ret = JSON.parse(data)
-                    if (ret.code == 0) {
-                        lk.appendNotifyInfo(`🎉${t}成功`)
-                    } else {
+                    if (response.statusCode == 401 || response.statusCode == 400) {
                         lk.execFail()
-                        lk.appendNotifyInfo(`❌${t}失败：${ret.message}`)
+                        lk.appendNotifyInfo(`❌${t}失败，Cookie过期请重新获取`)
                     }
+                    lk.log(data)
+                    let dataObj = JSON.parse(data)
+                    let numberOfCreatedCompletions = dataObj.status.numberOfCreatedCompletions
+                    let msg = `🎉${t}获取成功\n首次签到获取【${dataObj.points.platinum}】银币`
+                    if (numberOfCreatedCompletions == 0) {
+                        msg = `🎉无法重复获取${t}`
+                    }
+                    lk.log(msg)
+                    lk.appendNotifyInfo(msg)
                 }
-                if (!lk.execStatus) {
-                    lk.log(`请求内容：${JSON.stringify(url)}`)
-                }
-                resolve()
             } catch (e) {
                 lk.logErr(e)
-                lk.log(`b站返回数据：${data}`)
+                lk.log(`任天堂返回数据：${data}`)
                 lk.execFail()
-                lk.appendNotifyInfo(`${t}错误❌请带上日志联系作者`)
-            }
-        })
-    })
-}
-
-function getVipGoTicket() {
-    return new Promise((resolve, reject) => {
-        lk.log('领取每月会员购券')
-        const t = '领取会员购券'
-        let url = {
-            url: 'https://api.bilibili.com/x/vip/privilege/receive',
-            body: `csrf=${realHeader['X-CSRF-TOKEN']}&type=2`,
-            headers: realHeader
-        }
-        realHeader["Content-Length"] = url.body.length
-        url.headers = realHeader
-        lk.post(url, (error, response, data) => {
-            try {
-                lk.log(error)
-                if (error) {
-                    lk.execFail()
-                    lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
-                } else {
-                    let ret = JSON.parse(data)
-                    if (ret.code == 0) {
-                        lk.appendNotifyInfo(`🎉${t}成功`)
-                    } else {
-                        lk.execFail()
-                        lk.appendNotifyInfo(`❌${t}失败：${ret.message}`)
-                    }
-                }
-                if (!lk.execStatus) {
-                    lk.log(`请求内容：${JSON.stringify(url)}`)
-                }
+                lk.appendNotifyInfo(`❌${t}错误，请带上日志联系作者，或稍后再试`)
+            } finally {
                 resolve()
-            } catch (e) {
-                lk.logErr(e)
-                lk.log(`b站返回数据：${data}`)
-                lk.execFail()
-                lk.appendNotifyInfo(`${t}错误❌请带上日志联系作者`)
             }
         })
     })
