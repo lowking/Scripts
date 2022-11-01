@@ -43,5 +43,8 @@
 ## 贡献 +/-
 对现有代码进行更正
 
+## 感谢
+<a target="_blank" href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" style="border-radius: 5px;" width="10%">
+
 ## 许可
 Copyright © 2020-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.
