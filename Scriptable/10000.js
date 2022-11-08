@@ -132,7 +132,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     let normalFontSize = 14
     const sp = 3
     preColor = normalColor
-    if (Number(subt.replace('元', '').substring(subt.indexOf(']') + 1)) < warnFee) {
+    if (subt.includes('已欠费') || Number(subt.replace('元', '').substring(subt.indexOf(']') + 1)) < warnFee) {
         preColor = warnColor
     }
     titleTxt.textColor = preColor
@@ -199,6 +199,8 @@ function queryfee() {
                 data = JSON.parse(data)
                 if (data.result === 0) {
                     subt = `[话费] ${parseFloat(parseInt(data.totalBalanceAvailable) / 100).toFixed(2)}元`
+                } else if (data.result === -10000) {
+                    subt = `[话费] 已欠费`
                 } else {
                     throw new Error("查询余额失败")
                 }
