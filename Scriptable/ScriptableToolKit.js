@@ -216,9 +216,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         logErr(message) {
             this.execStatus = false
             if (this.isEnableLog) {
-                console.log(`${this.logSeparator}${this.name}执行异常:`)
-                console.log(message)
-                console.log(`\n${message.message}`)
+                console.error(`${this.logSeparator}${this.name}执行异常:`)
+                console.error(message)
+                console.error(`\n${message.message}`)
             }
         }
 
@@ -272,6 +272,26 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return Promise.resolve(data)
         }
 
+        async saveImage(fileName, image, container) {
+            let containerInstance = this.getContainer(container)
+            let imagePath = containerInstance.joinPath(containerInstance.documentsDirectory(), `${this.prefix}${this.id}/${fileName}`)
+            let imageDir = imagePath.substring(0, imagePath.lastIndexOf("/") + 1)
+            if (!containerInstance.isDirectory(imageDir)) {
+                containerInstance.createDirectory(imageDir, true)
+            }
+            containerInstance.writeImage(imagePath, image)
+        }
+
+        async getImage(fileName, container) {
+            let containerInstance = this.getContainer(container)
+            let imagePath = containerInstance.joinPath(containerInstance.documentsDirectory(), `${this.prefix}${this.id}/${fileName}`)
+            if (!containerInstance.fileExists(imagePath)) {
+                this.logErr(`file not exist: ${imagePath}`)
+                return false
+            }
+            return containerInstance.readImage(imagePath)
+        }
+
         /**
          * set value in container
          * @param key
@@ -301,10 +321,15 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             request.url = options.url
             request.method = 'GET'
             request.headers = options.headers
-            const result = await request.loadString()
-            callback(request.response, result)
+            try {
+                const result = await request.loadString()
+                callback(request.response, result)
+                return result
+            } catch (e) {
+                this.logErr(e)
+                callback(undefined, undefined)
+            }
 
-            return result
         }
 
         async post(options, callback = () => {}) {
@@ -313,10 +338,15 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             request.body = options.body
             request.method = 'POST'
             request.headers = options.headers
-            const result = await request.loadString()
-            callback(request.response, result)
-
-            return result
+            request.timeout = 5000
+            try {
+                const result = await request.loadString()
+                callback(request.response, result)
+                return result
+            } catch (e) {
+                this.logErr(e)
+                callback(undefined, undefined)
+            }
         }
 
         async loadScript ({scriptName, url}) {
