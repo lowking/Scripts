@@ -7,6 +7,7 @@ var options = {}
 options[`lkIsSaveLog${scriptId}`] = true
 options[`lkRunLimitNum${scriptId}`] = 600000
 const $ = new ScriptableToolKit(scriptName, scriptId, options)
+$.log(`11111111111111111111111111111`)
 // 小组件信息显示顺序，如：流量,语音,话费,时间
 let infoOrder = "流量,语音,话费,时间".split(",")
 if (typeof args.widgetParameter === "string") {
@@ -171,6 +172,8 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
         {
             fontColor: Color.dynamic(Color.black(), Color.white()),
             fontStyle: Font.boldSystemFont(28),
+            fontColor2: Color.gray(),
+            fontStyle2: Font.boldSystemFont(16),
         },
         {
             fontColor: Color.gray(),
@@ -186,31 +189,78 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
         $.log(`${JSON.stringify(currentSpec)}`)
         if ("话费" === type) {
             $.log('设置话费')
-            let feeText = w.addText(subt)
-            if (subt.includes('已欠费') || Number(subt.replace('元', '').substring(subt.indexOf(']') + 1)) < warnFee) {
+            let feeStack = w.addStack()
+            feeStack.layoutVertically()
+            let feeRowStack = feeStack.addStack()
+            feeRowStack.bottomAlignContent()
+            feeRowStack.addSpacer()
+            let feeText = feeRowStack.addText(subt.replace('¥', ''))
+            if (subt.includes('已欠费') || Number(subt.replace('¥', '').substring(subt.indexOf(']') + 1)) < warnFee) {
                 currentColor = warnColor
             }
-            feeText.font = currentSpec.fontStyle 
+            feeText.font = currentSpec.fontStyle
             feeText.textColor = currentColor
             feeText.rightAlignText()
+            if (n === 2) {
+                let smallStack = feeRowStack.addStack()
+                smallStack.centerAlignContent()
+                let smallText = smallStack.addText('¥')
+                smallText.font = currentSpec.fontStyle2
+                smallText.textColor = currentSpec.fontColor2
+                smallText.rightAlignText()
+            } else {
+                feeText.text += '¥'
+            }
         } else if ("流量" === type) {
             $.log('设置流量')
-            let flowText = w.addText(flowRes)
-            if (flowRes.indexOf('MB') && Number(flowRes.replace('MB', '')) < warnData) {
+            let flowResArr = flowRes.split(' ')
+            let flowStack = w.addStack()
+            flowStack.layoutVertically()
+            let flowRowStack = flowStack.addStack()
+            flowRowStack.bottomAlignContent()
+            flowRowStack.addSpacer()
+            let flowText = flowRowStack.addText(flowResArr[0])
+            if (flowRes.indexOf('MB') != -1 && Number(flowResArr[0]) < warnData) {
                 currentColor = warnColor
             }
             flowText.font = currentSpec.fontStyle
             flowText.textColor = currentColor
             flowText.rightAlignText()
+            if (n === 2 && flowResArr.length === 2) {
+                let smallStack = flowRowStack.addStack()
+                smallStack.centerAlignContent()
+                let smallText = smallStack.addText(flowResArr[1])
+                smallText.font = currentSpec.fontStyle2
+                smallText.textColor = currentSpec.fontColor2
+                smallText.rightAlignText()
+            } else if (flowResArr.length === 2) {
+                flowText.text += flowResArr[1]
+            }
         } else if ("语音" === type) {
             $.log('设置语音')
-            let voiceText = w.addText(voiceRes)
-            if (voiceRes.indexOf('分钟') && Number(voiceRes.replace('分钟', '').substring(voiceRes.indexOf(']') + 1)) < warnVoice) {
+            let voiceNum = voiceRes.replace('分钟', '')
+            let voiceStack = w.addStack()
+            voiceStack.layoutVertically()
+            let voiceRowStack = voiceStack.addStack()
+            voiceRowStack.bottomAlignContent()
+            voiceRowStack.addSpacer()
+            let voiceText = voiceRowStack.addText(voiceNum)
+            if (voiceRes.indexOf('分钟') && Number(voiceNum + 1) < warnVoice) {
                 currentColor = warnColor
             }
             voiceText.font = currentSpec.fontStyle
             voiceText.textColor = currentColor
             voiceText.rightAlignText()
+            if (n === 2) {
+                let smallStack = voiceRowStack.addStack()
+                smallStack.centerAlignContent()
+                let smallText = smallStack.addText('分钟')
+                smallText.font = currentSpec.fontStyle2
+                smallText.textColor = currentSpec.fontColor2
+                smallText.rightAlignText()
+            } else {
+                voiceText.text += '分钟'
+            }
         } else if ("时间" === type) {
             $.log('设置更新时间')
             let sucTime = now
@@ -318,9 +368,9 @@ function querymeal() {
                 if (data.result === 0) {
                     if (data.hasOwnProperty("balance")) {
                         flowRes = formatFlow(data.balance)
-                        flowRes = `${flowRes.count}${flowRes.unit}B`
+                        flowRes = `${flowRes.count} ${flowRes.unit}B`
                     } else {
-                        flowRes = '0MB'
+                        flowRes = '0 MB'
                     }
                     // flowRes = '[流量] ' + flowRes
                     voiceRes = data.hasOwnProperty("voiceBalance") ? `${data.voiceBalance}分钟` : '0分钟'
