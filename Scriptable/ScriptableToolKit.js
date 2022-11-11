@@ -185,14 +185,12 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     message = this.notifyInfo
                 }
                 // 校验lklog目录是否存在
-                if (this.icloud.isDirectory(this.logDir)) {
-                    // write log
-                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
-                } else {
+                if (!this.icloud.isDirectory(this.logDir)) {
                     // create dir
                     this.icloud.createDirectory(this.logDir, true)
-                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
                 }
+                // write log
+                this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
             }
         }
 
@@ -216,9 +214,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         logErr(message) {
             this.execStatus = false
             if (this.isEnableLog) {
-                console.error(`${this.logSeparator}${this.name}执行异常:`)
-                console.error(message)
-                console.error(`\n${message.message}`)
+                console.warn(`${this.logSeparator}${this.name}执行异常:`)
+                console.warn(message)
+                console.warn(`\n${message.message}`)
             }
         }
 
@@ -229,7 +227,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         /**
          * get value from container
          * @param key
-         * @param container this.local or this.icloud
+         * @param container local or icloud
          */
         async getVal(key, container, defaultValue) {
             let containerInstance = this.getContainer(container)
@@ -238,7 +236,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 let realDataFile = containerInstance.joinPath(containerInstance.documentsDirectory(), this.dataFile)
                 if (!containerInstance.fileExists(realDataFile)) {
                     await this.setVal(key, defaultValue, container)
-                    return Promise.resolve(defaultValue)
+                    return defaultValue
                 }
                 data = await containerInstance.readString(realDataFile)
                 data = JSON.parse(data)
@@ -246,10 +244,10 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 throw e
             }
             if (data.hasOwnProperty(key)) {
-                return Promise.resolve(data[key])
+                return data[key]
             } else {
                 await this.setVal(key, defaultValue, container)
-                return Promise.resolve(defaultValue)
+                return defaultValue
             }
         }
 
@@ -289,7 +287,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 this.logErr(`file not exist: ${imagePath}`)
                 return false
             }
-            return containerInstance.readImage(imagePath)
+            return await containerInstance.readImage(imagePath)
         }
 
         /**
@@ -313,7 +311,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 data = {}
             }
             data[key] = val
-            containerInstance.writeString(realDataFile, JSON.stringify(data))
+            await containerInstance.writeString(realDataFile, JSON.stringify(data))
         }
 
         async get(options, callback = () => {}) {
@@ -427,9 +425,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                                     // 接口错误
                                     resultStr = "❌"
                                 } else {
-                                    this.setVal('curDateCacheErrorTime', '', 'local')
                                     resultStr = resultStr.type.type
-                                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                                 }
                             }
                         })
@@ -439,7 +435,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     this.logErr(e)
                 } finally {
                     // 写入文件系统
-                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
+                    await this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                     if (resultStr == "❌") {
                         resolve(resultStr)
                         // 写入错误时间，便于5分钟后重新请求
@@ -447,6 +443,8 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                         this.setVal('curDateCache', '', 'local')
                         this.setVal('curDateCacheErrorTime', `${this.now.getTime()}`, 'local')
                     } else {
+                        this.setVal('curDateCacheErrorTime', '', 'local')
+                        this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                         resolve(resultStr == 0 ? workingDaysFlag : holidayFlag)
                     }
                 }
