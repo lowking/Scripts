@@ -7,6 +7,7 @@
  *      autoComplete： 自动补齐字符串
  *      customReplace： 自定义替换
  *      formatDate： 日期格式化
+ *      formatTimeDuring： 毫秒数转换成n天m小时
  *
  * 基于Scriptable的api封装的方法（用法可以参考该目录下/example中的demo）：
  *      require({scriptName, url = '', reload = false})： 引入第三方js库
@@ -868,6 +869,24 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 this.local.remove(filePath)
             }
             this.log(this.curLang.s35)
+        }
+
+        formatTimeDuring(total, lang = "zh", n = 0) {
+            total = Number(total);
+            let zhUnitArr = ["毫秒", "秒", "分钟", "小时", "天", "月", "年"];
+            let enUnitArr = ["ms", "s", "min", "h", "d", "m", "y"];
+            let scaleArr = [1000.0, 60.0, 60.0, 24.0, 30.0, 12.0, 100];
+            let len = total;
+            if (len > scaleArr[n]) {
+                len = total / scaleArr[n];
+                return this.formatTimeDuring(len, lang, ++n);
+            } else {
+                let unit = zhUnitArr[n]
+                if (lang === "en") {
+                    unit = enUnitArr[n]
+                }
+                return len.toFixed(2) + "" + unit;
+            }
         }
     })(scriptName, scriptId, options)
 }
