@@ -51,7 +51,7 @@ if (config.runsInWidget) {
         // widget = await createWidget(widget, title, await $.getVal('subt', 'local', '-'), await $.getVal('flowRes', 'local', '-'), await $.getVal('voiceRes', 'local', '-'))
         return false;
     }
-    main()
+    await main()
 } else {
     $.log('手动运行')
     let enter = await $.widgetEnter([{name:{zh:"预览",en:"Preview"}, callback: main}], true)
@@ -81,6 +81,7 @@ async function main() {
             }
         }
         $.saveLog()
+        widget.presentSmall()
         Script.setWidget(widget)
         Script.complete()
     } catch (e) {
@@ -284,7 +285,6 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
         }
     }
 
-    w.presentSmall()
     $.log('创建widget end')
     return w
 }
