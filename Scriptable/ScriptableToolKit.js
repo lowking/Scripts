@@ -8,6 +8,7 @@
  *      customReplace： 自定义替换
  *      formatDate： 日期格式化
  *      formatTimeDuring： 毫秒数转换成n天m小时
+ *      fileLengthFormat： 文件大小单位转换
  *
  * 基于Scriptable的api封装的方法（用法可以参考该目录下/example中的demo）：
  *      require({scriptName, url = '', reload = false})： 引入第三方js库
@@ -395,7 +396,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return typeof obj == "undefined" || obj == null || obj == "" || obj == "null"
         }
 
-        isWorkingDays(now){
+        isWorkingDays(now) {
             return new Promise(async (resolve, reject) => {
                 let sp = "≈"
                 const d = this.formatDate(now, 'yyyy-MM-dd')
@@ -878,11 +879,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return await this.generateAlert(this.curLang.s30, options)
         }
 
-        async handleOperations(index){
+        async handleOperations(index) {
             await this.operations[index].callback()
         }
 
-        cleanCache(){
+        cleanCache() {
             this.log(this.curLang.s34)
             let filePath = this.local.joinPath(this.local.documentsDirectory(), this.dataFile)
             if (this.local.fileExists(filePath)) {
@@ -910,6 +911,33 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     unit = enUnitArr[n]
                 }
                 return len.toFixed(2) + "" + unit;
+            }
+        }
+
+        fileLengthFormat(total, unit = "", toByte = false) {
+            total = Number(total);
+            var unitArr = ["", "KB", "MB", "GB", "TB", "PB", "EB", "ZB"];
+            var n = 0;
+            try {
+                n = unitArr.indexOf(unit);
+            } catch (e) {
+                throw e;
+            }
+            if (toByte) {
+                if (n == 0) {
+                    return total;
+                }
+                return this.fileLengthFormat(total * 1024, unitArr[--n], true);
+            }
+            var len = total;
+            if (len > 1000) {
+                len = total / 1024.0;
+                return this.fileLengthFormat(len, unitArr[++n]);
+            } else {
+                if (n == 0) {
+                    return len.toFixed(2);
+                }
+                return len.toFixed(2) + " " + unitArr[n];
             }
         }
     })(scriptName, scriptId, options)
