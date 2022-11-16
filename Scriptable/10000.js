@@ -118,6 +118,85 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     let targetDate = new Date()
     let isWD = await $.isWorkingDays(new Date(targetDate.setDate(now.getDate() + 1)))
 
+    // 处理需要显示差值的数据
+    let diffDataKey = ''
+    let preData = ''
+    let diffResult = ''
+    let diffSuffix = ''
+    let preDiffKey = 'preDiff_'
+    try {
+        if (infoOrder[2] === "话费") {
+            diffDataKey = 'subt'
+            preDiffKey += diffDataKey
+            preData = await $.getVal(diffDataKey, "local", "")
+            preData = Number(preData.replace('¥', ''))
+            let curData = Number(subt.replace('¥', ''))
+            if (preData || preData === 0) {
+                diffResult = curData - preData
+                let preDiff = await $.getVal(preDiffKey, "local", "")
+                // 判断是否保持上次的差值
+                if (preDiff) {
+                    // 有保存，则判断本次差值是否为0，为0则显示上次保存差值
+                    $.log(`ttttttttttttttttt`)
+                    if (diffResult === 0) {
+                        diffResult = preDiff
+                    }
+                }
+                await $.setVal(preDiffKey, diffResult, "local")
+                diffSuffix = '¥'
+            }
+        } else if (infoOrder[2] === "流量") {
+            diffDataKey = 'flowRes'
+            preDiffKey += diffDataKey
+            preData = await $.getVal(diffDataKey, "local", "")
+            preData = preData.split(" ")
+            preData = $.fileLengthFormat(preData[0], preData[1], true)
+            let curData = flowRes.split(" ")
+            curData = $.fileLengthFormat(curData[0], curData[1], true)
+            if (preData || preData === 0) {
+                diffResult = curData - preData
+                let preDiff = await $.getVal(preDiffKey, "local", "")
+                // 判断是否保持上次的差值
+                if (preDiff) {
+                    // 有保存，则判断本次差值是否为0，为0则显示上次保存差值
+                    if (diffResult === 0) {
+                        diffResult = preDiff
+                    }
+                }
+                await $.setVal(preDiffKey, diffResult, "local")
+                let tdiffResult = diffResult
+                if (diffResult < 0) {
+                    tdiffResult *= -1
+                }
+                let formatResult = $.fileLengthFormat(tdiffResult).split(" ")
+                diffResult = (diffResult < 0 ? "-" : "") + formatResult[0]
+                diffSuffix = formatResult.length == 2 ? formatResult[1] : "MB"
+            }
+        } else if (infoOrder[2] === "语音") {
+            diffDataKey = 'voiceRes'
+            preDiffKey += diffDataKey
+            preData = await $.getVal(diffDataKey, "local", "")
+            preData = Number(preData.replace('分钟', ''))
+            let curData = Number(voiceRes.replace('分钟', ''))
+            if (preData || preData === 0) {
+                diffResult = curData - preData
+                let preDiff = await $.getVal(preDiffKey, "local", "")
+                // 判断是否保持上次的差值
+                if (preDiff) {
+                    // 有保存，则判断本次差值是否为0，为0则显示上次保存差值
+                    if (diffResult === 0) {
+                        diffResult = preDiff
+                    }
+                }
+                await $.setVal(preDiffKey, diffResult, "local")
+                diffSuffix = '分钟'
+            }
+        }
+    } catch (e) {
+        $.logErr(e)
+        diffResult = ''
+    }
+    $.log(`差值：${diffResult}`)
     // 保存成功执行的数据
     if (subt != '-') {
         $.log(`${subt}${flowRes}${voiceRes}`)
@@ -183,53 +262,6 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     ]
     let getWarnColor = await $.getVal("warnColor", "icloud", "#ee632C")
     let warnColor = new Color(getWarnColor)
-    // 处理需要显示差值的数据
-    let diffDataKey = ''
-    let preData = ''
-    let diffResult = ''
-    let diffSuffix = ''
-    try {
-        if (infoOrder[2] === "话费") {
-            diffDataKey = 'subt'
-            preData = await $.getVal(diffDataKey, "local", "")
-            preData = Number(preData.replace('¥', ''))
-            let curData = Number(subt.replace('¥', ''))
-            if (preData) {
-                diffResult = `${curData - preData}`
-                diffSuffix = '¥'
-            }
-        } else if (infoOrder[2] === "流量") {
-            diffDataKey = 'flowRes'
-            preData = await $.getVal(diffDataKey, "local", "")
-            preData = preData.split(" ")
-            preData = $.fileLengthFormat(preData[0], preData[1], true)
-            let curData = flowRes.split(" ")
-            curData = $.fileLengthFormat(curData[0], curData[1], true)
-            if (preData) {
-                diffResult = curData - preData
-                let tdiffResult = diffResult
-                if (diffResult < 0) {
-                    tdiffResult *= -1
-                }
-                let formatResult = $.fileLengthFormat(tdiffResult).split(" ")
-                diffResult = (diffResult < 0 ? "-" : "") + formatResult[0]
-                diffSuffix = formatResult.length == 2 ? formatResult[1] : "MB"
-            }
-        } else if (infoOrder[2] === "语音") {
-            diffDataKey = 'voiceRes'
-            preData = await $.getVal(diffDataKey, "local", "")
-            preData = Number(preData.replace('分钟', ''))
-            let curData = Number(voiceRes.replace('分钟', ''))
-            if (preData || preData === 0) {
-                diffResult = curData - preData
-                diffSuffix = '分钟'
-            }
-        }
-    } catch (e) {
-        $.logErr(e)
-        diffResult = ''
-    }
-    $.log(`差值：${diffResult}`)
     for (let n = 0; n < infoOrder.length; n++) {
         let type = infoOrder[n]
         let currentSpec = specs[n]
