@@ -274,12 +274,6 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             let feeRowStack = feeStack.addStack()
             feeRowStack.bottomAlignContent()
             feeRowStack.addSpacer()
-            if (n === 3 && diffResult) {
-                let diffText = feeRowStack.addText(diffResult)
-                diffText.font = Font.systemFont(12)
-                diffText.textColor = diffResult >= 0 ? Color.green() : Color.red()
-                diffText.addSpacer()
-            }
             let feeText = feeRowStack.addText(subt.replace('¥', ''))
             if (subt.includes('已欠费') || Number(subt.replace('¥', '').substring(subt.indexOf(']') + 1)) < warnFee) {
                 currentColor = warnColor
@@ -363,7 +357,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             updateTimeRowStack.bottomAlignContent()
             updateTimeRowStack.addSpacer()
             if (n === 3 && (diffResult || diffResult === 0)) {
-                let diffText = updateTimeRowStack.addText((diffResult >= 0 ? `+${diffResult}` : diffResult) + "" +diffSuffix)
+                let diffText = updateTimeRowStack.addText((diffResult >= 0 ? `+${Number(diffResult).toFixed(2)}` : Number(diffResult).toFixed(2)) + "" +diffSuffix)
                 diffText.font = Font.boldSystemFont(10)
                 diffText.textColor = diffResult >= 0 ? Color.green() : Color.red()
                 diffText.leftAlignText()
