@@ -231,7 +231,7 @@ function signIn() {
             url: 'https://www.hifini.com/sg_sign.htm',
             headers: {
                 cookie: hifiniCookie,
-                "User-agent": lk.userAgent
+                "User-Agent": lk.userAgent
             }
         }
         lk.post(url, (error, response, data) => {
