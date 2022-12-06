@@ -3,7 +3,6 @@
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![LICENSE](https://img.shields.io/badge/Thanks-Orz3's%20icons-red.svg)](https://github.com/Orz-3)
 [![LICENSE](https://img.shields.io/badge/Thanks-58xinian's%20icons-red.svg)](https://github.com/58xinian)
-[![](https://tokei.rs/b1/github/lowking/Scripts?category=code)](https://tokei.rs/b1/github/lowking/Scripts?category=code)
 
 ## [中文](https://github.com/lowking/Scripts/blob/master/README.MD)
 
