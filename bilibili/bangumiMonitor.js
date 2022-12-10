@@ -127,7 +127,10 @@ if (!lk.isExecComm) {
             ],
             "keys": [
                 "lkVmidBilibiliBangumiMonitor",
-                "lkBilibiliBangumiList"
+                "lkBilibiliBangumiList0",
+                "lkBilibiliBangumiList1",
+                "lkBilibiliBangumiList2",
+                "lkBilibiliBangumiList3"
             ]
         }, {
             "author": "@lowking",
