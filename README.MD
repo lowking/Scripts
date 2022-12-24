@@ -3,6 +3,7 @@
 [![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
 [![LICENSE](https://img.shields.io/badge/感谢-Orz3的图标-red.svg)](https://github.com/Orz-3)
 [![LICENSE](https://img.shields.io/badge/感谢-58xinian的图标-red.svg)](https://github.com/58xinian)
+[![Close inactive issues](https://github.com/lowking/Scripts/actions/workflows/Close_Inactive_Issues.yml/badge.svg)](https://github.com/lowking/Scripts/actions/workflows/Close_Inactive_Issues.yml)
 
 ## [English](https://github.com/lowking/Scripts/blob/master/README_en.MD)
 
