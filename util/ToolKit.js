@@ -428,7 +428,7 @@ function ToolKit(scriptName, scriptId, options) {
                             if(hasMediaUrl) options["media-url"] = mediaUrl
                             $notify(this.name, subtitle, message, options)
                         }
-                        if (this.isSurge()) {
+                        if (this.isSurge() || this.isStash()) {
                             if(hasOpenUrl) options["url"] = openUrl
                             $notification.post(this.name, subtitle, message, options)
                         }
@@ -443,7 +443,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         getVal(key) {
-            if (this.isSurge() || this.isLoon()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
                 return $persistentStore.read(key)
             } else if (this.isQuanX()) {
                 return $prefs.valueForKey(key)
@@ -456,7 +456,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         setVal(key, val) {
-            if (this.isSurge() || this.isLoon()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
                 return $persistentStore.write(val, key)
             } else if (this.isQuanX()) {
                 return $prefs.setValueForKey(val, key)
@@ -529,7 +529,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge() || this.isLoon()) $httpClient.get(options, (error, response, body) => {
+            if (this.isSurge() || this.isLoon() || this.isStash()) $httpClient.get(options, (error, response, body) => {
                 callback(error, this.adapterStatus(response), body)
             })
             if (this.isNode()) {
@@ -563,7 +563,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge() || this.isLoon()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
                 $httpClient.post(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
                 })
@@ -600,7 +600,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
             }
-            if (this.isSurge() || this.isLoon()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
                 options.method = "PUT"
                 $httpClient.put(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
@@ -647,7 +647,7 @@ function ToolKit(scriptName, scriptId, options) {
 
         done(value = {}) {
             this.costTime()
-            if (this.isSurge() || this.isQuanX() || this.isLoon()) {
+            if (this.isSurge() || this.isQuanX() || this.isLoon() || this.isStash()) {
                 $done(value)
             }
         }
