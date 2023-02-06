@@ -23,7 +23,7 @@ QuantumultX 本地脚本配置:
 
 [rewrite_local]
 #阿里云盘签到cookie
-https:\/\/auth.aliyundrive.com\/v2\/account\/token url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
+^https:\/\/auth.aliyundrive.com\/v2\/account\/token url script-response-body https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
 
 [task_local]
 0 10 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
