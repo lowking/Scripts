@@ -38,7 +38,7 @@ cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Script
 
 */
 
-const lk = new ToolKit(`阿里云盘签到`, `AliYunPanCheckIn`, {"httpApia": "ffff@192.168.8.117:6166"})
+const lk = new ToolKit(`阿里云盘签到`, `AliYunPanCheckIn`, {"httpApi": "ffff@10.0.0.19:6166"})
 const aliYunPanTokenKey = 'lkAliYunPanTokenKey'
 let aliYunPanToken = !lk.getVal(aliYunPanTokenKey) ? '' : lk.getVal(aliYunPanTokenKey)
 const aliYunPanRefreshTokenKey = 'lkAliYunPanRefreshTokenKey'
@@ -86,7 +86,7 @@ function getCookie() {
     if (lk.isGetCookie(/\/v2\/account\/token/)) {
         lk.log(`开始获取cookie`)
         let data = lk.getResponseBody()
-        lk.log(`获取到的cookie：${data}`)
+        // lk.log(`获取到的cookie：${data}`)
         try {
             data = JSON.parse(data)
             lk.setVal(aliYunPanRefreshTokenKey, data["refresh_token"])
