@@ -89,9 +89,16 @@ function getCookie() {
         // lk.log(`获取到的cookie：${data}`)
         try {
             data = JSON.parse(data)
-            lk.setVal(aliYunPanRefreshTokenKey, data["refresh_token"])
-            lk.appendNotifyInfo('🎉成功获取阿里云盘refresh_token，可以关闭相应脚本')
+            let refreshToken = data["refresh_token"]
+            if (refreshToken) {
+                lk.setVal(aliYunPanRefreshTokenKey, refreshToken)
+                lk.appendNotifyInfo('🎉成功获取阿里云盘refresh_token，可以关闭相应脚本')
+            } else {
+                lk.execFail()
+                lk.appendNotifyInfo('❌获取阿里云盘token失败，请稍后再试')
+            }
         } catch (e) {
+            lk.execFail()
             lk.appendNotifyInfo('❌获取阿里云盘token失败')
         }
         lk.msg('')
