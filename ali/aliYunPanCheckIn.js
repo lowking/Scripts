@@ -18,7 +18,7 @@ https://auth.aliyundrive.com/v2/account/token
 
 
 ************************
-QuantumultX 本地脚本配置:
+QuantumultX 脚本配置:
 ************************
 
 [rewrite_local]
@@ -29,11 +29,11 @@ QuantumultX 本地脚本配置:
 0 10 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
 
 ************************
-LOON 本地脚本配置:
+LOON 脚本配置:
 ************************
 
 [Script]
-http-request https:\/\/auth.aliyundrive.com\/v2\/account\/token script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js, timeout=10, tag=阿里云盘签到cookie
+http-response https:\/\/auth.aliyundrive.com\/v2\/account\/token script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js, requires-body=true, timeout=10, tag=阿里云盘签到cookie
 cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js, tag=阿里云盘签到
 
 */
