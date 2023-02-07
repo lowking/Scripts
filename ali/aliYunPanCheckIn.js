@@ -54,7 +54,7 @@ if(!lk.isExecComm) {
     } else {
         lk.boxJsJsonBuilder({
             "icons": [
-                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPan.png",
+                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPana.png",
                 "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPan.png"
             ],
             "settings": [
