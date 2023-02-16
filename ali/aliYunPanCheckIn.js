@@ -1,5 +1,5 @@
 /*
-阿里云盘签到-lowking-v1.0.0
+阿里云盘签到-lowking-v1.0.1
 
 按下面配置完之后，打开阿里云盘获取token（如获取不到，等一段时间再打开），下面配置只验证过surge的，其他的自行测试
 ⚠️只测试过surge没有其他app自行测试
@@ -192,15 +192,21 @@ function signIn() {
                     if (dataObj.success) {
                         let notice = ""
                         let prefix = ""
+                        let rewardName = ""
+                        let desp = ""
                         if (dataObj?.result?.signInLogs.length > 0) {
                             dataObj.result.signInLogs.forEach((l) => {
                                 if (l?.status != "miss") {
                                     prefix = `第${l?.day}天`
-                                    notice = l?.notice
+                                    rewardName = l?.reward?.name
+                                    desp = l?.reward?.description
                                 }
                             })
                         }
                         let notifyStr = `🎉${prefix}${t}成功`
+                        if (rewardName) {
+                            notice = `${rewardName.trim()}${!desp ? "" : "-" + desp.trim()}`
+                        }
                         if (notice) {
                             notifyStr = `${notifyStr}，获得【${notice}】`
                         }
