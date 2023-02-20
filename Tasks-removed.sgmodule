@@ -2,6 +2,8 @@
 #!desc=无需安装该模块，用于记录已移除的任务
 
 [Script]
+10000 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/10000/10000.js,script-update-interval=0
+
 京东多合一签到 = type=cron,cronexp="20 1 0,20 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/JD-DailyBonus/JD_DailyBonus.js,script-update-interval=0,max-size=-1
 
 京东金融领豆 = type=cron,cronexp="20 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/jd_jr_sign.js,script-update-interval=0
