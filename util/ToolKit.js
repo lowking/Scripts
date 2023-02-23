@@ -18,6 +18,7 @@
  * @param scriptId 每个脚本唯一的id，用于存储持久化的时候加入key
  * @param options 传入一些参数，目前参数如下；
  *                                      httpApi=ffff@3.3.3.18:6166（这个是默认值，本人surge调试脚本用，可自行修改）
+ *                                      target_boxjs_json_path=/Users/lowking/Desktop/Scripts/lowking.boxjs.json（生成boxjs配置的目标文件路径）
  * @constructor
  */
 function ToolKit(scriptName, scriptId, options) {

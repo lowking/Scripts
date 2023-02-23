@@ -39,5 +39,7 @@ hifini签到cookie = type=http-request,pattern=https:\/\/www.hifini.com\/my.htm,
 
 阿里云盘签到cookie = requires-body=1,type=http-response,pattern=https:\/\/auth.aliyundrive.com\/v2\/account\/token,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
 
+顺丰速运cookie = requires-body=1,type=http-request, pattern=^https:\/\/ccsp-egmas.sf-express.com\/cx-app-member\/member\/app\/user\/universalSign,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/sfexpress/sfexpress.cookie.js
+
 [MITM]
-hostname = %APPEND% auth.aliyundrive.com, *.hifini.com, cauth.pupuapi.com, qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, passport.iqiyi.com, *.smzdm.com, yuba.douyu.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com
+hostname = %APPEND% ccsp-egmas.sf-express.com, auth.aliyundrive.com, *.hifini.com, cauth.pupuapi.com, qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, passport.iqiyi.com, *.smzdm.com, yuba.douyu.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com
