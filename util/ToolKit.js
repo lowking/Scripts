@@ -24,7 +24,7 @@
 function ToolKit(scriptName, scriptId, options) {
     return new (class {
         constructor(scriptName, scriptId, options) {
-            this.tgEscapeCharMapping = {'&':'＆', '#':'＃'}
+            this.tgEscapeCharMapping = {'&': '＆', '#': '＃'}
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
@@ -112,7 +112,7 @@ function ToolKit(scriptName, scriptId, options) {
                         }
                     }
                     if (!isHttpApiErr) {
-                        this.callApi(this.comm[2]);
+                        this.callApi(this.comm[2])
                     }
                 }
             }
@@ -158,7 +158,7 @@ function ToolKit(scriptName, scriptId, options) {
             })
         }
 
-        getCallerFileNameAndLine(){
+        getCallerFileNameAndLine() {
             let error
             try {
                 throw Error('')
@@ -180,10 +180,10 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         getFunName(fun) {
-            var ret = fun.toString();
-            ret = ret.substr('function '.length);
-            ret = ret.substr(0, ret.indexOf('('));
-            return ret;
+            var ret = fun.toString()
+            ret = ret.substr('function '.length)
+            ret = ret.substr(0, ret.indexOf('('))
+            return ret
         }
 
         boxJsJsonBuilder(info, param) {
@@ -203,7 +203,7 @@ function ToolKit(scriptName, scriptId, options) {
                 boxJsJson.id = `${this.prefix}${this.id}`
                 boxJsJson.name = this.name
                 boxJsJson.desc_html = `⚠️使用说明</br>详情【<a href='${scritpUrl}?raw=true'><font class='red--text'>点我查看</font></a>】`
-                boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`,`${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
+                boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`, `${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
                 boxJsJson.keys = []
                 boxJsJson.settings = [
                     {
@@ -246,9 +246,9 @@ function ToolKit(scriptName, scriptId, options) {
                             // 处理传入的每项设置
                             if (key === 'settings') {
                                 for (let i = 0; i < info[key].length; i++) {
-                                    let input = info[key][i];
+                                    let input = info[key][i]
                                     for (let j = 0; j < boxJsJson.settings.length; j++) {
-                                        let def = boxJsJson.settings[j];
+                                        let def = boxJsJson.settings[j]
                                         if (input.id === def.id) {
                                             // id相同，就使用外部传入的配置
                                             boxJsJson.settings.splice(j, 1)
@@ -309,8 +309,8 @@ function ToolKit(scriptName, scriptId, options) {
                             }
                         }
                         // 全部处理完毕检查是否有漏掉未配置的参数，进行提醒
-                        const regex = /(?:#lk\{)(.+?)(?=\})/;
-                        let m = regex.exec(ret);
+                        const regex = /(?:#lk\{)(.+?)(?=\})/
+                        let m = regex.exec(ret)
                         if (m !== null) {
                             this.log(`生成BoxJs还有未配置的参数，请参考https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js#L17-L18传入参数：\n`)
                         }
@@ -321,7 +321,7 @@ function ToolKit(scriptName, scriptId, options) {
                         }
                         loseParamSet.forEach(p => {
                             console.log(`${p} `)
-                        });
+                        })
                         this.fs.writeFileSync(boxjsJsonPath, ret)
                     }
                 }
@@ -371,7 +371,7 @@ function ToolKit(scriptName, scriptId, options) {
         isStash() {
             return 'undefined' !== typeof $environment && $environment['stash-version']
         }
-       
+
         isNode() {
             return typeof require == "function" && !this.isJSBox()
         }
@@ -425,12 +425,12 @@ function ToolKit(scriptName, scriptId, options) {
                         const hasMediaUrl = !this.isEmpty(mediaUrl)
 
                         if (this.isQuanX()) {
-                            if(hasOpenUrl) options["open-url"] = openUrl
-                            if(hasMediaUrl) options["media-url"] = mediaUrl
+                            if (hasOpenUrl) options["open-url"] = openUrl
+                            if (hasMediaUrl) options["media-url"] = mediaUrl
                             $notify(this.name, subtitle, message, options)
                         }
                         if (this.isSurge() || this.isStash()) {
-                            if(hasOpenUrl) options["url"] = openUrl
+                            if (hasOpenUrl) options["url"] = openUrl
                             $notification.post(this.name, subtitle, message, options)
                         }
                         if (this.isNode()) this.log("⭐️" + this.name + subtitle + message)
@@ -443,17 +443,19 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
-        getVal(key) {
+        getVal(key, defaultValue = "") {
+            let value
             if (this.isSurge() || this.isLoon() || this.isStash()) {
-                return $persistentStore.read(key)
+                value = $persistentStore.read(key)
             } else if (this.isQuanX()) {
-                return $prefs.valueForKey(key)
+                value = $prefs.valueForKey(key)
             } else if (this.isNode()) {
                 this.data = this.loadData()
-                return this.data[key]
+                value = process.env[key] || this.data[key]
             } else {
-                return (this.data && this.data[key]) || null
+                value = (this.data && this.data[key]) || null
             }
+            return !value ? defaultValue : value
         }
 
         setVal(key, val) {
