@@ -648,6 +648,20 @@
           "val": "",
           "type": "text",
           "desc": "Bing积分cookie"
+        },
+        {
+          "id": "bingSearchCookieKey",
+          "name": "Bing每日搜索cookie",
+          "val": "",
+          "type": "text",
+          "desc": "请使用电脑打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
+        },
+        {
+          "id": "searchPcAmountKey",
+          "name": "Bing每日执行搜索次数",
+          "val": 10,
+          "type": "number",
+          "desc": "Bing每日执行搜索次数"
         }
       ],
       "author": "@lowking",
