@@ -433,7 +433,7 @@ function ToolKit(scriptName, scriptId, options) {
                             if (hasOpenUrl) options["url"] = openUrl
                             $notification.post(this.name, subtitle, message, options)
                         }
-                        if (this.isNode()) this.log("⭐️" + this.name + subtitle + message)
+                        if (this.isNode()) this.log("⭐️" + this.name + "\n" + subtitle + "\n" + message)
                         if (this.isJSBox()) $push.schedule({
                             title: this.name,
                             body: subtitle ? subtitle + "\n" + message : message
