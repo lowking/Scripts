@@ -121,8 +121,8 @@ async function all() {
         }
         let dashBoard = await getDashBoard()
         if (dashBoard?.dashboard) {
-            await reportAct(dashBoard)
-            subtitle = `当前积分：${dashBoard?.dashboard?.userStatus?.availablePoints || "-"}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}${isAlreadySearchPc ? "  ⌬" : ""}`
+            let newPoint = await reportAct(dashBoard)
+            subtitle = `当前积分：${dashBoard?.dashboard?.userStatus?.availablePoints || "-"}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}${isAlreadySearchPc ? "  ⌬" : ""}`
         } else {
             lk.appendNotifyInfo("❌未获取到活动信息")
         }
@@ -215,7 +215,13 @@ function searchPc() {
     return new Promise(async (resolve, _reject) => {
         lk.log(`开始执行每日搜索`)
         let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
-        if (nowString == isSearchRepeat && searchPcCount >= searchPcAmount) {
+        let isAlwaysSearch = searchPcCount == -1
+        if (isAlwaysSearch) {
+            // 总是搜索的话，赋值为0，搜索次数设置为1
+            searchPcCount = 0
+            searchPcAmount = 1
+        }
+        if (!isAlwaysSearch && nowString == isSearchRepeat && searchPcCount >= searchPcAmount) {
             lk.log(`今日搜索已达配置上限：${searchPcAmount}次`)
             isAlreadySearchPc = true
             resolve()
@@ -250,9 +256,11 @@ function searchPc() {
                 lk.log(`waiting`)
                 await lk.sleep(200)
             }
-            lk.log(`保存今天(${nowString})搜索次数：${searchPcCount}`)
             try {
-                lk.setVal(searchPcCountKey, JSON.stringify(searchPcCount))
+                if (!isAlwaysSearch) {
+                    lk.log(`保存今天(${nowString})搜索次数：${searchPcCount}`)
+                    lk.setVal(searchPcCountKey, JSON.stringify(searchPcCount))
+                }
                 lk.setVal(searchRepeatKey, nowString)
             } catch (e) {
                 lk.logErr(e)
@@ -266,6 +274,7 @@ function searchPc() {
 
 function reportAct(dashBoard) {
     return new Promise(async (resolve, _reject) => {
+        let newPoint = 0
         let promotionalItem, morePromotions
         morePromotions = dashBoard?.dashboard?.morePromotions || []
         if ((promotionalItem = dashBoard?.dashboard?.promotionalItem)) {
@@ -297,6 +306,7 @@ function reportAct(dashBoard) {
                             lk.appendNotifyInfo(`🎉${title}【${point}】`)
                             sucCount++
                             completePoint += point
+                            newPoint += point
                         } else {
                             failCount++
                             lk.execFail()
@@ -344,11 +354,11 @@ function reportAct(dashBoard) {
                 lk.prependNotifyInfo(err)
                 lk.prependNotifyInfo(`🎉：${sucCount}个，❌：${failCount}个，今日已完成：${completeCount}个`)
             }
-            resolve()
+            resolve(newPoint)
         } else {
             lk.execFail()
             lk.prependNotifyInfo(`❌未获取到活动信息`)
-            resolve()
+            resolve(newPoint)
         }
     })
 }
