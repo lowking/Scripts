@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v1.0.0
+Bing积分-lowking-v1.1.0
 
 ⚠️只测试过surge没有其他app自行测试
 
