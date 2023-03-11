@@ -8,7 +8,7 @@ hifini签到 = type=cron,cronexp="55 59 23 * * ?",wake-system=1,script-path=http
 
 顺丰签到 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/sfexpress/sfexpress.js,script-update-interval=0
 
-bing积分 = type=cron,cronexp="0 0 */2 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bing/bingPoint.js,script-update-interval=0
+bing积分 = type=cron,cronexp="0 0 * * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bing/bingPoint.js,script-update-interval=0
 
 智行火车票 = type=cron,cronexp="50 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/zxhc/zxhc.js,script-update-interval=0
 
