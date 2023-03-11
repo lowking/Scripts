@@ -19,16 +19,25 @@ Bing积分 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://
 const lk = new ToolKit(`Bing积分`, `BingPoint`, {"httpApi": "ffff@10.0.0.19:6166"})
 const bingPointCookieKey = 'bingPointCookieKey'
 const bingSearchCookieKey = 'bingSearchCookieKey'
+const bingSearchCookieMobileKey = 'bingSearchCookieMobileKey'
 const searchRepeatKey = "bingSearchRepeatKey"
+const searchRepeatMobileKey = "searchRepeatMobileKey"
 const searchPcCountKey = "bingSearchPcCountKey"
 const searchPcAmountKey = "searchPcAmountKey"
+const searchMobileCountKey = "bingSearchMobileCountKey"
+const searchMobileAmountKey = "searchMobileAmountKey"
 let bingPointHeader
 let bingPointCookie = lk.getVal(bingPointCookieKey)
 let bingSearchCookie = lk.getVal(bingSearchCookieKey)
+let bingSearchMobileCookie = lk.getVal(bingSearchCookieMobileKey)
 let isSearchRepeat = lk.getVal(searchRepeatKey)
+let isSearchMobileRepeat = lk.getVal(searchRepeatMobileKey)
 let searchPcCount = lk.getVal(searchPcCountKey, 0)
 let searchPcAmount = lk.getVal(searchPcAmountKey, 10)
-let isAlreadySearchPc = false
+let searchMobileCount = lk.getVal(searchMobileCountKey, 0)
+let searchMobileAmount = lk.getVal(searchMobileAmountKey, 10)
+let isAlreadySearchPc = false, isAlreadySearchMobile = false
+let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -49,18 +58,32 @@ if(!lk.isExecComm) {
                     "desc": "Bing积分cookie"
                 },
                 {
+                    "id": bingSearchCookieMobileKey,
+                    "name": "Bing每日搜索cookie(移动端)",
+                    "val": "",
+                    "type": "text",
+                    "desc": "请使用手机打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
+                },
+                {
+                    "id": searchMobileAmountKey,
+                    "name": "Bing每日执行搜索(移动端)次数",
+                    "val": 10,
+                    "type": "number",
+                    "desc": "Bing每日执行搜索(移动端)次数"
+                },
+                {
                     "id": bingSearchCookieKey,
-                    "name": "Bing每日搜索cookie",
+                    "name": "Bing每日搜索cookie(PC)",
                     "val": "",
                     "type": "text",
                     "desc": "请使用电脑打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
                 },
                 {
                     "id": searchPcAmountKey,
-                    "name": "Bing每日执行搜索次数",
+                    "name": "Bing每日执行搜索(PC)次数",
                     "val": 10,
                     "type": "number",
-                    "desc": "Bing每日执行搜索次数"
+                    "desc": "Bing每日执行搜索(PC)次数"
                 }
             ],
             "keys": [bingPointCookieKey]
@@ -119,10 +142,13 @@ async function all() {
         if (bingSearchCookie != '') {
             await searchPc()
         }
+        if (bingSearchMobileCookie != '') {
+            await searchMobile()
+        }
         let dashBoard = await getDashBoard()
         if (dashBoard?.dashboard) {
             let newPoint = await reportAct(dashBoard)
-            subtitle = `当前积分：${dashBoard?.dashboard?.userStatus?.availablePoints || "-"}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}${isAlreadySearchPc ? "  ⌬" : ""}`
+            subtitle = `当前积分：${dashBoard?.dashboard?.userStatus?.availablePoints || "-"}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}`
         } else {
             lk.appendNotifyInfo("❌未获取到活动信息")
         }
@@ -211,10 +237,66 @@ function doReportActForUrlreward(title, item, rvt) {
     })
 }
 
+function searchMobile() {
+    return new Promise(async (resolve, _reject) => {
+        lk.log(`开始执行每日搜索(移动端)`)
+        let isAlwaysSearch = searchMobileCount == -1
+        if (isAlwaysSearch) {
+            // 总是搜索的话，赋值为0，搜索次数设置为1
+            searchMobileCount = 0
+            searchMobileAmount = 1
+        }
+        if (!isAlwaysSearch && nowString == isSearchMobileRepeat && searchMobileCount >= searchMobileAmount) {
+            lk.log(`今日搜索(移动端)已达配置上限：${searchMobileAmount}次`)
+            isAlreadySearchMobile = true
+            resolve()
+            return
+        }
+        let h = JSON.parse(JSON.stringify(bingPointHeader))
+        if (nowString != isSearchMobileRepeat || searchMobileCount < searchMobileAmount) {
+            for (let i = searchMobileCount; i < searchMobileAmount; i++) {
+                h["authority"] = "cn.bing.com"
+                h["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                h["user-agent"] = "Mozilla/5.0 (iPhone; CPU iPhone OS 16_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Mobile/15E148 Safari/604.1"
+                h["accept-language"] = "zh-CN,zh-Hans;q=0.9"
+                h["referer"] = "https://cn.bing.com/"
+                h["accept-encoding"] = "UTF-8"
+                h["Content-Encoding"] = "UTF-8"
+                h["cookie"] = bingSearchMobileCookie
+                let searchWord = lk.randomString(10)
+                let url = {
+                    url: `https://cn.bing.com/search?q=${searchWord}&search=&form=QBLH&sp=-1&lq=0&pq=${searchWord}&sc=8-2&qs=n&sk=&ghsh=0&ghacc=0&ghpl=`,
+                    headers: h,
+                    gzip: true
+                }
+                lk.get(url, (error, _response, data) => {
+                    ++searchMobileCount
+                })
+            }
+
+            while (searchMobileCount < searchMobileAmount) {
+                lk.log(`waiting`)
+                await lk.sleep(200)
+            }
+            try {
+                if (!isAlwaysSearch) {
+                    lk.log(`保存今天(${nowString})搜索(移动端)次数：${searchMobileCount}`)
+                    lk.setVal(searchMobileCountKey, JSON.stringify(searchMobileCount))
+                }
+                lk.setVal(searchRepeatMobileKey, nowString)
+            } catch (e) {
+                lk.logErr(e)
+            }
+            resolve()
+        } else {
+            resolve()
+        }
+    })
+}
+
 function searchPc() {
     return new Promise(async (resolve, _reject) => {
-        lk.log(`开始执行每日搜索`)
-        let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
+        lk.log(`开始执行每日搜索(PC)`)
         let isAlwaysSearch = searchPcCount == -1
         if (isAlwaysSearch) {
             // 总是搜索的话，赋值为0，搜索次数设置为1
@@ -222,7 +304,7 @@ function searchPc() {
             searchPcAmount = 1
         }
         if (!isAlwaysSearch && nowString == isSearchRepeat && searchPcCount >= searchPcAmount) {
-            lk.log(`今日搜索已达配置上限：${searchPcAmount}次`)
+            lk.log(`今日搜索(PC)已达配置上限：${searchPcAmount}次`)
             isAlreadySearchPc = true
             resolve()
             return
@@ -258,7 +340,7 @@ function searchPc() {
             }
             try {
                 if (!isAlwaysSearch) {
-                    lk.log(`保存今天(${nowString})搜索次数：${searchPcCount}`)
+                    lk.log(`保存今天(${nowString})搜索(PC)次数：${searchPcCount}`)
                     lk.setVal(searchPcCountKey, JSON.stringify(searchPcCount))
                 }
                 lk.setVal(searchRepeatKey, nowString)

@@ -650,18 +650,32 @@
           "desc": "Bing积分cookie"
         },
         {
+          "id": "bingSearchCookieMobileKey",
+          "name": "Bing每日搜索cookie(移动端)",
+          "val": "",
+          "type": "text",
+          "desc": "请使用手机打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
+        },
+        {
+          "id": "searchMobileAmountKey",
+          "name": "Bing每日执行搜索(移动端)次数",
+          "val": 10,
+          "type": "number",
+          "desc": "Bing每日执行搜索(移动端)次数"
+        },
+        {
           "id": "bingSearchCookieKey",
-          "name": "Bing每日搜索cookie",
+          "name": "Bing每日搜索cookie(PC)",
           "val": "",
           "type": "text",
           "desc": "请使用电脑打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
         },
         {
           "id": "searchPcAmountKey",
-          "name": "Bing每日执行搜索次数",
+          "name": "Bing每日执行搜索(PC)次数",
           "val": 10,
           "type": "number",
-          "desc": "Bing每日执行搜索次数"
+          "desc": "Bing每日执行搜索(PC)次数"
         }
       ],
       "author": "@lowking",
