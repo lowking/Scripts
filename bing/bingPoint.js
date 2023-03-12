@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v1.1.0
+Bing积分-lowking-v1.2.1
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -26,6 +26,7 @@ const searchPcCountKey = "bingSearchPcCountKey"
 const searchPcAmountKey = "searchPcAmountKey"
 const searchMobileCountKey = "bingSearchMobileCountKey"
 const searchMobileAmountKey = "searchMobileAmountKey"
+const bingCachePointKey = "bingCachePointKey"
 let bingPointHeader
 let bingPointCookie = lk.getVal(bingPointCookieKey)
 let bingSearchCookie = lk.getVal(bingSearchCookieKey)
@@ -36,6 +37,7 @@ let searchPcCount = lk.getVal(searchPcCountKey, 0)
 let searchPcAmount = lk.getVal(searchPcAmountKey, 10)
 let searchMobileCount = lk.getVal(searchMobileCountKey, 0)
 let searchMobileAmount = lk.getVal(searchMobileAmountKey, 10)
+let cachePoint = lk.getVal(bingCachePointKey, 0)
 let isAlreadySearchPc = false, isAlreadySearchMobile = false
 let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
 
@@ -114,8 +116,20 @@ function getCookie() {
     lk.done()
 }
 
+async function dealMsg(dashBoard, newPoint) {
+    return new Promise((resolve, _reject) => {
+        let availablePoints = dashBoard?.dashboard?.userStatus?.availablePoints || "-"
+        if (availablePoints != "-" && cachePoint) {
+            lk.setVal(bingCachePointKey, JSON.stringify(availablePoints))
+            let increaseAmount = availablePoints - cachePoint
+            lk.prependNotifyInfo(`本次执行：${increaseAmount >= 0 ? "+" + increaseAmount : increaseAmount}`)
+        }
+        resolve(`当前积分：${availablePoints}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}`)
+    })
+}
+
 async function all() {
-    let subtitle = ``
+    let msg = ``
     if (bingPointCookie == '') {
         lk.execFail()
         lk.appendNotifyInfo(`⚠️请先打开rewards.bing.com获取cookie`)
@@ -148,7 +162,7 @@ async function all() {
         let dashBoard = await getDashBoard()
         if (dashBoard?.dashboard) {
             let newPoint = await reportAct(dashBoard)
-            subtitle = `当前积分：${dashBoard?.dashboard?.userStatus?.availablePoints || "-"}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}`
+            msg = await dealMsg(dashBoard, newPoint)
         } else {
             lk.appendNotifyInfo("❌未获取到活动信息")
         }
@@ -156,7 +170,7 @@ async function all() {
     if (!lk.isNode()) {
         lk.log(lk.notifyInfo.join("\n"))
     }
-    lk.msg(subtitle)
+    lk.msg(msg)
     lk.done()
 }
 
