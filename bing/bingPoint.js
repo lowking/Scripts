@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v1.2.1
+Bing积分-lowking-v1.2.2
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -156,9 +156,11 @@ async function all() {
         if (bingSearchCookie != '') {
             await searchPc()
         }
+        await lk.sleep(5000)
         if (bingSearchMobileCookie != '') {
             await searchMobile()
         }
+        await lk.sleep(2000)
         let dashBoard = await getDashBoard()
         if (dashBoard?.dashboard) {
             let newPoint = await reportAct(dashBoard)
