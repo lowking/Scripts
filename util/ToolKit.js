@@ -188,6 +188,14 @@ function ToolKit(scriptName, scriptId, options) {
 
         boxJsJsonBuilder(info, param) {
             if (this.isNode()) {
+                let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
+                // 从传入参数param读取配置的boxjs的json文件路径
+                if (param.hasOwnProperty("target_boxjs_json_path")) {
+                    boxjsJsonPath = param["target_boxjs_json_path"]
+                }
+                if (!this.fs.existsSync(boxjsJsonPath)) {
+                    return
+                }
                 if (!this.isJsonObject(info) || !this.isJsonObject(param)) {
                     this.log("构建BoxJsJson传入参数格式错误，请传入json对象")
                     return
@@ -278,11 +286,6 @@ function ToolKit(scriptName, scriptId, options) {
                         this.fs.writeFileSync(curDirDataFilePath, jsondata)
                     }
                     // 写到项目的boxjs订阅json中
-                    let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
-                    // 从传入参数param读取配置的boxjs的json文件路径
-                    if (param.hasOwnProperty("target_boxjs_json_path")) {
-                        boxjsJsonPath = param["target_boxjs_json_path"]
-                    }
                     let boxjsJson = JSON.parse(this.fs.readFileSync(boxjsJsonPath))
                     if (boxjsJson.hasOwnProperty("apps") && Array.isArray(boxjsJson["apps"]) && boxjsJson["apps"].length > 0) {
                         let apps = boxjsJson.apps
