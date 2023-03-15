@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v1.3.3
+Bing积分-lowking-v1.3.4
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -30,6 +30,7 @@ const searchMobileAmountKey = "searchMobileAmountKey"
 const searchEdgeCountKey = "bingSearchEdgeCountKey"
 const searchEdgeAmountKey = "searchEdgeAmountKey"
 const bingCachePointKey = "bingCachePointKey"
+const bingIsContinueWhenZeroKey = "bingIsContinueWhenZeroKey"
 let bingPointHeader
 let bingPointCookie = lk.getVal(bingPointCookieKey)
 let bingSearchCookie = lk.getVal(bingSearchCookieKey)
@@ -44,6 +45,7 @@ let searchMobileAmount = lk.getVal(searchMobileAmountKey, 10)
 let searchEdgeCount = lk.getVal(searchEdgeCountKey, 0)
 let searchEdgeAmount = lk.getVal(searchEdgeAmountKey, 10)
 let cachePoint = lk.getVal(bingCachePointKey, 0)
+let isContinueWhenZero = lk.getVal(bingIsContinueWhenZeroKey, 1)
 let isAlreadySearchPc = false, isAlreadySearchMobile = false, isAlreadySearchEdge = false
 let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
 
@@ -136,12 +138,17 @@ async function dealMsg(dashBoard, newPoint) {
             lk.setVal(bingCachePointKey, JSON.stringify(availablePoints))
             let increaseAmount = availablePoints - cachePoint
             lk.prependNotifyInfo(`本次执行：${increaseAmount >= 0 ? "+" + increaseAmount : increaseAmount}`)
+            lk.setVal(bingIsContinueWhenZeroKey, JSON.stringify(increaseAmount + newPoint))
         }
         resolve(`当前积分：${availablePoints}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}`)
     })
 }
 
 async function all() {
+    if (isContinueWhenZero <= 0) {
+        lk.done()
+        return
+    }
     let msg = ``
     if (bingPointCookie == '') {
         lk.execFail()
@@ -155,17 +162,17 @@ async function all() {
         bingPointHeader["correlation-context"] = 'v=1,ms.b.tel.market=zh-CN'
         bingPointHeader["dnt"] = '1'
         bingPointHeader["referer"] = 'https://rewards.bing.com/redeem/000899036002'
-        bingPointHeader["sec-ch-ua"] = 'Not A(Brand;v=24, Chromium;v=110'
-        bingPointHeader["sec-ch-ua-arch"] = 'x86'
-        bingPointHeader["sec-ch-ua-bitness"] = '64'
-        bingPointHeader["sec-ch-ua-full-version"] = '110.0.5481.177'
+        bingPointHeader["sec-ch-ua"] = '"Chromium";v="111", "Not(A:Brand";v="8"'
+        bingPointHeader["sec-ch-ua-arch"] = '"x86"'
+        bingPointHeader["sec-ch-ua-bitness"] = '"64"'
+        bingPointHeader["sec-ch-ua-full-version"] = '"111.0.5563.64"'
         bingPointHeader["sec-ch-ua-mobile"] = '?0'
-        bingPointHeader["sec-ch-ua-platform"] = 'macOS'
+        bingPointHeader["sec-ch-ua-platform"] = '"macOS"'
         bingPointHeader["sec-ch-ua-platform-version"] = '13.2.0'
-        bingPointHeader["sec-fetch-dest"] = 'empty'
-        bingPointHeader["sec-fetch-mode"] = 'cors'
-        bingPointHeader["sec-fetch-site"] = 'same-origin'
-        bingPointHeader["user-agent"] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+        bingPointHeader["sec-fetch-dest"] = 'document'
+        bingPointHeader["sec-fetch-mode"] = 'navigate'
+        bingPointHeader["sec-fetch-site"] = 'none'
+        bingPointHeader["user-agent"] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'
         if (bingSearchCookie != '') {
             await searchPc()
             await lk.sleep(5000)
@@ -582,7 +589,7 @@ function getDashBoard() {
                 lk.logErr(e)
                 lk.log(`bing返回数据：${data}\n${error}\n${JSON.stringify(_response)}`)
                 lk.execFail()
-                lk.appendNotifyInfo(`❌${t}错误，请稍后再试`)
+                lk.appendNotifyInfo(`❌${t}错误，请稍后再试，或者cookie过期，请重新抓取`)
                 resolve({})
             }
         })
