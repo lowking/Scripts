@@ -61,7 +61,8 @@ function ToolKit(scriptName, scriptId, options) {
             this.execCount = this.isEmpty(this.execCount) ? 0 : parseInt(this.execCount)
 
             this.logSeparator = '\n██'
-            this.startTime = new Date().getTime()
+            this.now = new Date()
+            this.startTime = this.now.getTime()
             this.node = (() => {
                 if (this.isNode()) {
                     const request = require('request')

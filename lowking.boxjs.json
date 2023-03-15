@@ -643,6 +643,13 @@
           "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         },
         {
+          "id": "bingResetHoursKey",
+          "name": "Bing每日任务重置时间",
+          "val": 8,
+          "type": "number",
+          "desc": "写小时数，默认：8"
+        },
+        {
           "id": "bingPointCookieKey",
           "name": "Bing积分cookie",
           "val": "",
