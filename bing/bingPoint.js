@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v1.3.2
+Bing积分-lowking-v1.3.3
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -509,7 +509,7 @@ function reportAct(dashBoard) {
                     err = `🎉任务都做完啦，共获得${completePoint}积分`
                     break
                 }
-                if (new Date().getTime() - lk.startTime > 5 * 1000) {
+                if (new Date().getTime() - lk.startTime > 30 * 1000) {
                     lk.log(`执行超时，强制退出`)
                     err = "❌执行超时，强制退出（请添加分流切换节点）"
                     break
