@@ -17,6 +17,7 @@ Bing积分 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://
 */
 
 const lk = new ToolKit(`Bing积分`, `BingPoint`, {"httpApi": "ffff@10.0.0.19:6166"})
+const scriptTimeout = 30
 const bingPointCookieKey = 'bingPointCookieKey'
 const bingSearchCookieKey = 'bingSearchCookieKey'
 const bingSearchCookieMobileKey = 'bingSearchCookieMobileKey'
@@ -103,7 +104,8 @@ if(!lk.isExecComm) {
                     "desc": "Bing每日执行搜索(Edge)次数"
                 }
             ],
-            "keys": [bingPointCookieKey]
+            "keys": [bingPointCookieKey],
+            "script_timeout": scriptTimeout
         }, {
             "script_url": "https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js",
             "author": "@lowking",
@@ -516,7 +518,7 @@ function reportAct(dashBoard) {
                     err = `🎉任务都做完啦，共获得${completePoint}积分`
                     break
                 }
-                if (new Date().getTime() - lk.startTime > 30 * 1000) {
+                if (new Date().getTime() - lk.startTime > scriptTimeout * 1000) {
                     lk.log(`执行超时，强制退出`)
                     err = "❌执行超时，强制退出（请添加分流切换节点）"
                     break
