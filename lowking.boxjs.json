@@ -695,7 +695,7 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js?raw=true",
-      "script_timeout": 30
+      "script_timeout": 60
     }
   ]
 }
