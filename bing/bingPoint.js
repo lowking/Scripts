@@ -1,5 +1,5 @@
 /*
-Bing积分-lowking-v2.3.4
+Bing积分-lowking-v2.3.5
 
 ⚠️只测试过surge没有其他app自行测试
 1.3.4版本的速度更新，不然第二天无法重置执行状态，导致无法做任务
@@ -160,6 +160,11 @@ async function dealMsg(dashBoard, newPoint) {
 async function all() {
     // 每天任务重置时间到了之后，允许执行
     let isReset = lk.now.getHours() == bingResetHours
+    if (isReset) {
+        searchPcCount = 0
+        searchMobileCount = 0
+        searchEdgeCount = 0
+    }
     if (!isReset && isContinueWhenZero <= 0) {
         lk.done()
         return
