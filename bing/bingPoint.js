@@ -5,10 +5,8 @@ Bing积分-lowking-v2.3.5
 1.3.4版本的速度更新，不然第二天无法重置执行状态，导致无法做任务
 记得到boxjs里面设置每日任务重置时间，不设置默认每天早上8点
 
-hostname = rewards.bing.com
-
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -16,8 +14,9 @@ Surge 4.2.0+ 脚本配置:
 Bing积分cookie = requires-body=0,type=http-request,pattern=https:\/\/rewards\.bing\.com,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bing/bingPoint.js
 Bing积分 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bing/bingPoint.js
 
+[MITM]
+hostname = %APPEND% rewards.bing.com
 */
-
 const lk = new ToolKit(`Bing积分`, `BingPoint`, {"httpApi": "ffff@10.0.0.19:6166"})
 const scriptTimeout = 30
 const bingPointCookieKey = 'bingPointCookieKey'

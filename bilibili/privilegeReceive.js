@@ -5,10 +5,8 @@
 
 按下面配置完之后，手机哔哩哔哩点击我的-我的大会员-卡券包，领取一张券获取Cookie
 
-hostname = *.bilibili.com
-
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -16,26 +14,8 @@ Surge 4.2.0+ 脚本配置:
 哔哩哔哩大会员特权领取cookie = type=http-request,pattern=https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 哔哩哔哩大会员特权领取 = type=cron,cronexp="0 1 0 1 * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
 
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#哔哩哔哩大会员特权领取cookie
-https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
-
-[task_local]
-0 1 0 1 * ? https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-request https:\/\/api.bilibili.com\/x\/vip\/privilege\/receive script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, timeout=10, tag=哔哩哔哩大会员特权领取cookie
-cron "0 0 0,1 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bilibili/privilegeReceive.js, tag=哔哩哔哩大会员特权领取
-
+[MITM]
+hostname = %APPEND% *.bilibili.com
 */
 
 const lk = new ToolKit(`哔哩哔哩大会员特权领取`, `BilibiliPrivilegeReceive`)

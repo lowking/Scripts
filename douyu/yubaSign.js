@@ -14,32 +14,8 @@ Surge 脚本配置:
 斗鱼鱼吧获取cookie = type=http-request,pattern=^https://yuba.douyu.com/wbapi/web/group/myFollow,script-path=yubaSign.js
 斗鱼鱼吧签到 = type=cron,cronexp="0 0 0,1 * * ?",wake-system=1,script-path=yubaSign.js
 
-[mitm]
-hostname = yuba.douyu.com
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#斗鱼鱼吧获取cookie
-^https://yuba.douyu.com/wbapi/web/group/myFollow? url script-request-header yubaSign.js
-
-[task_local]
-0 0 0,1 * * ? yubaSign.js
-
-[mitm]
-hostname = yuba.douyu.com
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-request ^https://yuba.douyu.com/wbapi/web/group/myFollow script-path=yubaSign.js, timeout=10, tag=斗鱼鱼吧获取cookie
-cron "0 0 0,1 * * *" script-path=yubaSign.js, tag=斗鱼鱼吧签到
-
-mitm = yuba.douyu.com
+[MITM]
+hostname = %APPEND% yuba.douyu.com
 */
 const lk = new ToolKit(`斗鱼鱼吧签到`, `DouyuYubaSign`)
 const config = {

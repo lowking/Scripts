@@ -3,38 +3,17 @@ hifini签到-lowking-v1.0
 
 按下面配置完之后，打开https://www.hifini.com/my.htm获取cookie
 
-hostname = *.hifini.com
-
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 [Script]
 # > hifini签到
 hifini签到cookie = type=http-request,pattern=https:\/\/www.hifini.com\/my.htm,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js
 hifini签到 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js
 
-
-************************
-QuantumultX 本地脚本配置:
-************************
-[rewrite_local]
-#hifini签到cookie
-https:\/\/www.hifini.com\/my.htm url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js
-
-[task_local]
-0 10 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js
-
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-request https:\/\/www.hifini.com\/my.htm script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js, timeout=10, tag=hifini签到cookie
-cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js, tag=hifini签到
-
+[MITM]
+hostname = %APPEND% *.hifini.com
 */
-
 const lk = new ToolKit(`hifini签到`, `HifiniSignIn`)
 const hifiniCookieKey = 'lkHifiniCookieKey'
 const hifiniIsTakeTheFirst = 'lkHifiniIsTakeTheFirst'

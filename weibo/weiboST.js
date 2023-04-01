@@ -6,7 +6,7 @@
 ⚠️注：获取完cookie记得把脚本禁用
 
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -20,20 +20,6 @@ Surge 4.2.0+ 脚本配置:
 
 [mitm] 
 hostname = weibo.com
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#微博超话签到
-https:\/\/weibo\.com\/p\/aj\/general\/button\?ajwvr=6&api=http:\/\/i\.huati\.weibo\.com\/aj\/super\/checkin url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboSTCookie.js
-0 0 0,1 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboST.js
-#超话页面强制用pc模式打开
-^https?://weibo\.com/p/[0-9] url request-header (\r\n)User-Agent:.+(\r\n) request-header $1User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15
-
-[mitm] 
-hostname= weibo.com
 */
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = new ToolKit(`微博超话签到`, `WeiboSTSign`)

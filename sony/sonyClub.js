@@ -4,30 +4,12 @@
 ⚠️v1.2之后需要订阅BoxJs之后填写帐号密码
 
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
+
 [Script]
 # > 索尼俱乐部签到
 索尼俱乐部签到 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js
-
-
-
-
-************************
-QuantumultX 脚本配置:
-************************
-[task_local]
-0 0 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js
-
-
-
-
-************************
-LOON 脚本配置:
-************************
-[Script]
-cron "0 0 0 * * *" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js, tag=索尼俱乐部签到
-
 */
 const sonyClubTokenKey = 'lkSonyClubToken'
 const lk = new ToolKit('索尼俱乐部签到', 'SonyClub')

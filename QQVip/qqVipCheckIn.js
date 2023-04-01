@@ -17,7 +17,7 @@ QQ会员成长值-lowking-v1.7
 }
 
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -25,32 +25,8 @@ Surge 4.2.0+ 脚本配置:
 qq会员获取cookie = type=http-request,pattern=https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi,script-path=qqVipCheckIn.js
 qq会员签到 = type=cron,cronexp="0 0 0,1 * * ?",wake-system=1,script-path=qqVipCheckIn.js
 
-[mitm]
-hostname = proxy.vac.qq.com
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#qq会员获取cookie
-https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi? url script-request-header qqVipCheckIn.js
-
-[task_local]
-0 0 0,1 * * ? qqVipCheckIn.js
-
-[mitm]
-hostname = proxy.vac.qq.com
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-request https:\/\/proxy.vac.qq.com\/cgi-bin\/srfentry.fcgi script-path=qqVipCheckIn.js, timeout=10, tag=qq会员获取cookie
-cron "0 0 0,1 * * *" script-path=qqVipCheckIn.js, tag=qq会员签到
-
-mitm = proxy.vac.qq.com
+[MITM]
+hostname = %APPEND% proxy.vac.qq.com
 */
 const signHeaderKey = 'lkQQSignHeaderKey'
 const blockListKey = 'lkQQSignBlockListKey'

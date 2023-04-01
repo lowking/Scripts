@@ -5,7 +5,7 @@ QQ萌宠-lowking-v1.0
 按下面配置完之后，手机qq进入左侧会员，再点击右侧qq宠物(如果没弹出获取成功通知，点击右上角3个点，重启小程序)
 
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -13,32 +13,8 @@ Surge 4.2.0+ 脚本配置:
 QQ萌宠cookie = requires-body=1,type=http-response,pattern=https:\/\/qqpet.jwetech.com\/api\/authorizations,script-path=lkQQPet.js
 QQ萌宠 = type=cron,cronexp="0 0 0,1 * * ?",wake-system=1,script-path=lkQQPet.js
 
-[mitm]
-hostname = qqpet.jwetech.com
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#QQ萌宠获取cookie
-https:\/\/qqpet.jwetech.com\/api\/authorizations url script-response-body lkQQPet.js
-
-[task_local]
-0 0 0,1 * * ? lkQQPet.js
-
-[mitm]
-hostname = qqpet.jwetech.com
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-response https:\/\/qqpet.jwetech.com\/api\/authorizations script-path=lkQQPet.js, timeout=10, requires-body=true, tag=QQ萌宠cookie
-cron "0 0 0,1 * * *" script-path=lkQQPet.js, tag=QQ萌宠
-
-mitm = qqpet.jwetech.com
+[MITM]
+hostname = %APPEND% qqpet.jwetech.com
 */
 const lk = new ToolKit(`QQ萌宠`, `QQPet`)
 const qqPetTokenKey = `lkQQPetToken`

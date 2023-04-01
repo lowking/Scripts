@@ -4,10 +4,8 @@
 按下面配置完之后，手机朴朴短信登录获取token，下面配置只验证过surge的，其他的自行测试
 ⚠️只测试过surge没有其他app自行测试
 
-hostname = cauth.pupuapi.com
-
 ************************
-Surge 4.2.0+ 脚本配置:
+Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
@@ -15,28 +13,9 @@ Surge 4.2.0+ 脚本配置:
 朴朴签到cookie = requires-body=1,type=http-response,pattern=https:\/\/cauth.pupuapi.com\/clientauth\/user\/verify_login,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
 朴朴签到 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
 
-
-************************
-QuantumultX 本地脚本配置:
-************************
-
-[rewrite_local]
-#朴朴签到cookie
-https:\/\/cauth.pupuapi.com\/clientauth\/user\/verify_login url script-request-header https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
-
-[task_local]
-0 10 0 * * ? https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js
-
-************************
-LOON 本地脚本配置:
-************************
-
-[Script]
-http-request https:\/\/cauth.pupuapi.com\/clientauth\/user\/verify_login script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js, timeout=10, tag=朴朴签到cookie
-cron "0 10 0 * * ?" script-path=https://raw.githubusercontent.com/lowking/Scripts/master/pupu/pupuCheckIn.js, tag=朴朴签到
-
+[MITM]
+hostname = %APPEND% cauth.pupuapi.com
 */
-
 const lk = new ToolKit(`朴朴签到`, `PuPuCheckIn`, {"httpApia": "ffff@192.168.8.117:6166"})
 const pupuTokenKey = 'lkPuPuTokenKey'
 let pupuToken = lk.getVal(pupuTokenKey)
