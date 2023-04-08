@@ -268,7 +268,6 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     if (dataObj.errcode == 0) {
                         resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}\n${discount}`)
                     } else {
-                        lk.execFail()
                         resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.errmsg}\n${discount}`)
                     }
                 }
