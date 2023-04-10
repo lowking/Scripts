@@ -1,5 +1,5 @@
 /*
-哔哩哔哩番剧监控-lowking-v1.6
+哔哩哔哩番剧监控-lowking-v1.6.1
 
 ⚠️注意，如果频繁出现“追番列表数据处理错误❌请带上日志联系作者”这个提示，多半是返回的数据太长，接收不完整破坏了原有json结构
 只需在BoxJs配置调小“页大小”，即可解决，建议10
@@ -19,12 +19,14 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 [MITM]
 hostname = %APPEND% *.bilibili.com
 */
-const lk = new ToolKit('哔哩哔哩番剧监控', 'BilibiliBangumiMonitor')
+const lk = new ToolKit('哔哩哔哩番剧监控', 'BilibiliBangumiMonitor', {"httpApi": "ffff@10.0.0.19:6166"})
 const vmid = lk.getVal('lkVmidBilibiliBangumiMonitor')
 const followStatus = lk.getVal('lkBilibiliBangumiFollowStatus', 2)
 const bangumiListKey = `lkBilibiliBangumiList${followStatus}`
 const pageSize = lk.getVal('lkBilibiliBangumiPageSize', 15)
 const limitNo = lk.getVal('lkBilibiliBangumiLimitNo', 10)
+const errCountKey = "lkBilibiliBangumiErrCount"
+let errCount = lk.getVal(errCountKey, 0)
 
 if (!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -292,16 +294,29 @@ function getFollowList(pn, ps, preList, type) {
                         if (pn * ps < total) {
                             curList = await getFollowList(++pn, ps, curList, type)
                         }
+                        lk.setVal(errCountKey, "0")
                     } else {
-                        lk.execFail()
-                        lk.appendNotifyInfo(`❌获取追番列表失败：${ret.message}`)
+                        if (errCount >= 5) {
+                            lk.execFail()
+                            lk.appendNotifyInfo(`❌获取追番列表失败：${ret.message}`)
+                            lk.setVal(errCountKey, "0")
+                        } else {
+                            ++errCount
+                            lk.setVal(errCountKey, JSON.stringify(errCount))
+                        }
                     }
                 }
             } catch (e) {
                 lk.logErr(e)
                 lk.log(`b站返回数据：${data}`)
-                lk.execFail()
-                lk.appendNotifyInfo(`追番列表数据处理错误❌请带上日志联系作者`)
+                if (errCount >= 5) {
+                    lk.execFail()
+                    lk.appendNotifyInfo(`追番列表数据处理错误❌请带上日志联系作者`)
+                    lk.setVal(errCountKey, "0")
+                } else {
+                    ++errCount
+                    lk.setVal(errCountKey, JSON.stringify(errCount))
+                }
             } finally {
                 resolve(curList)
             }
