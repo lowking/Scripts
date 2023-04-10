@@ -191,7 +191,7 @@ function ToolKit(scriptName, scriptId, options) {
             if (this.isNode()) {
                 let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
                 // 从传入参数param读取配置的boxjs的json文件路径
-                if (param.hasOwnProperty("target_boxjs_json_path")) {
+                if (param && param.hasOwnProperty("target_boxjs_json_path")) {
                     boxjsJsonPath = param["target_boxjs_json_path"]
                 }
                 if (!this.fs.existsSync(boxjsJsonPath)) {
