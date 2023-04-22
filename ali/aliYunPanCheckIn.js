@@ -1,5 +1,5 @@
 /*
-阿里云盘签到-lowking-v1.0.1
+阿里云盘签到-lowking-v1.0.2
 
 按下面配置完之后，打开阿里云盘获取token（如获取不到，等一段时间再打开），下面配置只验证过surge的，其他的自行测试
 ⚠️只测试过surge没有其他app自行测试
@@ -142,8 +142,49 @@ function refreshToken() {
     })
 }
 
-function signIn() {
+function getReward(day) {
     return new Promise((resolve, _reject) => {
+        const t = '领取奖励'
+        let url = {
+            url: 'https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: aliYunPanToken,
+                "User-Agent": lk.userAgent
+            },
+            body: JSON.stringify({
+                "signInDay": day
+            })
+        }
+        lk.post(url, (error, _response, data) => {
+            try {
+                if (error) {
+                    lk.execFail()
+                    lk.appendNotifyInfo(`❌第${day}天${t}失败，请稍后再试`)
+                } else {
+                    lk.log(data)
+                    let dataObj = JSON.parse(data)
+                    if (dataObj.success) {
+                        lk.appendNotifyInfo(`✓${t}(第${day}天)，${dataObj?.result?.notice}`)
+                    } else {
+                        lk.execFail()
+                        lk.appendNotifyInfo(`❌第${day}天${t}失败，${dataObj.message}`)
+                    }
+                }
+            } catch (e) {
+                lk.logErr(e)
+                lk.log(`阿里云盘返回数据：${data}`)
+                lk.execFail()
+                lk.appendNotifyInfo(`❌第${day}天${t}错误，请带上日志联系作者，或稍后再试`)
+            } finally {
+                resolve()
+            }
+        })
+    })
+}
+
+function signIn() {
+    return new Promise(async (resolve, _reject) => {
         let nowString = lk.formatDate(new Date(), 'yyyyMMdd')
         if (nowString == checkSignInRepeat) {
             lk.prependNotifyInfo('今日已经签到，无法重复签到～～')
@@ -160,36 +201,26 @@ function signIn() {
             },
             body: JSON.stringify({})
         }
-        lk.post(url, (error, _response, data) => {
+        lk.post(url, async (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    lk.log(data)
                     let dataObj = JSON.parse(data)
                     if (dataObj.success) {
-                        let notice = ""
                         let prefix = ""
-                        let rewardName = ""
-                        let desp = ""
                         if (dataObj?.result?.signInLogs.length > 0) {
-                            dataObj.result.signInLogs.forEach((l) => {
+                            for (const l of dataObj.result.signInLogs) {
                                 if (l?.status != "miss") {
                                     prefix = `第${l?.day}天`
-                                    rewardName = l?.reward?.name
-                                    desp = l?.reward?.description
+                                    if (!l?.isReward) {
+                                        await getReward(l?.day)
+                                    }
                                 }
-                            })
+                            }
                         }
-                        let notifyStr = `🎉${prefix}${t}成功`
-                        if (rewardName) {
-                            notice = `${rewardName.trim()}${!desp ? "" : "-" + desp.trim()}`
-                        }
-                        if (notice) {
-                            notifyStr = `${notifyStr}，获得【${notice}】`
-                        }
-                        lk.prependNotifyInfo(notifyStr)
+                        lk.prependNotifyInfo(`🎉${prefix}${t}成功`)
                         lk.setVal(checkSignInRepeatKey, nowString)
                     } else {
                         lk.execFail()
