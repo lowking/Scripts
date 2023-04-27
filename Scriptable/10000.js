@@ -33,8 +33,10 @@ const cookie = await $.getVal("cookie", "icloud", "")
 const title = await $.getVal("title", "icloud", "信不过")
 
 const now = $.now
+const errFlag = "⚬ "
 
 let subt, flowRes, voiceRes
+let requestState = 1 << 1 | 1 << 2
 let widget = new ListWidget()
 widget.backgroundImage = $.getWidgetBg()
 
@@ -107,11 +109,11 @@ function showmsg(w) {
  * 根据数据填充widget
  * @param w
  * @param pretitle  大标题
- * @param subt      [话费]1元
- * @param flowRes   [流量]1GB
- * @param voiceRes  [语音]1分钟
+ * @param _subt      [话费]1元
+ * @param _flowRes   [流量]1GB
+ * @param _voiceRes  [语音]1分钟
  */
-async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
+async function createWidget(w, pretitle, _subt, _flowRes, _voiceRes) {
     $.log('创建widget')
 
     // 获取第二天是否工作日
@@ -130,14 +132,13 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             preDiffKey += diffDataKey
             preData = await $.getVal(diffDataKey, "local", "")
             preData = Number(preData.replace('¥', ''))
-            let curData = Number(subt.replace('¥', ''))
+            let curData = Number(_subt.replace('¥', ''))
             if (preData || preData === 0) {
                 diffResult = curData - preData
                 let preDiff = await $.getVal(preDiffKey, "local", "")
                 // 判断是否保持上次的差值
                 if (preDiff) {
                     // 有保存，则判断本次差值是否为0，为0则显示上次保存差值
-                    $.log(`ttttttttttttttttt`)
                     if (diffResult === 0) {
                         diffResult = preDiff
                     }
@@ -151,7 +152,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             preData = await $.getVal(diffDataKey, "local", "")
             preData = preData.split(" ")
             preData = $.fileLengthFormat(preData[0], preData[1], true)
-            let curData = flowRes.split(" ")
+            let curData = _flowRes.split(" ")
             curData = $.fileLengthFormat(curData[0], curData[1], true)
             if (preData || preData === 0) {
                 diffResult = curData - preData
@@ -177,7 +178,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             preDiffKey += diffDataKey
             preData = await $.getVal(diffDataKey, "local", "")
             preData = Number(preData.replace('分钟', ''))
-            let curData = Number(voiceRes.replace('分钟', ''))
+            let curData = Number(_voiceRes.replace('分钟', ''))
             if (preData || preData === 0) {
                 diffResult = curData - preData
                 let preDiff = await $.getVal(preDiffKey, "local", "")
@@ -198,12 +199,16 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
     }
     $.log(`差值：${diffResult}`)
     // 保存成功执行的数据
-    if (subt != '-') {
-        $.log(`${subt}${flowRes}${voiceRes}`)
-        await $.setVal('subt', subt, 'local')
-        await $.setVal('flowRes', flowRes, 'local')
-        await $.setVal('voiceRes', voiceRes, 'local')
-        $.log(`写入数据：${await $.getDataFile('local')}`)
+    if (requestState & (1 << 1)) {
+        $.log(`${_subt}`)
+        await $.setVal('subt', _subt, 'local')
+        $.log(`写入余额数据：${await $.getDataFile('local')}`)
+    }
+    if (requestState & (1 << 2)) {
+        $.log(`${_flowRes}${_voiceRes}`)
+        await $.setVal('flowRes', _flowRes, 'local')
+        await $.setVal('voiceRes', _voiceRes, 'local')
+        $.log(`写入流量语音数据：${await $.getDataFile('local')}`)
     }
     let image = await $.getImage('bg.png', 'icloud')
     let base64str = ``
@@ -269,13 +274,19 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
         $.log(`${JSON.stringify(currentSpec)}`)
         if ("话费" === type) {
             $.log('设置话费')
+            let feeReqState = requestState & (1 << 1)
+            let _errFlag = errFlag
+            if (feeReqState) {
+                _subt = subt
+                _errFlag = ""
+            }
             let feeStack = w.addStack()
             feeStack.layoutVertically()
             let feeRowStack = feeStack.addStack()
             feeRowStack.bottomAlignContent()
             feeRowStack.addSpacer()
-            let feeText = feeRowStack.addText(subt.replace('¥', ''))
-            if (subt.includes('已欠费') || Number(subt.replace('¥', '').substring(subt.indexOf(']') + 1)) < warnFee) {
+            let feeText = feeRowStack.addText(_errFlag + _subt.replace('¥', ''))
+            if (_subt.includes('已欠费') || Number(_subt.replace('¥', '').substring(_subt.indexOf(']') + 1)) < warnFee) {
                 currentColor = warnColor
             }
             feeText.font = currentSpec.fontStyle
@@ -293,14 +304,21 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             }
         } else if ("流量" === type) {
             $.log('设置流量')
-            let flowResArr = flowRes.split(' ')
+            // 判断状态码，如果查询成功显示最新数据，否则显示失败标记⚬+上次查询成功的数据
+            let flowReqState = requestState & (1 << 2)
+            let _errFlag = errFlag
+            if (flowReqState) {
+                _flowRes = flowRes
+                _errFlag = ""
+            }
+            let flowResArr = _flowRes.split(' ')
             let flowStack = w.addStack()
             flowStack.layoutVertically()
             let flowRowStack = flowStack.addStack()
             flowRowStack.bottomAlignContent()
             flowRowStack.addSpacer()
-            let flowText = flowRowStack.addText(flowResArr[0])
-            if (flowRes.indexOf('MB') != -1 && Number(flowResArr[0]) < warnData) {
+            let flowText = flowRowStack.addText(_errFlag + flowResArr[0])
+            if (_flowRes.indexOf('MB') != -1 && Number(flowResArr[0]) < warnData) {
                 currentColor = warnColor
             }
             flowText.font = currentSpec.fontStyle
@@ -318,14 +336,21 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             }
         } else if ("语音" === type) {
             $.log('设置语音')
-            let voiceNum = voiceRes.replace('分钟', '')
+            // 判断状态码，如果查询成功显示最新数据，否则显示失败标记⚬+上次查询成功的数据
+            let voiceReqState = requestState & (1 << 2)
+            let _errFlag = errFlag
+            if (voiceReqState) {
+                _voiceRes = voiceRes
+                _errFlag = ""
+            }
+            let voiceNum = _voiceRes.replace('分钟', '')
             let voiceStack = w.addStack()
             voiceStack.layoutVertically()
             let voiceRowStack = voiceStack.addStack()
             voiceRowStack.bottomAlignContent()
             voiceRowStack.addSpacer()
-            let voiceText = voiceRowStack.addText(voiceNum)
-            if (voiceRes.indexOf('分钟') && Number(voiceNum + 1) < warnVoice) {
+            let voiceText = voiceRowStack.addText(_errFlag + voiceNum)
+            if (_voiceRes.indexOf('分钟') && Number(voiceNum + 1) < warnVoice) {
                 currentColor = warnColor
             }
             voiceText.font = currentSpec.fontStyle
@@ -368,7 +393,7 @@ async function createWidget(w, pretitle, subt, flowRes, voiceRes) {
             let iconElm = updateTimeRowStack.addImage(updateTimeIcon.image)
             iconElm.imageSize = new Size(11, 12)
             iconElm.tintColor = Color.gray()
-            let updateTimeText = updateTimeRowStack.addText(`${hours > 9 ? hours : "0" + hours}:${minutes > 9 ? minutes : "0" + minutes}${$.execStatus?'':'⚬'}`)
+            let updateTimeText = updateTimeRowStack.addText(`${hours > 9 ? hours : "0" + hours}:${minutes > 9 ? minutes : "0" + minutes}`)
             updateTimeText.font = currentSpec.fontStyle
             updateTimeText.textColor = currentColor
             updateTimeText.rightAlignText()
@@ -436,6 +461,7 @@ function queryfee() {
                 }
                 $.log(`查询余额结束：${subt}`)
             } catch (e) {
+                requestState ^= 1 << 1
                 $.execFail()
                 $.log('查询余额异常')
                 $.logErr(e)
@@ -475,6 +501,7 @@ function querymeal() {
                 }
                 $.log(`查询套餐结束：\n${flowRes}\n${voiceRes}`)
             } catch (e) {
+                requestState ^= 1 << 2
                 $.execFail()
                 $.log('查询套餐异常')
                 $.logErr(e)
