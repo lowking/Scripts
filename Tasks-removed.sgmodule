@@ -8,6 +8,8 @@
 
 京东金融领豆 = type=cron,cronexp="20 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/dompling/Script/master/jd/jd_jr_sign.js,script-update-interval=0
 
+爱奇艺 = type=cron,cronexp="30 2 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/iQIYI-DailyBonus/iQIYI.js,script-update-interval=0
+
 取关京东店铺和商品 = type=cron,cronexp="20 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_unsubscribe.js,script-update-interval=0
 
 微博超话 = type=cron,cronexp="0 0 0 * * ?",wake-system=1,timeout=30,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/weibo/weiboST.js,script-update-interval=0
