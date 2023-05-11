@@ -13,7 +13,7 @@
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/bilibili.png" style="border-radius: 5px;" width="5%">
 🟢</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bilibili/privilegeReceive.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bilibiliBigVip.svg" style="border-radius: 5px;" width="5%">
-🟢</a>
+🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js"><img src="https://github.githubassets.com/favicons/favicon-dark.svg" style="border-radius: 5px;" width="5%">
 🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png" style="border-radius: 5px;" width="5%">
