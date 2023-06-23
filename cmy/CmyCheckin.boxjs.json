@@ -91,7 +91,7 @@
 					"primary": ["name"],
 					"child": [
 						{
-							"id": "id",
+							"id": "name",
 							"name": "游戏名",
 							"type": "text"
 						},
