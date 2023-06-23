@@ -273,7 +273,27 @@
           "type": "textarea",
           "autoGrow": true,
           "rows": 5,
-          "desc": "仓库地址 (JSON 格式)"
+          "desc": "仓库地址 (JSON 格式)",
+          "primary": [
+            "name"
+          ],
+          "child": [
+            {
+              "id": "name",
+              "name": "描述",
+              "type": "text"
+            },
+            {
+              "id": "url",
+              "name": "仓库链接",
+              "type": "text"
+            },
+            {
+              "id": "file_names",
+              "name": "文件",
+              "type": "text"
+            }
+          ]
         },
         {
           "id": "lkGithubMonitorToken",
