@@ -123,7 +123,8 @@ function ToolKit(scriptName, scriptId, options) {
             // 直接用接收到文件路径，解决在不同目录下都可以使用 node xxxx/xxx.js p 指令发送脚本给手机执行
             // let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
             let fname = this.comm[0]
-            this.log(`获取【${fname}】内容传给手机`)
+            let httpApiHost = this.options.httpApi.split("@")[1]
+            this.log(`获取【${fname}】内容传给【${httpApiHost}】`)
             let scriptStr = ''
             this.fs = this.fs ? this.fs : require('fs')
             this.path = this.path ? this.path : require('path')
@@ -142,7 +143,7 @@ function ToolKit(scriptName, scriptId, options) {
                 scriptStr = ''
             }
             let options = {
-                url: `http://${this.options.httpApi.split("@")[1]}/v1/scripting/evaluate`,
+                url: `http://${httpApiHost}/v1/scripting/evaluate`,
                 headers: {
                     "X-Key": `${this.options.httpApi.split("@")[0]}`
                 },
@@ -154,7 +155,7 @@ function ToolKit(scriptName, scriptId, options) {
                 json: true
             }
             this.post(options, (_error, _response, _data) => {
-                this.log(`已将脚本【${fname}】发给手机！`)
+                this.log(`已将脚本【${fname}】发给【${httpApiHost}】`)
                 this.done()
             })
         }
