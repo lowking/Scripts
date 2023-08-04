@@ -112,8 +112,12 @@ if (!lk.isExecComm) {
 
 function getCookie() {
     if (lk.isGetCookie(/\/my.htm/)) {
-        if ($request.headers.hasOwnProperty('Cookie')) {
-            lk.setVal(hifiniCookieKey, $request.headers.Cookie)
+        let headers = Object.keys($request.headers).reduce((obj, key) => {
+            obj[key.toLowerCase()] = $request.headers[key]
+            return obj
+        }, {})
+        if (headers.hasOwnProperty('cookie')) {
+            lk.setVal(hifiniCookieKey, headers.cookie)
             lk.appendNotifyInfo('🎉成功获取hifini签到cookie，可以关闭相应脚本')
         } else {
             lk.appendNotifyInfo('❌获取hifini签到cookie失败')
