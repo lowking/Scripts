@@ -1,5 +1,5 @@
 /*
-阿里云盘签到-lowking-v1.1.0
+阿里云盘签到-lowking-v1.1.1
 
 按下面配置完之后，打开阿里云盘获取token（如获取不到，等一段时间再打开），下面配置只验证过surge的，其他的自行测试
 ⚠️只测试过surge没有其他app自行测试
@@ -10,12 +10,12 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 
 [Script]
 # > 阿里云盘签到
-https://auth.aliyundrive.com/v2/account/token
-阿里云盘签到cookie = requires-body=1,type=http-response,pattern=https:\/\/auth.aliyundrive.com\/v2\/account\/token,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
+https://auth.alipan.com/v2/account/token
+阿里云盘签到cookie = requires-body=1,type=http-response,pattern=https:\/\/auth.alipan.com\/v2\/account\/token,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
 阿里云盘签到 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js
 
 [MITM]
-hostname = %APPEND% auth.aliyundrive.com
+hostname = %APPEND% auth.alipan.com
 */
 const lk = new ToolKit(`阿里云盘签到`, `AliYunPanCheckIn`, {"httpApi": "ffff@10.0.0.19:6166"})
 const aliYunPanTokenKey = 'lkAliYunPanTokenKey'
@@ -106,7 +106,7 @@ function refreshToken() {
     return new Promise((resolve, _reject) => {
         const t = '获取token'
         let url = {
-            url: 'https://auth.aliyundrive.com/v2/account/token',
+            url: 'https://auth.alipan.com/v2/account/token',
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
             },
@@ -149,7 +149,7 @@ function getReward(day) {
     return new Promise((resolve, _reject) => {
         const t = '领取奖励'
         let url = {
-            url: 'https://member.aliyundrive.com/v1/activity/sign_in_reward?_rx-s=mobile',
+            url: 'https://member.alipan.com/v1/activity/sign_in_reward?_rx-s=mobile',
             headers: {
                 "Content-Type": "application/json",
                 Authorization: aliYunPanToken,
@@ -190,7 +190,7 @@ function doJoinTeam(joinTeamId) {
     return new Promise(async (resolve, _reject) => {
         const t = '加入队伍'
         let url = {
-            url: 'https://member.aliyundrive.com/v1/activity/sign_in_team_pk?_rx-s=mobile',
+            url: 'https://member.alipan.com/v1/activity/sign_in_team_pk?_rx-s=mobile',
             headers: {
                 "Content-Type": "application/json",
                 Authorization: aliYunPanToken,
@@ -233,7 +233,7 @@ function joinTeam(layer = 0) {
         // }
         const t = '加入PK'
         let url = {
-            url: 'https://member.aliyundrive.com/v1/activity/sign_in_team?_rx-s=mobile',
+            url: 'https://member.alipan.com/v1/activity/sign_in_team?_rx-s=mobile',
             headers: {
                 "Content-Type": "application/json",
                 Authorization: aliYunPanToken,
@@ -289,7 +289,7 @@ function signIn() {
         }
         const t = '签到'
         let url = {
-            url: 'https://member.aliyundrive.com/v1/activity/sign_in_list',
+            url: 'https://member.alipan.com/v1/activity/sign_in_list',
             headers: {
                 "Content-Type": "application/json",
                 Authorization: aliYunPanToken,
