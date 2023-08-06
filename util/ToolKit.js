@@ -95,8 +95,7 @@ function ToolKit(scriptName, scriptId, options) {
                 let isHttpApiErr = false
                 if (this.comm[1] == "p") {
                     this.isExecComm = true
-                    //phone
-                    this.log(`开始执行指令【${this.comm[1]}】=> 发送到手机测试脚本！`)
+                    this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本！`)
                     if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
                         this.log(`未设置options，使用默认值`)
                         //设置默认值
