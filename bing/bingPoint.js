@@ -128,8 +128,12 @@ if(!lk.isExecComm) {
 function getCookie() {
     if (lk.isGetCookie(/\/rewards\.bing\.com/)) {
         lk.log(`开始获取cookie`)
+        let headers = Object.keys($request.headers).reduce((obj, key) => {
+            obj[key.toLowerCase()] = $request.headers[key]
+            return obj
+        }, {})
         try {
-            const bingHeader = JSON.stringify($request.headers.cookie)
+            const bingHeader = JSON.stringify(headers.cookie)
             if (!!bingHeader) {
                 lk.setVal(bingPointCookieKey, bingHeader)
                 lk.appendNotifyInfo('🎉成功获取cookie，可以关闭相应脚本')
