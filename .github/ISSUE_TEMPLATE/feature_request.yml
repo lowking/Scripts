@@ -1,0 +1,31 @@
+name: "需求请求"
+description: 需求请求
+title: "[FEAT]"
+labels: [enhancement]
+body:
+  - type: checkboxes
+    attributes:
+      label: 您必须确认以下所有内容
+      description: 根据实际情况选择
+      options:
+        - label: 我确定没有重复的issue。
+        - label: 我确定需求未实现。
+        - label: 我确定需求合理。
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 需求描述
+    validations:
+      required: true
+  - type: textarea
+    id: suggested-solution
+    attributes:
+      label: 实现思路
+      description: |
+        实现此需求的解决思路。
+  - type: textarea
+    id: remark
+    attributes:
+      label: 备注
+      description: |
+        相关的任何其他上下文或截图，或者你觉得有帮助的信息
