@@ -675,13 +675,12 @@ function ToolKit(scriptName, scriptId, options) {
             return typeof obj == "undefined" || obj == null || obj == "" || obj == "null" || obj == "undefined" || obj.length === 0
         }
 
-        randomString(len) {
+        randomString(len, chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
             len = len || 32
-            var $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890'
-            var maxPos = $chars.length
+            var maxPos = chars.length
             var pwd = ''
             for (let i = 0; i < len; i++) {
-                pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+                pwd += chars.charAt(Math.floor(Math.random() * maxPos))
             }
             return pwd
         }
