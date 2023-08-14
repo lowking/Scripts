@@ -631,7 +631,22 @@
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png"
       ],
       "keys": [
-        "bingPointCookieKey"
+        "bingPointCookieKey",
+        "bingResetHoursKey",
+        "bingSearchCookieMobileKey",
+        "bingSearchCookieKey",
+        "bingSearchRepeatKey",
+        "searchRepeatMobileKey",
+        "bingSearchPcCountKey",
+        "searchPcAmountKey",
+        "bingSearchMobileCountKey",
+        "searchMobileAmountKey",
+        "bingPointAppTokenKey",
+        "bingPointAppTokenTypeKey",
+        "bingPointAppRefreshTokenKey",
+        "bingPointAppClientIdKey",
+        "bingCachePointKey",
+        "bingIsContinueWhenZeroKey"
       ],
       "settings": [
         {
@@ -684,13 +699,6 @@
           "desc": "请使用手机打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
         },
         {
-          "id": "searchMobileAmountKey",
-          "name": "Bing每日执行搜索(移动端)次数",
-          "val": 10,
-          "type": "number",
-          "desc": "Bing每日执行搜索(移动端)次数"
-        },
-        {
           "id": "bingSearchCookieKey",
           "name": "Bing每日搜索cookie(PC)",
           "val": "",
@@ -698,18 +706,88 @@
           "desc": "请使用电脑打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
         },
         {
-          "id": "searchPcAmountKey",
-          "name": "Bing每日执行搜索(PC)次数",
-          "val": 10,
-          "type": "number",
-          "desc": "Bing每日执行搜索(PC)次数"
+          "id": "bingSearchRepeatKey",
+          "name": "Bing每日搜索重复执行校验日期存储(PC&Edge)",
+          "val": "",
+          "type": "text",
+          "desc": ""
         },
         {
-          "id": "searchEdgeAmountKey",
-          "name": "Bing每日执行搜索(Edge)次数",
+          "id": "searchRepeatMobileKey",
+          "name": "Bing每日搜索重复执行校验日期存储(移动端)",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "bingSearchPcCountKey",
+          "name": "Bing每日搜索次数记录(PC)",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "searchPcAmountKey",
+          "name": "Bing每日搜索次数上限(PC)",
           "val": 10,
           "type": "number",
-          "desc": "Bing每日执行搜索(Edge)次数"
+          "desc": ""
+        },
+        {
+          "id": "bingSearchMobileCountKey",
+          "name": "Bing每日搜索次数记录(移动端)",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "searchMobileAmountKey",
+          "name": "Bing每日搜索次数上限(移动端)",
+          "val": 10,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "bingPointAppTokenKey",
+          "name": "Bing App token",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app获取token"
+        },
+        {
+          "id": "bingPointAppTokenTypeKey",
+          "name": "Bing App token type",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app获取"
+        },
+        {
+          "id": "bingPointAppRefreshTokenKey",
+          "name": "Bing App refresh_token",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app重新登录获取refresh_token"
+        },
+        {
+          "id": "bingPointAppClientIdKey",
+          "name": "Bing App client_id",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app重新登录获取client_id"
+        },
+        {
+          "id": "bingCachePointKey",
+          "name": "缓存当前积分，用于计算增值",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "bingIsContinueWhenZeroKey",
+          "name": "缓存本次执行积分的增量(不懂不需要改)",
+          "val": 1,
+          "type": "number",
+          "desc": "为0时(积分没增加)，不再执行搜索，避免不必要的请求"
         }
       ],
       "author": "@lowking",
