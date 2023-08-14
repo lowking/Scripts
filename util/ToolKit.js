@@ -73,6 +73,10 @@ function ToolKit(scriptName, scriptId, options) {
             })()
             this.execStatus = true
             this.notifyInfo = []
+
+            //boxjs相关
+            this.boxjsCurSessionKey = "chavy_boxjs_cur_sessions"
+            this.boxjsSessionsKey = "chavy_boxjs_sessions"
             this.log(`${this.name}, 开始执行!`)
             this.execComm()
         }
@@ -462,10 +466,51 @@ function ToolKit(scriptName, scriptId, options) {
             return !value ? defaultValue : value
         }
 
+        updateBoxjsSessions(key, val) {
+            // 避免死循环
+            if (key == this.boxjsSessionsKey) {
+                return
+            }
+            const boxJsId = `${this.prefix}${this.id}`
+            // 先从当前会话中获取boxjs的会话id
+            let boxjsCurSession = JSON.parse(this.getVal(this.boxjsCurSessionKey, "{}"))
+            if (!boxjsCurSession.hasOwnProperty(boxJsId)) {
+                return
+            }
+            let curSessionId = boxjsCurSession[boxJsId]
+            let boxjsSessions = JSON.parse(this.getVal(this.boxjsSessionsKey, "[]"))
+            if (boxjsSessions.length == 0) {
+                return
+            }
+            let curSessionDatas = []
+            boxjsSessions.forEach((session) => {
+                if (session.id == curSessionId) {
+                    curSessionDatas = session.datas
+                }
+            })
+            if (curSessionDatas.length == 0) {
+                return
+            }
+            // 再把修改的数据更新到对应会话中
+            curSessionDatas.forEach((kv) => {
+                if (kv.key == key) {
+                    kv.val = val
+                }
+            })
+            boxjsSessions.forEach((session) => {
+                if (session.id == curSessionId) {
+                    session.datas = curSessionDatas
+                }
+            })
+            this.setVal(this.boxjsSessionsKey, JSON.stringify(boxjsSessions))
+        }
+
         setVal(key, val) {
             if (this.isSurge() || this.isLoon() || this.isStash()) {
+                this.updateBoxjsSessions(key, val)
                 return $persistentStore.write(val, key)
             } else if (this.isQuanX()) {
+                this.updateBoxjsSessions(key, val)
                 return $prefs.setValueForKey(val, key)
             } else if (this.isNode()) {
                 this.data = this.loadData()
