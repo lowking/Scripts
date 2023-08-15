@@ -631,6 +631,7 @@
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png"
       ],
       "keys": [
+        "bingNicknameKey",
         "bingPointCookieKey",
         "bingResetHoursKey",
         "bingSearchCookieMobileKey",
@@ -676,6 +677,13 @@
           "val": "",
           "type": "text",
           "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "bingNicknameKey",
+          "name": "昵称(随意设置)",
+          "val": "",
+          "type": "text",
+          "desc": ""
         },
         {
           "id": "bingResetHoursKey",
