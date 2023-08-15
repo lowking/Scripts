@@ -492,11 +492,20 @@ function ToolKit(scriptName, scriptId, options) {
                 return
             }
             // 再把修改的数据更新到对应会话中
+            let isExists = false
             curSessionDatas.forEach((kv) => {
                 if (kv.key == key) {
                     kv.val = val
+                    isExists = true
                 }
             })
+            // 如果订阅更新，新增的字段不存在会话中则添加
+            if (!isExists) {
+                curSessionDatas.push({
+                    "key": key,
+                    "val": val
+                })
+            }
             boxjsSessions.forEach((session) => {
                 if (session.id == curSessionId) {
                     session.datas = curSessionDatas
