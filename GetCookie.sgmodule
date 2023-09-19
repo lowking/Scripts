@@ -41,5 +41,7 @@ hifini签到cookie = type=http-request,pattern=https:\/\/www.hifini.com\/my.htm,
 
 bing-cookie = requires-body=0,type=http-request, pattern=^https:\/\/rewards\.bing\.com,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/bing/bingPoint.js
 
+Jump游戏价格监控cookie = requires-body=0,type=http-request,pattern=https:\/\/switch\.jumpvg\.com\/jump\/app\/conf,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js
+
 [MITM]
-hostname = %APPEND% rewards.bing.com, ccsp-egmas.sf-express.com, auth.alipan.com, *.hifini.com, cauth.pupuapi.com, qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, passport.iqiyi.com, *.smzdm.com, yuba.douyu.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com
+hostname = %APPEND% switch.jumpvg.com, rewards.bing.com, ccsp-egmas.sf-express.com, auth.alipan.com, *.hifini.com, cauth.pupuapi.com, qqpet.jwetech.com, clientaccess.10086.cn, www.52pojie.cn, *.bilibili.com, passport.iqiyi.com, *.smzdm.com, yuba.douyu.com, tieba.baidu.com, as.xiaojukeji.com, user-api-prd-mx.wandafilm.com, api.m.jd.com, *.video.qq.com, *.bilibili.com, m.ctrip.com, i.meituan.com, credits.bz.mgtv.com
