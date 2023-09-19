@@ -1,5 +1,5 @@
 /*
-Jump价格监控-lowking-v1.0.0
+Jump游戏价格监控-lowking-v1.0.0
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -8,18 +8,21 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
 
 [Script]
-# > Jump价格监控
-Jump价格监控cookie = requires-body=0,type=http-request,pattern=https:\/\/switch\.jumpvg\.com\/jump\/app\/conf,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js
-Jump价格监控 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js
+# > Jump游戏价格监控
+Jump游戏价格监控cookie = requires-body=0,type=http-request,pattern=https:\/\/switch\.jumpvg\.com\/jump\/app\/conf,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js
+Jump游戏价格监控 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js
 
 [MITM]
 hostname = %APPEND% switch.jumpvg.com
 */
-const lk = new ToolKit(`Jump价格监控`, `JumpPrice`, {"httpApi": "ffff@10.0.0.19:6166"})
+const lk = new ToolKit(`Jump游戏价格监控`, `JumpPrice`, {"httpApi": "ffff@10.0.0.19:6166"})
 const domain = "https://switch.jumpvg.com"
 const jumpHeaderKey = 'jumpHeaderKey'
+const jumpDifferenceLowestPercentKey = 'jumpDifferenceLowestPercentp'
+const countryKey = 'jumpCountry'
 let header = lk.getVal(jumpHeaderKey)
-let differenceLowestPercent = 0.1
+let differenceLowestPercent = Number(lk.getVal(jumpDifferenceLowestPercentKey, 0.15))
+let country = `,${lk.getVal(countryKey, "Steam国区,日本,美国")},`
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
@@ -32,8 +35,23 @@ if(!lk.isExecComm) {
                 "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/jump.png"
             ],
             "settings": [
-
+                {
+                    "id": jumpDifferenceLowestPercentKey,
+                    "name": "过滤当前折扣在史低折扣加上该值的游戏",
+                    "val": 0.15,
+                    "type": "number",
+                    "desc": "写小数，默认：0.15"
+                },
+                {
+                    "id": countryKey,
+                    "name": "监控区服",
+                    "val": "Steam国区,日本,美国",
+                    "type": "text",
+                    "desc": "要监控哪些区服，可以先运行一次看看日志。默认值：Steam国区,日本,美国"
+                },
             ],
+            "keys": [jumpHeaderKey, jumpDifferenceLowestPercentKey, countryKey],
+            "script_timeout": 5
         }, {
             "script_url": "https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js",
             "author": "@lowking",
@@ -44,7 +62,6 @@ if(!lk.isExecComm) {
             lk.execFail()
             lk.appendNotifyInfo(err)
         }).finally(() => {
-            lk.msg(``)
             lk.done()
         })
     }
@@ -71,50 +88,53 @@ async function all() {
     let headers = JSON.parse(header)
     await getUserInfo(headers).then(([userInfo, t]) => {
         if (!userInfo?.data?.userId) {
-            throw `❌${ userInfo?.msg || t + "失败"}，请重新获取token`
+            throw `❌${userInfo?.msg || t + "失败"}，请重新获取token`
         }
         return userInfo
     }).then(async (userInfo) => {
         return await getGamePlatforms(userInfo.data.userId, headers).then(([platforms, t]) => {
             if (!(platforms?.code == 0 && platforms.data.length > 0)) {
-                throw `❌${ userInfo?.msg || t + "失败"}`
+                throw `❌${userInfo?.msg || t + "失败"}`
             }
             return {
                 platforms: platforms.data,
                 userId: userInfo.data.userId
             }
         })
-    }).then(({ platforms, userId }) => {
+    }).then(({platforms, userId}) => {
         platforms.forEach((platform) => {
             if (platform?.gameNum > 0 && platform?.moduleId > 0) {
                 getGames(userId, platform.moduleId, headers).then((games) => {
                     games?.data.filter(game => game?.discountOff != 0).forEach((game) => {
-                        // if (game?.title == "小狐狸冒险") {
-                            // gameDetail(game, headers).then((detail) => {
-                            //     lk.log(`${platform?.platformAlias}-${game?.title}-${detail?.jumpGame?.lowestPrice}`)
-                            //     lk.log(JSON.stringify(detail, null, 2))
-                            // })
-                        // }
                         allPrice({...game, ...platform.moduleId}, headers).then((prices) => {
-                            let info = `${platform?.platformAlias}-${game?.title}`
-                            prices.filter(price => price.leftTime).forEach((price) => {
-                                if (price.country.toLowerCase().indexOf("jump") == -1) {
-                                    let priceCNY = (price.price / 100).toFixed(2)
-                                    let priceDiscountCNY = (price.priceDiscount / 100).toFixed(2)
-                                    let lowestPriceCNY = (price.lowestPrice / 100).toFixed(2)
-                                    let diffLowestPercent = (price.priceDiscount-price.lowestPrice) / price.price
-                                    if (!price.lowestPrice) {
-                                        lowestPriceCNY = priceCNY
-                                        diffLowestPercent = 1
-                                    }
-                                    info = `${info}\n${diffLowestPercent <= differenceLowestPercent ? "✓" : ""}${price.country}: ${priceCNY}¥ ${priceDiscountCNY}¥(${lowestPriceCNY}¥ ${(diffLowestPercent * 100).toFixed(2)}%)`
-                                    if (price.leftTime) {
-                                        info = `${info} 剩余${price.leftTime}`
-                                    }
+                            const gameId = game.gameId
+                            const discountEndTime = prices[0].discountEndTime
+                            let gameNotifyKey = `jumpPriceNotify-${gameId}`
+                            let isNotify = lk.getVal(gameNotifyKey) != discountEndTime
+                            let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
+                            let matchCount = 0
+                            prices.filter(price => price.leftTime).filter(price => {
+                                return price.country.toLowerCase().indexOf("jump") == -1 && (country == ",," || country.indexOf(`,${price.country},`) != -1)
+                            }).forEach((price) => {
+                                let priceCNY = (price.price / 100).toFixed(2)
+                                let priceDiscountCNY = (price.priceDiscount / 100).toFixed(2)
+                                let lowestPriceCNY = (price.lowestPrice / 100).toFixed(2)
+                                let discountPercent = (price.price - price.priceDiscount) / price.price
+                                let lowestPercent = (price.price - price.lowestPrice) / price.price
+                                if (!price.lowestPrice) {
+                                    lowestPriceCNY = priceDiscountCNY
+                                    lowestPercent = discountPercent
+                                }
+                                if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
+                                    matchCount++
+                                    info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┗目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)　史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
                                 }
                             })
                             lk.log(info)
-                            lk.appendNotifyInfo(info)
+                            if (isNotify && matchCount) {
+                                lk.setVal(gameNotifyKey, discountEndTime)
+                                lk.msg(``, info)
+                            }
                         })
                     })
                 })
