@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.0.0
+Jump游戏价格监控-lowking-v1.0.1
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -60,7 +60,7 @@ if(!lk.isExecComm) {
         all().catch((err) => {
             lk.logErr(err)
             lk.execFail()
-            lk.appendNotifyInfo(err)
+            lk.msg(``, err)
         }).finally(() => {
             lk.done()
         })
