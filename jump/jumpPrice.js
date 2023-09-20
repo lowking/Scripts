@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.0.1
+Jump游戏价格监控-lowking-v1.0.2
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -127,7 +127,7 @@ async function all() {
                                 }
                                 if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
                                     matchCount++
-                                    info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┗目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)　史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
+                                    info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
                                 }
                             })
                             lk.log(info)
