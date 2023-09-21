@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.0.2
+Jump游戏价格监控-lowking-v1.0.3
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -214,7 +214,7 @@ async function getGames(userId, moduleId, headers) {
                 "subModuleId": 1,
                 "moduleId": moduleId,
                 "lowestPrice": 0,
-                "limit": 10,
+                "limit": 100,
                 "orderBy": 1
             })
         }, async (error, _response, data) => {
