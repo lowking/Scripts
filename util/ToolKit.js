@@ -106,7 +106,7 @@ function ToolKit(scriptName, scriptId, options) {
                         if (this.isEmpty(this.options)) {
                             this.options = {}
                         }
-                        this.options.httpApi = `ffff@10.0.0.9:6166`
+                        this.options.httpApi = `ffff@10.0.0.19:6166`
                     } else {
                         //判断格式
                         if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
@@ -161,34 +161,6 @@ function ToolKit(scriptName, scriptId, options) {
                 this.log(`已将脚本【${fname}】发给【${httpApiHost}】`)
                 this.done()
             })
-        }
-
-        getCallerFileNameAndLine() {
-            let error
-            try {
-                throw Error('')
-            } catch (err) {
-                error = err
-            }
-
-            const stack = error.stack
-            const stackArr = stack.split('\n')
-            let callerLogIndex = 1
-
-            if (callerLogIndex !== 0) {
-                const callerStackLine = stackArr[callerLogIndex]
-                this.path = this.path ? this.path : require('path')
-                return `[${callerStackLine.substring(callerStackLine.lastIndexOf(this.path.sep) + 1, callerStackLine.lastIndexOf(':'))}]`
-            } else {
-                return '[-]'
-            }
-        }
-
-        getFunName(fun) {
-            var ret = fun.toString()
-            ret = ret.substr('function '.length)
-            ret = ret.substr(0, ret.indexOf('('))
-            return ret
         }
 
         boxJsJsonBuilder(info, param) {
@@ -432,20 +404,21 @@ function ToolKit(scriptName, scriptId, options) {
                         const hasOpenUrl = !this.isEmpty(openUrl)
                         const hasMediaUrl = !this.isEmpty(mediaUrl)
 
-                        if (this.isQuanX()) {
+                        if (this.isSurge() || this.isLoon() || this.isStash()) {
+                            if (hasOpenUrl) options["url"] = openUrl
+                            $notification.post(this.name, subtitle, message, options)
+                        } else if (this.isQuanX()) {
                             if (hasOpenUrl) options["open-url"] = openUrl
                             if (hasMediaUrl) options["media-url"] = mediaUrl
                             $notify(this.name, subtitle, message, options)
+                        } else if (this.isNode()) {
+                            this.log("⭐️" + this.name + "\n" + subtitle + "\n" + message)
+                        } else if (this.isJSBox()) {
+                            $push.schedule({
+                                title: this.name,
+                                body: subtitle ? subtitle + "\n" + message : message
+                            })
                         }
-                        if (this.isSurge() || this.isStash()) {
-                            if (hasOpenUrl) options["url"] = openUrl
-                            $notification.post(this.name, subtitle, message, options)
-                        }
-                        if (this.isNode()) this.log("⭐️" + this.name + "\n" + subtitle + "\n" + message)
-                        if (this.isJSBox()) $push.schedule({
-                            title: this.name,
-                            body: subtitle ? subtitle + "\n" + message : message
-                        })
                     }
                 }
             }
@@ -581,7 +554,11 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         get(options, callback = () => {}) {
-            if (this.isQuanX()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
+                $httpClient.get(options, (error, response, body) => {
+                    callback(error, this.adapterStatus(response), body)
+                })
+            } else if (this.isQuanX()) {
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -589,16 +566,12 @@ function ToolKit(scriptName, scriptId, options) {
                 $task.fetch(options).then(response => {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
-            }
-            if (this.isSurge() || this.isLoon() || this.isStash()) $httpClient.get(options, (error, response, body) => {
-                callback(error, this.adapterStatus(response), body)
-            })
-            if (this.isNode()) {
+            } else if (this.isNode()) {
                 this.node.request(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
                 })
-            }
-            if (this.isJSBox()) {
+            } else if (this.isJSBox()) {
+                // not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -615,7 +588,11 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         post(options, callback = () => {}) {
-            if (this.isQuanX()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
+                $httpClient.post(options, (error, response, body) => {
+                    callback(error, this.adapterStatus(response), body)
+                })
+            } else if (this.isQuanX()) {
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -623,18 +600,12 @@ function ToolKit(scriptName, scriptId, options) {
                 $task.fetch(options).then(response => {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
-            }
-            if (this.isSurge() || this.isLoon() || this.isStash()) {
-                $httpClient.post(options, (error, response, body) => {
-                    callback(error, this.adapterStatus(response), body)
-                })
-            }
-            if (this.isNode()) {
+            } else if (this.isNode()) {
                 this.node.request.post(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
                 })
-            }
-            if (this.isJSBox()) {
+            } else if (this.isJSBox()) {
+                // not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -651,7 +622,12 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         put(options, callback = () => {}) {
-            if (this.isQuanX()) {
+            if (this.isSurge() || this.isLoon() || this.isStash()) {
+                options.method = "PUT"
+                $httpClient.put(options, (error, response, body) => {
+                    callback(error, this.adapterStatus(response), body)
+                })
+            } else if (this.isQuanX()) {
                 // no test
                 if (typeof options == "string") options = {
                     url: options
@@ -660,21 +636,13 @@ function ToolKit(scriptName, scriptId, options) {
                 $task.fetch(options).then(response => {
                     callback(null, this.adapterStatus(response), response.body)
                 }, reason => callback(reason.error, null, null))
-            }
-            if (this.isSurge() || this.isLoon() || this.isStash()) {
-                options.method = "PUT"
-                $httpClient.put(options, (error, response, body) => {
-                    callback(error, this.adapterStatus(response), body)
-                })
-            }
-            if (this.isNode()) {
+            } else if (this.isNode()) {
                 options.method = "PUT"
                 this.node.request.put(options, (error, response, body) => {
                     callback(error, this.adapterStatus(response), body)
                 })
-            }
-            if (this.isJSBox()) {
-                // no test
+            } else if (this.isJSBox()) {
+                // not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -702,8 +670,6 @@ function ToolKit(scriptName, scriptId, options) {
             this.costTotalMs += ms
             this.log(`${info}耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
             this.setVal(this.costTotalStringKey, JSON.stringify(`${this.costTotalMs},${this.execCount}`))
-            // this.setVal(this.execCountKey, JSON.stringify(0))
-            // this.setVal(this.costTotalMsKey, JSON.stringify(0))
         }
 
         done(value = {}) {
@@ -731,8 +697,8 @@ function ToolKit(scriptName, scriptId, options) {
 
         randomString(len, chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
             len = len || 32
-            var maxPos = chars.length
-            var pwd = ''
+            let maxPos = chars.length
+            let pwd = ''
             for (let i = 0; i < len; i++) {
                 pwd += chars.charAt(Math.floor(Math.random() * maxPos))
             }
@@ -766,7 +732,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
             if (ifCode) {
                 let temp = ``
-                for (var i = 0; i < clen; i++) {
+                for (let i = 0; i < clen; i++) {
                     temp += cstr
                 }
                 str = str.substring(0, startIndex) + temp + str.substring(clen + startIndex)
@@ -808,8 +774,8 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         toDBC(txtstring) {
-            var tmp = ""
-            for (var i = 0; i < txtstring.length; i++) {
+            let tmp = ""
+            for (let i = 0; i < txtstring.length; i++) {
                 if (txtstring.charCodeAt(i) == 32) {
                     tmp = tmp + String.fromCharCode(12288)
                 } else if (txtstring.charCodeAt(i) < 127) {
