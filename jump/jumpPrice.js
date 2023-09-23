@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.1.0
+Jump游戏价格监控-lowking-v1.1.1
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -110,7 +110,7 @@ async function all() {
                             const gameId = game.gameId
                             const discountEndTime = prices[0].discountEndTime
                             let gameNotifyKey = `jumpPriceNotify-${gameId}`
-                            let isNotify = lk.getVal(gameNotifyKey) != discountEndTime
+                            let isNotify = lk.getVal(gameNotifyKey, "") != (discountEndTime || "")
                             let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
                             let matchCount = 0
                             let isLastDay = false
