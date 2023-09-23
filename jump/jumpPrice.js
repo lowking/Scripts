@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.0.3
+Jump游戏价格监控-lowking-v1.1.0
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -113,6 +113,7 @@ async function all() {
                             let isNotify = lk.getVal(gameNotifyKey) != discountEndTime
                             let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
                             let matchCount = 0
+                            let isLastDay = false
                             prices.filter(price => price.leftTime).filter(price => {
                                 return price.country.toLowerCase().indexOf("jump") == -1 && (country == ",," || country.indexOf(`,${price.country},`) != -1)
                             }).forEach((price) => {
@@ -125,13 +126,16 @@ async function all() {
                                     lowestPriceCNY = priceDiscountCNY
                                     lowestPercent = discountPercent
                                 }
+                                if (!isLastDay && price.leftTime.trim().indexOf("1天") == 0) {
+                                    isLastDay = true
+                                }
                                 if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
                                     matchCount++
                                     info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
                                 }
                             })
                             lk.log(info)
-                            if (isNotify && matchCount) {
+                            if (isNotify && matchCount || isLastDay) {
                                 lk.setVal(gameNotifyKey, discountEndTime)
                                 lk.msg(``, info)
                             }
