@@ -94,31 +94,33 @@ function ToolKit(scriptName, scriptId, options) {
 
         async execComm() {
             //支持node命令，实现发送手机测试
-            if (this.isNode()) {
-                this.comm = process.argv.slice(1)
-                let isHttpApiErr = false
-                if (this.comm[1] == "p") {
-                    this.isExecComm = true
-                    this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本！`)
-                    if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
-                        this.log(`未设置options，使用默认值`)
-                        //设置默认值
-                        if (this.isEmpty(this.options)) {
-                            this.options = {}
-                        }
-                        this.options.httpApi = `ffff@10.0.0.19:6166`
-                    } else {
-                        //判断格式
-                        if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
-                            isHttpApiErr = true
-                            this.log(`❌httpApi格式错误！格式：ffff@3.3.3.18:6166`)
-                            this.done()
-                        }
-                    }
-                    if (!isHttpApiErr) {
-                        this.callApi(this.comm[2])
-                    }
+            if (!this.isNode()) {
+                return
+            }
+            this.comm = process.argv.slice(1)
+            if (this.comm[1] != "p") {
+                return
+            }
+            let isHttpApiErr = false
+            this.isExecComm = true
+            this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本！`)
+            if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
+                this.log(`未设置options，使用默认值`)
+                //设置默认值
+                if (this.isEmpty(this.options)) {
+                    this.options = {}
                 }
+                this.options.httpApi = `ffff@10.0.0.19:6166`
+            } else {
+                //判断格式
+                if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
+                    isHttpApiErr = true
+                    this.log(`❌httpApi格式错误！格式：ffff@3.3.3.18:6166`)
+                    this.done()
+                }
+            }
+            if (!isHttpApiErr) {
+                this.callApi(this.comm[2])
             }
         }
 
@@ -164,148 +166,151 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         boxJsJsonBuilder(info, param) {
-            if (this.isNode()) {
-                let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
-                // 从传入参数param读取配置的boxjs的json文件路径
-                if (param && param.hasOwnProperty("target_boxjs_json_path")) {
-                    boxjsJsonPath = param["target_boxjs_json_path"]
+            if (!this.isNode()) {
+                return
+            }
+            if (!this.isJsonObject(info) || !this.isJsonObject(param)) {
+                this.log("构建BoxJsJson传入参数格式错误，请传入json对象")
+                return
+            }
+            let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
+            // 从传入参数param读取配置的boxjs的json文件路径
+            if (param && param.hasOwnProperty("target_boxjs_json_path")) {
+                boxjsJsonPath = param["target_boxjs_json_path"]
+            }
+            if (!this.fs.existsSync(boxjsJsonPath)) {
+                return
+            }
+            this.log('using node')
+            let needAppendKeys = ["settings", "keys"]
+            const domain = 'https://raw.githubusercontent.com/Orz-3'
+            let boxJsJson = {}
+            let scritpUrl = '#lk{script_url}'
+            if (param && param.hasOwnProperty('script_url')) {
+                scritpUrl = this.isEmpty(param['script_url']) ? "#lk{script_url}" : param['script_url']
+            }
+            boxJsJson.id = `${this.prefix}${this.id}`
+            boxJsJson.name = this.name
+            boxJsJson.desc_html = `⚠️使用说明</br>详情【<a href='${scritpUrl}?raw=true'><font class='red--text'>点我查看</font></a>】`
+            boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`, `${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
+            boxJsJson.keys = []
+            boxJsJson.settings = [
+                {
+                    "id": `${this.prefix}IsEnableLog${this.id}`,
+                    "name": "开启/关闭日志",
+                    "val": true,
+                    "type": "boolean",
+                    "desc": "默认开启"
+                },
+                {
+                    "id": `${this.prefix}NotifyOnlyFail${this.id}`,
+                    "name": "只当执行失败才通知",
+                    "val": false,
+                    "type": "boolean",
+                    "desc": "默认关闭"
+                },
+                {
+                    "id": `${this.prefix}IsEnableTgNotify${this.id}`,
+                    "name": "开启/关闭Telegram通知",
+                    "val": false,
+                    "type": "boolean",
+                    "desc": "默认关闭"
+                },
+                {
+                    "id": `${this.prefix}TgNotifyUrl${this.id}`,
+                    "name": "Telegram通知地址",
+                    "val": "",
+                    "type": "text",
+                    "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
                 }
-                if (!this.fs.existsSync(boxjsJsonPath)) {
-                    return
-                }
-                if (!this.isJsonObject(info) || !this.isJsonObject(param)) {
-                    this.log("构建BoxJsJson传入参数格式错误，请传入json对象")
-                    return
-                }
-                this.log('using node')
-                let needAppendKeys = ["settings", "keys"]
-                const domain = 'https://raw.githubusercontent.com/Orz-3'
-                let boxJsJson = {}
-                let scritpUrl = '#lk{script_url}'
-                if (param && param.hasOwnProperty('script_url')) {
-                    scritpUrl = this.isEmpty(param['script_url']) ? "#lk{script_url}" : param['script_url']
-                }
-                boxJsJson.id = `${this.prefix}${this.id}`
-                boxJsJson.name = this.name
-                boxJsJson.desc_html = `⚠️使用说明</br>详情【<a href='${scritpUrl}?raw=true'><font class='red--text'>点我查看</font></a>】`
-                boxJsJson.icons = [`${domain}/mini/master/Alpha/${this.id.toLocaleLowerCase()}.png`, `${domain}/mini/master/Color/${this.id.toLocaleLowerCase()}.png`]
-                boxJsJson.keys = []
-                boxJsJson.settings = [
-                    {
-                        "id": `${this.prefix}IsEnableLog${this.id}`,
-                        "name": "开启/关闭日志",
-                        "val": true,
-                        "type": "boolean",
-                        "desc": "默认开启"
-                    },
-                    {
-                        "id": `${this.prefix}NotifyOnlyFail${this.id}`,
-                        "name": "只当执行失败才通知",
-                        "val": false,
-                        "type": "boolean",
-                        "desc": "默认关闭"
-                    },
-                    {
-                        "id": `${this.prefix}IsEnableTgNotify${this.id}`,
-                        "name": "开启/关闭Telegram通知",
-                        "val": false,
-                        "type": "boolean",
-                        "desc": "默认关闭"
-                    },
-                    {
-                        "id": `${this.prefix}TgNotifyUrl${this.id}`,
-                        "name": "Telegram通知地址",
-                        "val": "",
-                        "type": "text",
-                        "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+            ]
+            boxJsJson.author = "#lk{author}"
+            boxJsJson.repo = "#lk{repo}"
+            boxJsJson.script = `${scritpUrl}?raw=true`
+            if (!this.isEmpty(info)) {
+                for (let key of needAppendKeys) {
+                    if (this.isEmpty(info[key])) {
+                        break
                     }
-                ]
-                boxJsJson.author = "#lk{author}"
-                boxJsJson.repo = "#lk{repo}"
-                boxJsJson.script = `${scritpUrl}?raw=true`
-                // 除了settings和keys追加，其他的都覆盖
-                if (!this.isEmpty(info)) {
-                    for (let i in needAppendKeys) {
-                        let key = needAppendKeys[i]
-                        if (!this.isEmpty(info[key])) {
-                            // 处理传入的每项设置
-                            if (key === 'settings') {
-                                for (let i = 0; i < info[key].length; i++) {
-                                    let input = info[key][i]
-                                    for (let j = 0; j < boxJsJson.settings.length; j++) {
-                                        let def = boxJsJson.settings[j]
-                                        if (input.id === def.id) {
-                                            // id相同，就使用外部传入的配置
-                                            boxJsJson.settings.splice(j, 1)
-                                        }
-                                    }
+
+                    // 处理传入的每项设置
+                    if (key === 'settings') {
+                        for (let i = 0; i < info[key].length; i++) {
+                            let input = info[key][i]
+                            for (let j = 0; j < boxJsJson.settings.length; j++) {
+                                let def = boxJsJson.settings[j]
+                                if (input.id === def.id) {
+                                    // id相同，就使用外部传入的配置
+                                    boxJsJson.settings.splice(j, 1)
                                 }
                             }
-                            boxJsJson[key] = boxJsJson[key].concat(info[key])
                         }
-                        delete info[key]
                     }
-                }
-                Object.assign(boxJsJson, info)
-                if (this.isNode()) {
-                    this.fs = this.fs ? this.fs : require('fs')
-                    this.path = this.path ? this.path : require('path')
-                    const curDirDataFilePath = this.path.resolve(this.boxJsJsonFile)
-                    const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
-                    const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
-                    const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-                    const jsondata = JSON.stringify(boxJsJson, null, '\t')
-                    if (isCurDirDataFile) {
-                        this.fs.writeFileSync(curDirDataFilePath, jsondata)
-                    } else if (isRootDirDataFile) {
-                        this.fs.writeFileSync(rootDirDataFilePath, jsondata)
-                    } else {
-                        this.fs.writeFileSync(curDirDataFilePath, jsondata)
-                    }
-                    // 写到项目的boxjs订阅json中
-                    let boxjsJson = JSON.parse(this.fs.readFileSync(boxjsJsonPath))
-                    if (boxjsJson.hasOwnProperty("apps") && Array.isArray(boxjsJson["apps"]) && boxjsJson["apps"].length > 0) {
-                        let apps = boxjsJson.apps
-                        let targetIdx = apps.indexOf(apps.filter((app) => {
-                            return app.id == boxJsJson.id
-                        })[0])
-                        if (targetIdx >= 0) {
-                            boxjsJson.apps[targetIdx] = boxJsJson
-                        } else {
-                            boxjsJson.apps.push(boxJsJson)
-                        }
-                        let ret = JSON.stringify(boxjsJson, null, 2)
-                        if (!this.isEmpty(param)) {
-                            for (const key in param) {
-                                let val = ''
-                                if (param.hasOwnProperty(key)) {
-                                    val = param[key]
-                                } else if (key === 'author') {
-                                    val = '@lowking'
-                                } else if (key === 'repo') {
-                                    val = 'https://github.com/lowking/Scripts'
-                                }
-                                ret = ret.replace(`#lk{${key}}`, val)
-                            }
-                        }
-                        // 全部处理完毕检查是否有漏掉未配置的参数，进行提醒
-                        const regex = /(?:#lk\{)(.+?)(?=\})/
-                        let m = regex.exec(ret)
-                        if (m !== null) {
-                            this.log(`生成BoxJs还有未配置的参数，请参考https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js#L17-L18传入参数：\n`)
-                        }
-                        let loseParamSet = new Set()
-                        while ((m = regex.exec(ret)) !== null) {
-                            loseParamSet.add(m[1])
-                            ret = ret.replace(`#lk{${m[1]}}`, ``)
-                        }
-                        loseParamSet.forEach(p => {
-                            console.log(`${p} `)
-                        })
-                        this.fs.writeFileSync(boxjsJsonPath, ret)
-                    }
+                    boxJsJson[key] = boxJsJson[key].concat(info[key])
+
+                    delete info[key]
                 }
             }
+            Object.assign(boxJsJson, info)
+            this.fs = this.fs ? this.fs : require('fs')
+            this.path = this.path ? this.path : require('path')
+            const curDirDataFilePath = this.path.resolve(this.boxJsJsonFile)
+            const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
+            const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+            const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+            const jsondata = JSON.stringify(boxJsJson, null, '\t')
+            if (isCurDirDataFile) {
+                this.fs.writeFileSync(curDirDataFilePath, jsondata)
+            } else if (isRootDirDataFile) {
+                this.fs.writeFileSync(rootDirDataFilePath, jsondata)
+            } else {
+                this.fs.writeFileSync(curDirDataFilePath, jsondata)
+            }
+
+            let boxjsJson = JSON.parse(this.fs.readFileSync(boxjsJsonPath))
+            if (!(boxjsJson.hasOwnProperty("apps") && Array.isArray(boxjsJson["apps"]) && boxjsJson["apps"].length > 0)) {
+                return
+            }
+            let apps = boxjsJson.apps
+            let targetIdx = apps.indexOf(apps.filter((app) => {
+                return app.id == boxJsJson.id
+            })[0])
+            if (targetIdx >= 0) {
+                boxjsJson.apps[targetIdx] = boxJsJson
+            } else {
+                boxjsJson.apps.push(boxJsJson)
+            }
+            let ret = JSON.stringify(boxjsJson, null, 2)
+            if (!this.isEmpty(param)) {
+                for (const key in param) {
+                    let val = param[key]
+                    if (!val) {
+                        switch (key) {
+                            case 'author':
+                                val = '@lowking'
+                            case 'repo':
+                                val = 'https://github.com/lowking/Scripts'
+                            default:
+                                continue
+                        }
+                    }
+                    ret = ret.replace(`#lk{${key}}`, val)
+                }
+            }
+            const regex = /(?:#lk\{)(.+?)(?=\})/
+            let m = regex.exec(ret)
+            if (m !== null) {
+                this.log(`生成BoxJs还有未配置的参数，请参考https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js#L17-L19传入参数：`)
+            }
+            let loseParamSet = new Set()
+            while ((m = regex.exec(ret)) !== null) {
+                loseParamSet.add(m[1])
+                ret = ret.replace(`#lk{${m[1]}}`, ``)
+            }
+            loseParamSet.forEach(p => {
+                console.log(`${p} `)
+            })
+            this.fs.writeFileSync(boxjsJsonPath, ret)
         }
 
         isJsonObject(obj) {
@@ -369,6 +374,9 @@ function ToolKit(scriptName, scriptId, options) {
             if (this.isEnableLog) {
                 console.log(`${this.logSeparator}${this.name}执行异常:`)
                 console.log(message)
+                if (!message.message) {
+                    return
+                }
                 console.log(`\n${message.message}`)
             }
         }
@@ -376,50 +384,51 @@ function ToolKit(scriptName, scriptId, options) {
         msg(subtitle, message, openUrl, mediaUrl) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
-            } else {
-                if (this.isEmpty(message)) {
-                    if (Array.isArray(this.notifyInfo)) {
-                        message = this.notifyInfo.join("\n")
-                    } else {
-                        message = this.notifyInfo
-                    }
+                return
+            }
+            if (this.isEmpty(message)) {
+                if (Array.isArray(this.notifyInfo)) {
+                    message = this.notifyInfo.join("\n")
+                } else {
+                    message = this.notifyInfo
                 }
-                if (!this.isEmpty(message)) {
-                    if (this.isEnableTgNotify) {
-                        this.log(`${this.name}Tg通知开始`)
-                        //处理特殊字符
-                        for (let key in this.tgEscapeCharMapping) {
-                            if (!this.tgEscapeCharMapping.hasOwnProperty(key)) {
-                                continue
-                            }
-                            message = message.replace(key, this.tgEscapeCharMapping[key])
-                        }
-                        this.get({
-                            url: encodeURI(`${this.tgNotifyUrl}📌${this.name}\n${message}`)
-                        }, (_error, _statusCode, _body) => {
-                            this.log(`Tg通知完毕`)
-                        })
-                    } else {
-                        let options = {}
-                        const hasOpenUrl = !this.isEmpty(openUrl)
-                        const hasMediaUrl = !this.isEmpty(mediaUrl)
-
-                        if (this.isSurge() || this.isLoon() || this.isStash()) {
-                            if (hasOpenUrl) options["url"] = openUrl
-                            $notification.post(this.name, subtitle, message, options)
-                        } else if (this.isQuanX()) {
-                            if (hasOpenUrl) options["open-url"] = openUrl
-                            if (hasMediaUrl) options["media-url"] = mediaUrl
-                            $notify(this.name, subtitle, message, options)
-                        } else if (this.isNode()) {
-                            this.log("⭐️" + this.name + "\n" + subtitle + "\n" + message)
-                        } else if (this.isJSBox()) {
-                            $push.schedule({
-                                title: this.name,
-                                body: subtitle ? subtitle + "\n" + message : message
-                            })
-                        }
+            }
+            if (this.isEmpty(message)) {
+                return
+            }
+            if (this.isEnableTgNotify) {
+                this.log(`${this.name}Tg通知开始`)
+                //处理特殊字符
+                for (let key in this.tgEscapeCharMapping) {
+                    if (!this.tgEscapeCharMapping.hasOwnProperty(key)) {
+                        continue
                     }
+                    message = message.replace(key, this.tgEscapeCharMapping[key])
+                }
+                this.get({
+                    url: encodeURI(`${this.tgNotifyUrl}📌${this.name}\n${message}`)
+                }, (_error, _statusCode, _body) => {
+                    this.log(`Tg通知完毕`)
+                })
+            } else {
+                let options = {}
+                const hasOpenUrl = !this.isEmpty(openUrl)
+                const hasMediaUrl = !this.isEmpty(mediaUrl)
+
+                if (this.isSurge() || this.isLoon() || this.isStash()) {
+                    if (hasOpenUrl) options["url"] = openUrl
+                    $notification.post(this.name, subtitle, message, options)
+                } else if (this.isQuanX()) {
+                    if (hasOpenUrl) options["open-url"] = openUrl
+                    if (hasMediaUrl) options["media-url"] = mediaUrl
+                    $notify(this.name, subtitle, message, options)
+                } else if (this.isNode()) {
+                    this.log("⭐️" + this.name + "\n" + subtitle + "\n" + message)
+                } else if (this.isJSBox()) {
+                    $push.schedule({
+                        title: this.name,
+                        body: subtitle ? subtitle + "\n" + message : message
+                    })
                 }
             }
         }
@@ -505,40 +514,44 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         loadData() {
-            if (this.isNode()) {
-                this.fs = this.fs ? this.fs : require('fs')
-                this.path = this.path ? this.path : require('path')
-                const curDirDataFilePath = this.path.resolve(this.dataFile)
-                const rootDirDataFilePath = this.path.resolve(process.cwd(), this.dataFile)
-                const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
-                const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-                if (isCurDirDataFile || isRootDirDataFile) {
-                    const datPath = isCurDirDataFile ? curDirDataFilePath : rootDirDataFilePath
-                    try {
-                        return JSON.parse(this.fs.readFileSync(datPath))
-                    } catch (e) {
-                        return {}
-                    }
-                } else return {}
-            } else return {}
+            if (!this.isNode()) {
+                return {}
+            }
+            this.fs = this.fs ? this.fs : require('fs')
+            this.path = this.path ? this.path : require('path')
+            const curDirDataFilePath = this.path.resolve(this.dataFile)
+            const rootDirDataFilePath = this.path.resolve(process.cwd(), this.dataFile)
+            const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+            const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+            if (isCurDirDataFile || isRootDirDataFile) {
+                const datPath = isCurDirDataFile ? curDirDataFilePath : rootDirDataFilePath
+                try {
+                    return JSON.parse(this.fs.readFileSync(datPath))
+                } catch (e) {
+                    return {}
+                }
+            } else {
+                return {}
+            }
         }
 
         writeData() {
-            if (this.isNode()) {
-                this.fs = this.fs ? this.fs : require('fs')
-                this.path = this.path ? this.path : require('path')
-                const curDirDataFilePath = this.path.resolve(this.dataFile)
-                const rootDirDataFilePath = this.path.resolve(process.cwd(), this.dataFile)
-                const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
-                const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-                const jsondata = JSON.stringify(this.data)
-                if (isCurDirDataFile) {
-                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
-                } else if (isRootDirDataFile) {
-                    this.fs.writeFileSync(rootDirDataFilePath, jsondata)
-                } else {
-                    this.fs.writeFileSync(curDirDataFilePath, jsondata)
-                }
+            if (!this.isNode()) {
+                return
+            }
+            this.fs = this.fs ? this.fs : require('fs')
+            this.path = this.path ? this.path : require('path')
+            const curDirDataFilePath = this.path.resolve(this.dataFile)
+            const rootDirDataFilePath = this.path.resolve(process.cwd(), this.dataFile)
+            const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
+            const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
+            const jsondata = JSON.stringify(this.data)
+            if (isCurDirDataFile) {
+                this.fs.writeFileSync(curDirDataFilePath, jsondata)
+            } else if (isRootDirDataFile) {
+                this.fs.writeFileSync(rootDirDataFilePath, jsondata)
+            } else {
+                this.fs.writeFileSync(curDirDataFilePath, jsondata)
             }
         }
 
