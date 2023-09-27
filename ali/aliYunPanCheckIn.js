@@ -1,5 +1,5 @@
 /*
-阿里云盘签到-lowking-v1.1.1
+阿里云盘签到-lowking-v1.1.2
 
 按下面配置完之后，打开阿里云盘获取token（如获取不到，等一段时间再打开），下面配置只验证过surge的，其他的自行测试
 ⚠️只测试过surge没有其他app自行测试
@@ -94,7 +94,7 @@ async function all() {
     } else {
         await refreshToken()
         let hasAlreadySignIn = await signIn()
-        await joinTeam()
+        // await joinTeam()
     }
     if (hasNeedSendNotify) {
         lk.msg(``)
