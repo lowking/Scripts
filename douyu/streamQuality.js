@@ -8,7 +8,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 [Script]
 # > 斗鱼画质过滤
 https://playclient.douyucdn.cn/lapi/live/appGetPlayer/stream/916749
-斗鱼画质过滤cookie = requires-body=1,type=http-response,pattern=https:\/\/playclient\.douyucdn\.cn\/lapi\/live\/appGetPlayer\/stream,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/streamQuality.js
+斗鱼画质过滤 = requires-body=1,type=http-response,pattern=https:\/\/playclient\.douyucdn\.cn\/lapi\/live\/appGetPlayer\/stream,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/streamQuality.js
 
 [MITM]
 hostname = %APPEND% playclient.douyucdn.cn
