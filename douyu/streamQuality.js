@@ -1,5 +1,5 @@
 /*
-斗鱼画质过滤-lowking-v1.0.6
+斗鱼画质过滤-lowking-v1.0.7
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -26,7 +26,7 @@ try {
             return pre?.bit < cur?.bit ? cur : pre
         })
         lk.log(`best: ${JSON.stringify(best)}`)
-        respBody.data.rateSetting = [best]
+        // respBody.data.rateSetting = [best]
         respBody.data.short_raten = best.name
         // respBody.data.scnt_switch = 0
         respBody.data.rateSwitch = best.rate
