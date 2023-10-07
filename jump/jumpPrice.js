@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.1.1
+Jump游戏价格监控-lowking-v1.1.2
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -103,48 +103,60 @@ async function all() {
         })
     }).then(({platforms, userId}) => {
         platforms.forEach((platform) => {
-            if (platform?.gameNum > 0 && platform?.moduleId > 0) {
-                getGames(userId, platform.moduleId, headers).then((games) => {
-                    games?.data.filter(game => game?.discountOff != 0).forEach((game) => {
-                        allPrice({...game, ...platform.moduleId}, headers).then((prices) => {
-                            const gameId = game.gameId
-                            const discountEndTime = prices[0].discountEndTime
-                            let gameNotifyKey = `jumpPriceNotify-${gameId}`
-                            let isNotify = lk.getVal(gameNotifyKey, "") != (discountEndTime || "")
-                            let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
-                            let matchCount = 0
-                            let isLastDay = false
-                            prices.filter(price => price.leftTime).filter(price => {
-                                return price.country.toLowerCase().indexOf("jump") == -1 && (country == ",," || country.indexOf(`,${price.country},`) != -1)
-                            }).forEach((price) => {
-                                let priceCNY = (price.price / 100).toFixed(2)
-                                let priceDiscountCNY = (price.priceDiscount / 100).toFixed(2)
-                                let lowestPriceCNY = (price.lowestPrice / 100).toFixed(2)
-                                let discountPercent = (price.price - price.priceDiscount) / price.price
-                                let lowestPercent = (price.price - price.lowestPrice) / price.price
-                                if (!price.lowestPrice) {
-                                    lowestPriceCNY = priceDiscountCNY
-                                    lowestPercent = discountPercent
-                                }
-                                if (!isLastDay && price.leftTime.trim().indexOf("1天") == 0) {
-                                    isLastDay = true
-                                }
-                                if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
-                                    matchCount++
-                                    info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
-                                }
-                            })
-                            lk.log(info)
-                            if (isNotify && matchCount || isLastDay) {
-                                lk.setVal(gameNotifyKey, discountEndTime)
-                                lk.msg(``, info)
-                            }
-                        })
-                    })
-                })
-            }
+            dealPlatform(platform, userId, headers)
         })
     })
+}
+
+function dealAllPrice(game, prices, platform) {
+    const gameId = game.gameId
+    const discountEndTime = prices[0].discountEndTime
+    let gameNotifyKey = `jumpPriceNotify-${gameId}`
+    let isNotify = lk.getVal(gameNotifyKey, "") != (discountEndTime || "")
+    let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
+    let matchCount = 0
+    let isLastDay = false
+    prices.filter(price => price.leftTime).filter(price => {
+        return price.country.toLowerCase().indexOf("jump") == -1 && (country == ",," || country.indexOf(`,${price.country},`) != -1)
+    }).forEach((price) => {
+        let priceCNY = (price.price / 100).toFixed(2)
+        let priceDiscountCNY = (price.priceDiscount / 100).toFixed(2)
+        let lowestPriceCNY = (price.lowestPrice / 100).toFixed(2)
+        let discountPercent = (price.price - price.priceDiscount) / price.price
+        let lowestPercent = (price.price - price.lowestPrice) / price.price
+        if (!price.lowestPrice) {
+            lowestPriceCNY = priceDiscountCNY
+            lowestPercent = discountPercent
+        }
+        if (!isLastDay && price.leftTime.trim().indexOf("1天") == 0) {
+            isLastDay = true
+        }
+        if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
+            matchCount++
+            info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
+        }
+    })
+    lk.log(info)
+    if (isNotify && matchCount || isLastDay) {
+        lk.setVal(gameNotifyKey, discountEndTime)
+        lk.msg(``, info)
+    }
+}
+
+function dealGames(games, platform, headers) {
+    games?.data.filter(game => game?.discountOff != 0).forEach((game) => {
+        allPrice({...game, ...platform.moduleId}, headers).then((prices) => {
+            dealAllPrice(game, prices, platform)
+        })
+    })
+}
+
+function dealPlatform(platform, userId, headers) {
+    if (platform?.gameNum > 0 && platform?.moduleId > 0) {
+        getGames(userId, platform.moduleId, headers).then((games) => {
+            dealGames(games, platform, headers)
+        })
+    }
 }
 
 async function getUserInfo(headers) {
