@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.1.2
+Jump游戏价格监控-lowking-v1.1.3
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -110,9 +110,9 @@ async function all() {
 
 function dealAllPrice(game, prices, platform) {
     const gameId = game.gameId
-    const discountEndTime = prices[0].discountEndTime
+    const discountEndTime = prices[0].discountEndTime || "unknown"
     let gameNotifyKey = `jumpPriceNotify-${gameId}`
-    let isNotify = lk.getVal(gameNotifyKey, "") != (discountEndTime || "")
+    let isNotify = lk.getVal(gameNotifyKey, "") != discountEndTime
     let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
     let matchCount = 0
     let isLastDay = false
@@ -131,13 +131,14 @@ function dealAllPrice(game, prices, platform) {
         if (!isLastDay && price.leftTime.trim().indexOf("1天") == 0) {
             isLastDay = true
         }
-        if (lowestPercent - discountPercent <= differenceLowestPercent ? "✓" : "") {
+        if (lowestPercent - discountPercent <= differenceLowestPercent) {
             matchCount++
             info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
         }
     })
-    lk.log(info)
-    if (isNotify && matchCount || isLastDay) {
+    lk.log(`info: ${info}\nisNotify: ${isNotify}\nmatchCount: ${matchCount}\nisLastDay: ${isLastDay}\ndiscountEndTime: ${discountEndTime}`)
+    // 不同活动结束时间并且符合价格条件，或者符合条件价格并且是活动最后一天才通知
+    if (isNotify && matchCount || isLastDay && matchCount) {
         lk.setVal(gameNotifyKey, discountEndTime)
         lk.msg(``, info)
     }
