@@ -19,7 +19,7 @@
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png" style="border-radius: 5px;" width="5%">
 🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/pupu/pupuCheckIn.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/pupu.png" style="border-radius: 5px;" width="5%">
-🟢</a>
+🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/QQPet/lkQQPet.js"><img src="https://github.com/58xinian/icon/raw/master/qqpet.png" style="border-radius: 5px;" width="5%">
 🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/qqvip.png" style="border-radius: 5px;" width="5%">
