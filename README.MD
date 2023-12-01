@@ -33,7 +33,7 @@
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/ali/aliYunPanCheckIn.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPan.png" style="border-radius: 5px;" width="5%">
 🟢</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png" style="border-radius: 5px;" width="5%">
-🟢</a>
+🔴</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/jump.png" style="border-radius: 5px;" width="5%">
 🟢</a>
 
