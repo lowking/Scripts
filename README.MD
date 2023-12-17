@@ -29,7 +29,7 @@
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/weibo.png" style="border-radius: 5px;" width="5%">
 🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/hufini/hifiniSign.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/hifinisignin-dark.png" style="border-radius: 5px;" width="5%">
-🟢</a>
+🔴</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/ali/aliYunPanCheckIn.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPan.png" style="border-radius: 5px;" width="5%">
 🟢</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png" style="border-radius: 5px;" width="5%">

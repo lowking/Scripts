@@ -2,8 +2,6 @@
 #!desc=该模块自用，脚本签到合集
 
 [Script]
-hifini签到 = type=cron,cronexp="55 59 23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/hifini/hifiniSign.js,script-update-interval=0
-
 阿里云盘签到 = type=cron,cronexp="0 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js,script-update-interval=0
 
 顺丰签到 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/sfexpress/sfexpress.js,script-update-interval=0
