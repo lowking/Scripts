@@ -6,11 +6,6 @@
 
 顺丰签到 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/sfexpress/sfexpress.js,script-update-interval=0
 
-bing积分1 = type=cron,cronexp="0 0 10 * * ?",wake-system=1,timeout=880,script-path=bingPoint.js,script-update-interval=0
-会话切换1 = type=cron,cronexp="0 50 10 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
-bing积分2 = type=cron,cronexp="0 0 23 * * ?",wake-system=1,timeout=880,script-path=bingPoint.js,script-update-interval=0
-会话切换2 = type=cron,cronexp="0 50 23 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/box/switcher/box.switcher.js,script-update-interval=0
-
 贴吧 = type=cron,cronexp="50 2 0 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.js,script-update-interval=0
 
 索尼俱乐部 = type=cron,cronexp="10 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js,script-update-interval=0
