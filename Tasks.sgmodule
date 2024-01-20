@@ -1,5 +1,6 @@
 #!name=Tasks by lowking. Self-use
 #!desc=该模块自用，脚本签到合集
+#!category=Self
 
 [Script]
 阿里云盘签到 = type=cron,cronexp="0 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js,script-update-interval=0
