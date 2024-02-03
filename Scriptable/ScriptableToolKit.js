@@ -396,12 +396,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return typeof obj == "undefined" || obj == null || obj == "" || obj == "null"
         }
 
-        isWorkingDays(now) {
+        isWorkingDays(now, workingDaysFlag = 'curlybraces', holidayFlag = 'gamecontroller') {
             return new Promise(async (resolve, reject) => {
                 let sp = "≈"
                 const d = this.formatDate(now, 'yyyy-MM-dd')
-                // 0工作日 1休息日 2节假日
-                // enum(0, 1, 2, 3), // 节假日类型，分别表示 工作日、周末、节日、调休。
+                // 0工作日 1休息日 2节假日 3补班
                 let resultStr = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
@@ -447,7 +446,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     } else {
                         this.setVal('curDateCacheErrorTime', '', 'local')
                         this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
-                        resolve(resultStr == 0 ? workingDaysFlag : holidayFlag)
+                        resolve(resultStr == 0 || resultStr == 3 ? workingDaysFlag : holidayFlag)
                     }
                 }
 
