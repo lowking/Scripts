@@ -381,7 +381,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
-        msg(subtitle, message, openUrl, mediaUrl) {
+        msg(subtitle, message, openUrl, mediaUrl, copyText) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
                 return
@@ -414,9 +414,18 @@ function ToolKit(scriptName, scriptId, options) {
                 let options = {}
                 const hasOpenUrl = !this.isEmpty(openUrl)
                 const hasMediaUrl = !this.isEmpty(mediaUrl)
+                const hasCopyText = !this.isEmpty(copyText)
 
                 if (this.isSurge() || this.isLoon() || this.isStash()) {
-                    if (hasOpenUrl) options["url"] = openUrl
+                    if (hasOpenUrl) {
+                        options["url"] = openUrl
+                        options["action"] = "open-url"
+                    }
+                    if (hasCopyText) {
+                        options["text"] = copyText
+                        options["action"] = "clipboard"
+                    }
+                    if (hasMediaUrl) options["media-url"] = mediaUrl
                     $notification.post(this.name, subtitle, message, options)
                 } else if (this.isQuanX()) {
                     if (hasOpenUrl) options["open-url"] = openUrl
