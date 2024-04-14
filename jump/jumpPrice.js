@@ -101,10 +101,10 @@ async function all() {
                 userId: userInfo.data.userId
             }
         })
-    }).then(({platforms, userId}) => {
-        platforms.forEach((platform) => {
-            dealPlatform(platform, userId, headers)
-        })
+    }).then(async ({platforms, userId}) => {
+        for (const platform of platforms) {
+            await dealPlatform(platform, userId, headers)
+        }
     })
 }
 
@@ -116,9 +116,16 @@ function dealAllPrice(game, prices, platform) {
     let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
     let matchCount = 0
     let isLastDay = false
-    prices.filter(price => price.leftTime).filter(price => {
-        return price.country.toLowerCase().indexOf("jump") == -1 && (country == ",," || country.indexOf(`,${price.country},`) != -1)
-    }).forEach((price) => {
+    prices = prices.filter(price => {
+        let hasIncludeJump = price.country.toLowerCase().indexOf("jump") != -1
+        let watching = country == ",," || country.indexOf(`,${price.country},`) != -1
+        lk.log(`${price.country}: ${price.leftTime}, ${hasIncludeJump}, ${watching}`)
+        return price.leftTime && !hasIncludeJump && watching
+    })
+    if (prices.length == 0) {
+        return
+    }
+    for (const price of prices) {
         let priceCNY = (price.price / 100).toFixed(2)
         let priceDiscountCNY = (price.priceDiscount / 100).toFixed(2)
         let lowestPriceCNY = (price.lowestPrice / 100).toFixed(2)
@@ -135,7 +142,7 @@ function dealAllPrice(game, prices, platform) {
             matchCount++
             info = `${info}\n┏${price.country}　${price.leftTime ? price.leftTime : ""}\n┣目前${priceDiscountCNY}¥(-${(discountPercent * 100).toFixed(0)}%)\n┗史低${lowestPriceCNY}¥(-${(lowestPercent * 100).toFixed(0)}%)`
         }
-    })
+    }
     lk.log(`info: ${info}\nisNotify: ${isNotify}\nmatchCount: ${matchCount}\nisLastDay: ${isLastDay}\ndiscountEndTime: ${discountEndTime}`)
     // 不同活动结束时间并且符合价格条件，或者符合条件价格并且是活动最后一天才通知
     if (isNotify && matchCount || isLastDay && matchCount) {
@@ -144,18 +151,19 @@ function dealAllPrice(game, prices, platform) {
     }
 }
 
-function dealGames(games, platform, headers) {
-    games?.data.filter(game => game?.discountOff != 0).forEach((game) => {
-        allPrice({...game, ...platform.moduleId}, headers).then((prices) => {
+async function dealGames(games, platform, headers) {
+    games = games?.data.filter(game => game?.discountOff != 0)
+    for (const game of games) {
+        await allPrice({...game, ...platform.moduleId}, headers).then((prices) => {
             dealAllPrice(game, prices, platform)
         })
-    })
+    }
 }
 
-function dealPlatform(platform, userId, headers) {
+async function dealPlatform(platform, userId, headers) {
     if (platform?.gameNum > 0 && platform?.moduleId > 0) {
-        getGames(userId, platform.moduleId, headers).then((games) => {
-            dealGames(games, platform, headers)
+        await getGames(userId, platform.moduleId, platform?.platformAlias, headers).then(async (games) => {
+            await dealGames(games, platform, headers)
         })
     }
 }
@@ -216,11 +224,11 @@ async function getGamePlatforms(userId, headers) {
     })
 }
 
-async function getGames(userId, moduleId, headers) {
+function getGames(userId, moduleId, platformAlias, headers) {
     return new Promise((resolve, _reject) => {
-        const t = '获取游戏列表'
+        const t = `获取${platformAlias}游戏列表`
         lk.log(t)
-        lk.post({
+        let url = {
             url: `${domain}/jump/favorite/appList`,
             headers,
             body: JSON.stringify({
@@ -234,7 +242,8 @@ async function getGames(userId, moduleId, headers) {
                 "limit": 100,
                 "orderBy": 1
             })
-        }, async (error, _response, data) => {
+        }
+        lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
@@ -283,14 +292,14 @@ async function gameDetail(game, headers) {
     })
 }
 
-async function allPrice(game, headers) {
+function allPrice(game, headers) {
     return new Promise((resolve, _reject) => {
-        const t = `获取[${game?.title}]游戏所有价格`
+        const t = `获取[${game?.title}]游戏所有价格-${game.gameId}-${game.moduleId}`
         lk.log(t)
         lk.post({
             url: `${domain}/jump/price/getAllPriceByGame?id=${game.gameId}&platform=${game.moduleId}`,
             headers,
-        }, async (error, _response, data) => {
+        }, (error, _response, data) => {
             try {
                 if (error) {
                     lk.execFail()
