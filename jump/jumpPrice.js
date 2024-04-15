@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.1.3
+Jump游戏价格监控-lowking-v1.1.4
 
 ⚠️只测试过surge没有其他app自行测试
 
