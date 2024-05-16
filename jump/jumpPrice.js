@@ -1,5 +1,5 @@
 /*
-Jump游戏价格监控-lowking-v1.1.4
+Jump游戏价格监控-lowking-v1.2.0
 
 ⚠️只测试过surge没有其他app自行测试
 
@@ -114,6 +114,7 @@ function dealAllPrice(game, prices, platform) {
     let gameNotifyKey = `jumpPriceNotify-${gameId}`
     let isNotify = lk.getVal(gameNotifyKey, "") != discountEndTime
     let info = `${platform?.platformAlias} 🎮${game?.title} ${(prices[0].price / 100).toFixed(2)}¥`
+    let cover = game?.cover
     let matchCount = 0
     let isLastDay = false
     prices = prices.filter(price => {
@@ -147,7 +148,11 @@ function dealAllPrice(game, prices, platform) {
     // 不同活动结束时间并且符合价格条件，或者符合条件价格并且是活动最后一天才通知
     if (isNotify && matchCount || isLastDay && matchCount) {
         lk.setVal(gameNotifyKey, discountEndTime)
-        lk.msg(``, info)
+        if (cover) {
+            lk.msg(``, info, '', cover)
+        } else {
+            lk.msg(``, info)
+        }
     }
 }
 
