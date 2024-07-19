@@ -872,6 +872,81 @@
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js?raw=true",
       "script_timeout": 5
+    },
+    {
+      "id": "lkZzz",
+      "name": "绝区零",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/jump/zzz.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png",
+        "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png"
+      ],
+      "keys": [
+        "zzzUidKey",
+        "zzzCookieKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogZzz",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailZzz",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyZzz",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlZzz",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "zzzUidKey",
+          "name": "绝区零Uid",
+          "val": "",
+          "type": "text",
+          "desc": "填写游戏内的uid"
+        },
+        {
+          "id": "zzzCookieKey",
+          "name": "日常签到cookie",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "zzzDfpKey",
+          "name": "设备指纹",
+          "val": "",
+          "type": "text",
+          "desc": "设备指纹"
+        },
+        {
+          "id": "zzzBbsCookieKey",
+          "name": "米游社cookie",
+          "val": "",
+          "type": "text",
+          "desc": "米游社cookie"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/jump/zzz.js?raw=true",
+      "script_timeout": 5
     }
   ]
 }
