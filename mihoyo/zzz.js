@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.2
+绝区零-lowking-v1.0.3
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -108,18 +108,23 @@ async function all() {
             throw `获取签到信息异常，请重新获取cookie之后再尝试`
         }
         let isSign = info?.data?.is_sign
-        return {
-            zzzUid,
-            zzzCookie,
-            zzzDfp,
+        info = {
+            uid: zzzUid,
+            cookie: zzzCookie,
+            dfp: zzzDfp,
             isSign
         }
+        return info
     }).then(async ({uid, cookie, dfp, isSign}) => {
         title = '日常签到'
         if (!isSign) {
             await signIn(title, uid, cookie, dfp).then((signRet) => {
-                if (signRet != 0) {
+                if (signRet?.retcode != 0) {
                     throw `❌${title}失败：${signRet?.message}`
+                }
+                if (signRet?.data?.is_risk) {
+                    lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                    return
                 }
                 lk.appendNotifyInfo(`🎉${title}成功`)
             })
@@ -148,6 +153,18 @@ async function all() {
         }
         return postRet.data.list
     }).then(async (post) => {
+        await Promise.all(post.map(async (p) => {
+            let postId = p.post.post_id
+            return await viewPost(`浏览：${postId}`, postId, zzzBbsCookie, zzzDfp)
+        })).then((ret) => {
+            let sucCount = 0
+            ret.forEach((r) => {
+                if (r?.retcode == 0) {
+                    sucCount++
+                }
+            })
+            lk.appendNotifyInfo(`浏览结果：${sucCount}/${ret.length}`)
+        })
         await Promise.all(post.map(async (p) => {
             let postId = p.post.post_id
             return await bbsUpVote(`点赞：${postId}`, postId, false, zzzBbsCookie, zzzDfp)
@@ -190,15 +207,33 @@ async function all() {
     })
 }
 
-function getDs(task) {
+function getDs(task, body = "") {
+    lk.log(`getDs: task: ${task}, body: ${body}`)
     let randomStr = lk.randomString(6)
     let timestamp = Math.floor(Date.now() / 1000)
-    let sign = MD5(`salt=rtvTthKxEyreVXQCnhluFgLXPOFKPHlA&t=${timestamp}&r=${randomStr}`)
-    let ds = `${timestamp},${randomStr},${sign}`
-    if (task === "signIn") {
-        const randomInt = Math.floor(Math.random() * (200000 - 100001) + 100001);
-        sign = MD5(`salt=t0qEgfub6cvueAPgR5m9aQWWVciEer7v&t=${timestamp}&r=${randomInt}&b=${JSON.stringify({"gids":8})}&q=`);
-        ds = `${timestamp},${randomInt},${sign}`;
+    let sign, ds, str
+    switch (task) {
+        case "signIn":
+            const randomInt = Math.floor(Math.random() * (200000 - 100001) + 100001)
+            str = `salt=t0qEgfub6cvueAPgR5m9aQWWVciEer7v&t=${timestamp}&r=${randomInt}&b=${body}&q=`
+            sign = MD5(str)
+            ds = `${timestamp},${randomInt},${sign}`
+            break
+        case "dailyCheckin":
+            str = `salt=t0qEgfub6cvueAPgR5m9aQWWVciEer7v&t=${timestamp}&r=${randomStr}`
+            if (body) {
+                str = `${str}&b=${body}&q=`
+            }
+            sign = MD5(str)
+            ds = `${timestamp},${randomStr},${sign}`
+            break
+        default:
+            str = `salt=rtvTthKxEyreVXQCnhluFgLXPOFKPHlA&t=${timestamp}&r=${randomStr}`
+            if (body) {
+                str = `${str}&b=${body}&q=`
+            }
+            sign = MD5(str)
+            ds = `${timestamp},${randomStr},${sign}`
     }
 
     return ds
@@ -239,6 +274,40 @@ function share(title, postId, cookie, dfp) {
     })
 }
 
+function viewPost(title, postId, cookie, dfp) {
+    return new Promise((resolve, _reject) => {
+        lk.log(title)
+        lk.get({
+            url: `${bbsDomain}/post/api/getPostFull?post_id=${postId}`,
+            headers: {
+                referer: "https://app.mihoyo.com",
+                "x-rpc-device_fp": dfp,
+                "x-rpc-client_type": 2,
+                "x-rpc-app_version": "2.71.1",
+                ds: getDs(),
+                cookie
+            },
+        }, (error, _response, data) => {
+            try {
+                if (error) {
+                    lk.execFail()
+                    lk.log(error)
+                    lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
+                } else {
+                    data = JSON.parse(data)
+                }
+            } catch (e) {
+                lk.logErr(e)
+                lk.log(`返回数据：${data}`)
+                lk.execFail()
+                throw `❌${title}错误，请稍后再试`
+            } finally {
+                resolve(data)
+            }
+        })
+    })
+}
+
 function bbsUpVote(title, postId, isCancel, cookie, dfp) {
     return new Promise((resolve, _reject) => {
         lk.log(title)
@@ -247,6 +316,9 @@ function bbsUpVote(title, postId, isCancel, cookie, dfp) {
             headers: {
                 referer: "https://app.mihoyo.com",
                 "x-rpc-device_fp": dfp,
+                "x-rpc-client_type": 2,
+                "x-rpc-app_version": "2.71.1",
+                ds: getDs(),
                 cookie
             },
             body: JSON.stringify({"is_cancel":isCancel,"post_id":postId,"upvote_type":1})
@@ -311,7 +383,7 @@ async function bbsSignIn(title, cookie, dfp) {
                 "x-rpc-device_fp": dfp,
                 "x-rpc-client_type": 2,
                 "x-rpc-app_version": "2.71.1",
-                ds: getDs("signIn"),
+                ds: getDs("signIn", JSON.stringify({"gids": 8})),
                 cookie
             },
             body: JSON.stringify({"gids":8})
@@ -339,13 +411,18 @@ async function bbsSignIn(title, cookie, dfp) {
 async function signIn(title, uid, cookie, dfp) {
     return new Promise((resolve, _reject) => {
         lk.log(title)
-        lk.get({
+        // todo 有待后续验证
+        let body = JSON.stringify({"act_id":"e202406242138391","region":"prod_gf_cn","uid":""+uid,"lang":"zh-cn"})
+        lk.post({
             url: `${domain}/event/luna/zzz/sign`,
             headers: {
                 "x-rpc-device_fp": dfp,
+                "x-rpc-client_type": 5,
+                "x-rpc-app_version": "2.71.1",
+                ds: getDs("dailyCheckin", body),
                 cookie: cookie
             },
-            body: JSON.stringify({"act_id":"e202406242138391","region":"prod_gf_cn","uid":uid,"lang":"zh-cn"})
+            body
         }, async (error, _response, data) => {
             try {
                 if (error) {
