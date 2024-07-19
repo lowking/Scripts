@@ -36,6 +36,8 @@
 🔴</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/jump.png" style="border-radius: 5px;" width="5%">
 🟢</a>
+&nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png" style="border-radius: 5px;" width="5%">
+🟢</a>
 
 ### Scriptable
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10086.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10086.png" style="border-radius: 5px;" width="5%">🔴</a>

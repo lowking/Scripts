@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.1
+绝区零-lowking-v1.0.2
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -33,8 +33,8 @@ if(!lk.isExecComm) {
     } else {
         lk.boxJsJsonBuilder({
             "icons": [
-                "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png",
-                "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png"
+                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png",
+                "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png"
             ],
             "settings": [
                 {
