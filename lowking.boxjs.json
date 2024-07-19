@@ -876,7 +876,7 @@
     {
       "id": "lkZzz",
       "name": "绝区零",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/jump/zzz.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
         "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png",
         "https://fastcdn.mihoyo.com/mi18n/nap_cn/m20240603hy38zhr2tc/upload/c7ef76e88f579dce12f1ae35345e1a28_4828348663082395836.png"
@@ -945,7 +945,7 @@
       ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
-      "script": "https://github.com/lowking/Scripts/blob/master/jump/zzz.js?raw=true",
+      "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true",
       "script_timeout": 5
     }
   ]

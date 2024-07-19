@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.0
+绝区零-lowking-v1.0.1
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -69,7 +69,7 @@ if(!lk.isExecComm) {
             "keys": [zzzUidKey, zzzCookieKey],
             "script_timeout": 5
         }, {
-            "script_url": "https://github.com/lowking/Scripts/blob/master/jump/zzz.js",
+            "script_url": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js",
             "author": "@lowking",
             "repo": "https://github.com/lowking/Scripts",
         })
