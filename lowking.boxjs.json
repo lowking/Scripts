@@ -883,7 +883,12 @@
       ],
       "keys": [
         "zzzUidKey",
-        "zzzCookieKey"
+        "zzzCookieKey",
+        "zzzDfpKey",
+        "zzzBbsCookieKey",
+        "appVersionKey",
+        "salt6xKey",
+        "saltK2Key"
       ],
       "settings": [
         {
@@ -941,6 +946,27 @@
           "val": "",
           "type": "text",
           "desc": "米游社cookie"
+        },
+        {
+          "id": "appVersionKey",
+          "name": "米游社API版本",
+          "val": "2.71.1",
+          "type": "text",
+          "desc": "米游社API版本"
+        },
+        {
+          "id": "salt6xKey",
+          "name": "salt 6x",
+          "val": "t0qEgfub6cvueAPgR5m9aQWWVciEer7v",
+          "type": "text",
+          "desc": "t0qEgfub6cvueAPgR5m9aQWWVciEer7v"
+        },
+        {
+          "id": "saltK2Key",
+          "name": "salt k2",
+          "val": "rtvTthKxEyreVXQCnhluFgLXPOFKPHlA",
+          "type": "text",
+          "desc": "rtvTthKxEyreVXQCnhluFgLXPOFKPHlA"
         }
       ],
       "author": "@lowking",
