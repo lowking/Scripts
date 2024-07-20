@@ -946,7 +946,7 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true",
-      "script_timeout": 5
+      "script_timeout": 10
     }
   ]
 }
