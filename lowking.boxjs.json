@@ -934,6 +934,13 @@
           "desc": ""
         },
         {
+          "id": "zzzSignInCountDownAmountKey",
+          "name": "n次执行之后才进行日常签到",
+          "val": 3,
+          "type": "number",
+          "desc": "n次执行之后才进行日常签到"
+        },
+        {
           "id": "zzzDfpKey",
           "name": "设备指纹",
           "val": "",
