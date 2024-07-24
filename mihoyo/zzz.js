@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.6
+绝区零-lowking-v1.0.7
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -173,28 +173,36 @@ async function all() {
                 lk.appendNotifyInfo(`⚠️${title}已经签到过了`)
             }
         })
+
+        title = '米游社打卡'
+        await bbsSignIn(title, zzzBbsCookie, zzzDfp).then((signRet) => {
+            lk.log(JSON.stringify(signRet))
+            switch (signRet?.retcode) {
+                case 0:
+                    lk.appendNotifyInfo(`🎉${title}成功，获得${signRet?.data?.points}米游币`)
+                    break
+                case 1008:
+                    lk.appendNotifyInfo(`⚠️${title}异常：${signRet?.message}`)
+                    break
+                case 1034:
+                    lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                    break
+                default:
+                    lk.appendNotifyInfo(`⚠️${title}异常：${JSON.stringify(signRet)}`)
+            }
+        })
     }
-    title = '米游社打卡'
-    await bbsSignIn(title, zzzBbsCookie, zzzDfp).then((signRet) => {
-        lk.log(JSON.stringify(signRet))
-        switch (signRet?.retcode) {
-            case 0:
-                lk.appendNotifyInfo(`🎉${title}成功，获得${signRet?.data?.points}米游币`)
-                break
-            case 1008:
-                lk.appendNotifyInfo(`⚠️${signRet?.message}`)
-                break
-            default:
-                throw `⚠️${title}异常：${signRet?.message}`
-        }
-    })
+
     title = '米游社获取帖子'
     await getBbsPost(title).then((postRet) => {
         if (postRet?.retcode != 0) {
-            throw `⚠️${title}异常：${postRet?.message}`
+            lk.appendNotifyInfo(`⚠️${title}异常：${postRet?.message}`)
         }
-        return postRet.data.list
+        return postRet?.data?.list
     }).then(async (post) => {
+        if (!post) {
+            return post
+        }
         await Promise.all(post.map(async (p) => {
             let postId = p.post.post_id
             return await viewPost(`浏览：${postId}`, postId, zzzBbsCookie, zzzDfp)
@@ -222,6 +230,9 @@ async function all() {
         })
         return post
     }).then(async (post) => {
+        if (!post) {
+            return post
+        }
         await lk.sleep(1000)
         await Promise.all(post.map(async (p) => {
             let postId = p.post.post_id
@@ -238,6 +249,9 @@ async function all() {
         })
         return post[0]
     }).then(async (post) => {
+        if (!post) {
+            return post
+        }
         title = "米游社分享"
         await share(title, post.post.post_id, zzzBbsCookie, zzzDfp).then((ret) => {
             if (ret?.retcode == 0) {
