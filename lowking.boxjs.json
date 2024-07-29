@@ -936,7 +936,7 @@
         {
           "id": "zzzSignInCountDownAmountKey",
           "name": "n次执行之后才进行日常签到",
-          "val": 3,
+          "val": 0,
           "type": "number",
           "desc": "n次执行之后才进行日常签到"
         },
@@ -953,6 +953,13 @@
           "val": "",
           "type": "text",
           "desc": "米游社cookie"
+        },
+        {
+          "id": "zzzBbsSignInCountDownAmountKey",
+          "name": "n次执行之后才进行打卡",
+          "val": 0,
+          "type": "number",
+          "desc": "n次执行之后才进行打卡"
         },
         {
           "id": "appVersionKey",
