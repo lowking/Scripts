@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.9
+绝区零-lowking-v1.0.10
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -130,9 +130,9 @@ if(!lk.isExecComm) {
         all().catch((err) => {
             lk.logErr(err)
             lk.execFail()
-            lk.msg(``, err, ``, bannerUrl)
+            lk.msg(``, err, openUrl, bannerUrl)
         }).finally(() => {
-            lk.msg(``, ``, ``, bannerUrl)
+            lk.msg(``, ``, openUrl, bannerUrl)
             lk.done()
         })
     }
@@ -148,7 +148,7 @@ function getCookie() {
             lk.appendNotifyInfo("❌获取cookie失败")
         }
     }
-    lk.msg(``, ``, openUrl)
+    lk.msg(``)
     lk.done()
 }
 
