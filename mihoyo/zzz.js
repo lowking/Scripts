@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.10
+绝区零-lowking-v1.0.11
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -183,6 +183,7 @@ async function all() {
                     }
                     if (signRet?.data?.is_risk) {
                         lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                        lk.setVal(signInCountDownAmountKey, 3)
                         return
                     }
                     lk.appendNotifyInfo(`🎉${title}成功`)
@@ -209,6 +210,7 @@ async function all() {
                     break
                 case 1034:
                     lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                    lk.setVal(bbsSignInCountDownAmountKey, 3)
                     break
                 default:
                     lk.appendNotifyInfo(`⚠️${title}异常：${JSON.stringify(signRet)}`)
