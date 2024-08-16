@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.11
+绝区零-lowking-v1.0.12
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -531,7 +531,8 @@ async function getZzzInfo(title, uid, cookie) {
         lk.get({
             url: `${domain}/event/luna/zzz/info?lang=zh-cn&act_id=e202406242138391&region=prod_gf_cn&uid=${uid}`,
             headers: {
-                cookie: cookie
+                cookie: cookie,
+                "x-rpc-signgame": "zzz"
             }
         }, async (error, _response, data) => {
             try {
