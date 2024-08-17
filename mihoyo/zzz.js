@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.12
+绝区零-lowking-v1.0.13
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -497,6 +497,7 @@ async function signIn(title, uid, cookie, dfp) {
         lk.post({
             url: `${domain}/event/luna/zzz/sign`,
             headers: {
+                "x-rpc-signgame": "zzz",
                 "x-rpc-device_fp": dfp,
                 "x-rpc-client_type": 5,
                 "x-rpc-app_version": appVersion,
