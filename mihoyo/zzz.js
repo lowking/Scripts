@@ -137,20 +137,6 @@ if(!lk.isExecComm) {
     }
 }
 
-function getCookie() {
-    if (lk.isGetCookie(/\/jump\/app\/conf/)) {
-        lk.log(`开始获取cookie`)
-        if ($request.headers) {
-            lk.setVal(jumpHeaderKey, JSON.stringify($request.headers))
-            lk.appendNotifyInfo('🎉成功获取cookie，可以关闭相应脚本')
-        } else {
-            lk.appendNotifyInfo("❌获取cookie失败")
-        }
-    }
-    lk.msg(``)
-    lk.done()
-}
-
 async function all() {
     if (!zzzUid || !zzzCookie || !zzzDfp || !zzzBbsCookie) {
         throw "⚠️请先打开米游社获取cookie"
