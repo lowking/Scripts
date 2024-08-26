@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.0.13
+绝区零-lowking-v1.0.14
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -40,7 +40,6 @@ const MD5 = function(d){result = M(V(Y(X(d),8*d.length)));return result.toLowerC
 
 if(!lk.isExecComm) {
     if (lk.isRequest()) {
-        getCookie()
         lk.done()
     } else {
         lk.boxJsJsonBuilder({
