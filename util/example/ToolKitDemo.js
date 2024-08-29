@@ -1,13 +1,13 @@
 const lk = new ToolKit('工具包使用示例', 'ToolKitDemo', {"httpApi": "ffff@10.0.0.6:6166"})
 
-if (!lk.isExecComm) {
+const main = () => {
     let test = lk.getVal("test")
     lk.msg(``, `这是通知内容:${test}`)
     lk.setVal("test", "hello")
     test = lk.getVal("test")
     lk.msg(``, `这是通知内容:${test}`)
 
-    //生成boxjs配置.json
+    // 生成boxjs配置.json
     lk.boxJsJsonBuilder({
         "icons": [
             "https://raw.githubusercontent.com/Orz-3/mini/master/toolkitdemo.png",
@@ -19,20 +19,38 @@ if (!lk.isExecComm) {
         "script_url": "https://github.com/lowking/Scripts/blob/master/util/example/ToolKitDemo.js"
     })
 
-    //可以点击打开url的通知
+    // 可以点击打开url的通知
     lk.msg(``, `可点击跳转`, `https://baidu.com`)
-    //记录通知内容
+
+    // 记录通知内容
     lk.appendNotifyInfo(`通知1`)
     lk.appendNotifyInfo(`通知2`)
-    //插入到通知内容第一行
+
+    // 插入到通知内容第一行
     lk.prependNotifyInfo(`通知0`)
-    //复制文本
-    lk.msg(``, `可点击复制`, 'https://baidu.com', 'https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png', '要复制的文本')
-    //通知显示媒体信息，10秒后通知自动消失（仅限surge）
-    lk.msg(``, `显示媒体信息5秒后消失`, '', 'https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png', '', 5)
-    //最后一次性输出
+
+    // 复制文本
+    lk.msg(``,
+        `可点击复制`,
+        'https://baidu.com',
+        'https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png',
+        '要复制的文本')
+
+    // 通知显示媒体信息，10秒后通知自动消失（仅限surge）
+    lk.msg(``,
+        `显示媒体信息5秒后消失`,
+        '',
+        'https://raw.githubusercontent.com/chavyleung/scripts/master/box/icons/BoxSetting.png',
+        '',
+        5)
+
+    // 最后一次性输出
     lk.msg(``)
 }
+
+// 支持surge的通过httpApi直接在手机测试脚本：node ToolKitDemo.js p，即可；
+// 如果在命令行下，则根据配置生成boxjs的配置json
+if (!lk.isExecComm) main()
 lk.done()
 
 //ToolKit-start
