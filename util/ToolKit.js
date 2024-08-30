@@ -22,6 +22,64 @@
  * @constructor
  */
 function ToolKit(scriptName, scriptId, options) {
+    class Request {
+        constructor(tk) {
+            this.tk = tk
+        }
+
+        fetch(options, method = 'GET') {
+            options = typeof options === 'string' ? { url: options } : options
+            let fetcher
+            switch (method) {
+                case 'PUT':
+                    fetcher = this.put
+                    break
+                case 'POST':
+                    fetcher = this.post
+                    break
+                default:
+                    fetcher = this.get
+            }
+
+            const doFetch = new Promise((resolve, reject) => {
+                fetcher.call(this, options, (error, response, data) => {
+                    error ? reject(error) : resolve({error, response, data})
+                })
+            })
+
+            const delayFetch = (promise, timeout = 5000) => {
+                return Promise.race([
+                    promise,
+                    new Promise((_resolve, reject) => {
+                        setTimeout(() => {
+                            reject(new Error('请求超时'))
+                        }, timeout)
+                    })
+                ])
+            }
+
+            return options.timeout > 0 ? delayFetch(doFetch, options.timeout) : doFetch
+        }
+
+        get(options) {
+            return new Promise((resolve, _reject) => {
+                resolve(this.fetch.call(this.tk, options))
+            })
+        }
+
+        post(options) {
+            return new promise((resolve, _reject) => {
+                resolve(this.fetch.call(this.tk, options, 'POST'))
+            })
+        }
+
+        put(options) {
+            return new promise((resolve, _reject) => {
+                resolve(this.fetch.call(this.tk, options, 'PUT'))
+            })
+        }
+    }
+
     return new (class {
         constructor(scriptName, scriptId, options) {
             this.tgEscapeCharMapping = {'&': '＆', '#': '＃'}
@@ -29,6 +87,7 @@ function ToolKit(scriptName, scriptId, options) {
             this.prefix = `lk`
             this.name = scriptName
             this.id = scriptId
+            this.req = new Request(this)
             this.data = null
             this.dataFile = this.getRealPath(`${this.prefix}${this.id}.dat`)
             this.boxJsJsonFile = this.getRealPath(`${this.prefix}${this.id}.boxjs.json`)
@@ -110,7 +169,7 @@ function ToolKit(scriptName, scriptId, options) {
                 if (this.isEmpty(this.options)) {
                     this.options = {}
                 }
-                this.options.httpApi = `ffff@10.0.0.19:6166`
+                this.options.httpApi = `ffff@10.0.0.6:6166`
             } else {
                 //判断格式
                 if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
