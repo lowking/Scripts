@@ -28,7 +28,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         fetch(options, method = 'GET') {
-            options = typeof options === 'string' ? { url: options } : options
+            options = typeof options === 'string' ? {url: options} : options
             let fetcher
             switch (method) {
                 case 'PUT':
@@ -42,41 +42,28 @@ function ToolKit(scriptName, scriptId, options) {
             }
 
             const doFetch = new Promise((resolve, reject) => {
-                fetcher.call(this, options, (error, response, data) => {
-                    error ? reject(error) : resolve({error, response, data})
-                })
+                fetcher.call(this, options, (error, response, data) => error ? reject(error) : resolve({error, response, data}))
             })
 
             const delayFetch = (promise, timeout = 5000) => {
-                return Promise.race([
-                    promise,
-                    new Promise((_resolve, reject) => {
-                        setTimeout(() => {
-                            reject(new Error('请求超时'))
-                        }, timeout)
-                    })
+                return Promise.race([promise,
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('请求超时')), timeout))
                 ])
             }
 
             return options.timeout > 0 ? delayFetch(doFetch, options.timeout) : doFetch
         }
 
-        get(options) {
-            return new Promise((resolve, _reject) => {
-                resolve(this.fetch.call(this.tk, options))
-            })
+        async get(options) {
+            return this.fetch.call(this.tk, options)
         }
 
-        post(options) {
-            return new promise((resolve, _reject) => {
-                resolve(this.fetch.call(this.tk, options, 'POST'))
-            })
+        async post(options) {
+            return this.fetch.call(this.tk, options, 'POST')
         }
 
-        put(options) {
-            return new promise((resolve, _reject) => {
-                resolve(this.fetch.call(this.tk, options, 'PUT'))
-            })
+        async put(options) {
+            return this.fetch.call(this.tk, options, 'PUT')
         }
     }
 
