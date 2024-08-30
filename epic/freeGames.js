@@ -1,5 +1,5 @@
 /*
-EPIC限免-lowking-v1.0.0
+EPIC限免-lowking-v1.0.1
 
 ************************
 Surge 脚本配置:
@@ -80,16 +80,10 @@ const getFreeGames = games => {
             originalPrice = game.price.totalPrice?.originalPrice
         }
         if (discountPrice == 0) {
-            if (imgUrl) {
-                lk.msg(``,
-                    `${gameName} (¥${(originalPrice / 100).toFixed(2)})\n👉🏻点击免费领取`,
-                    `https://store.epicgames.com/zh-CN/${path}/${productHome}`,
-                    imgUrl)
-            } else {
-                lk.msg(``,
-                    `${gameName} (¥${(originalPrice / 100).toFixed(2)})\n👉🏻点击免费领取`,
-                    `https://store.epicgames.com/zh-CN/${path}/${productHome}`)
-            }
+            lk.msg(``,
+                `${gameName} (¥${(originalPrice / 100).toFixed(2)})\n👉🏻点击免费领取`,
+                `https://store.epicgames.com/zh-CN/${path}/${productHome}`,
+                imgUrl)
         }
     }
 }
