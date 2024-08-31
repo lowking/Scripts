@@ -334,8 +334,10 @@ function ToolKit(scriptName, scriptId, options) {
                         switch (key) {
                             case 'author':
                                 val = '@lowking'
+                                break
                             case 'repo':
                                 val = 'https://github.com/lowking/Scripts'
+                                break
                             default:
                                 continue
                         }
@@ -492,7 +494,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
-        getVal(key, defaultValue = "") {
+        getVal(key, defaultValue) {
             let value
             if (this.isSurge() || this.isLoon() || this.isStash()) {
                 value = $persistentStore.read(key)
