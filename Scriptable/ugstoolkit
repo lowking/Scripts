@@ -8,22 +8,24 @@ uglifyjs $targetPath/Scriptable/ScriptableToolKit.js -m -o $targetPath/Scriptabl
 pbcopy < $targetPath/Scriptable/ScriptableToolKit.min.js
 
 # 从剪辑版复制内容
-pasteStr=`pbpaste -Prefer text`
+pasteStr=$(pbpaste -Prefer text)
 
 # 替换到所有脚本//ScriptableToolKit-start和//ScriptableToolKit-end之间的内容
 echo "批量替换.js中ScriptableToolKit开始"
-for i in `find $targetPath -name '*.js' ! -path '*node_modules*'`
+while IFS= read -r -d '' i
 do
-	lineno=`grep -n "//ScriptableToolKit-start" $i`
+	lineno=$(grep -n "//ScriptableToolKit-start" "$i")
 	if [ -n "$lineno" ]; then
-		array=(`echo $lineno | tr ':' ' '` )
-		lineno=$[ ${array[0]} + 0 ]
+		array=()
+		IFS=":" read -r -a array <<< "$lineno"
+		lineno=$(( array[0] + 1 ))
 		if [ $lineno -ge 1 ]; then
-			# 调用py
-			python ~/bin/replaceAllJs.py $lineno $i $targetPath/Scriptable/ScriptableToolKit.min.js
-			echo "$i 已替换【${lineno}】"
+		    sed -i '' $lineno"G" "$i"
+		    sed -i '' $lineno"d" "$i"
+		    sed -i '' "$(( lineno - 1)) r $targetPath/Scriptable/ScriptableToolKit.min.js" "$i"
+		    printf "%-20s %s\n" "替换行:$lineno" "$i"
 		fi
 	fi
-done
+done < <(find $targetPath -name '*.js' -print0 ! -path '*node_modules')
 echo "批量替换.js中ScriptableToolKit完成"
 
