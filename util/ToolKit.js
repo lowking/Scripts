@@ -69,7 +69,6 @@ function ToolKit(scriptName, scriptId, options) {
 
     return new (class {
         constructor(scriptName, scriptId, options) {
-            this.tgEscapeCharMapping = {'&': '＆', '#': '＃'}
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
@@ -123,6 +122,40 @@ function ToolKit(scriptName, scriptId, options) {
             //boxjs相关
             this.boxjsCurSessionKey = "chavy_boxjs_cur_sessions"
             this.boxjsSessionsKey = "chavy_boxjs_sessions"
+
+            //tg消息转义配置
+            this.preTgEscapeCharMapping = {
+                '|\`|': ',backQuote,'
+            }
+            this.finalTgEscapeCharMapping = {
+                ',backQuote,': '\`',
+                '%2CbackQuote%2C': '\`'
+            }
+            this.tgEscapeCharMapping = {
+                '\_': '\\_',
+                '\*': '\\*',
+                '\`': '\\`'
+            }
+            this.tgEscapeCharMappingV2 = {
+                '\_': '\\_',
+                '\*': '\\*',
+                '\[': '\\[',
+                '\]': '\\]',
+                '\(': '\\(',
+                '\)': '\\)',
+                '\~': '\\~',
+                '\`': '\\`',
+                '\>': '\\>',
+                '\#': '\\#',
+                '\+': '\\+',
+                '\-': '\\-',
+                '\=': '\\=',
+                '\|': '\\|',
+                '\{': '\\{',
+                '\}': '\\}',
+                '\.': '\\.',
+                '\!': '\\!'
+            }
             this.log(`${this.name}, 开始执行!`)
             this.execComm()
         }
@@ -429,6 +462,16 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
+        replaceUseMap(mapping, message) {
+            for (let key in mapping) {
+                if (!mapping.hasOwnProperty(key)) {
+                    continue
+                }
+                message = message.replaceAll(key, mapping[key])
+            }
+            return message
+        }
+
         msg(subtitle, message, openUrl, mediaUrl, copyText, autoDismiss) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
                 //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
@@ -447,17 +490,21 @@ function ToolKit(scriptName, scriptId, options) {
             if (this.isEnableTgNotify) {
                 this.log(`${this.name}Tg通知开始`)
                 //处理特殊字符
-                for (let key in this.tgEscapeCharMapping) {
-                    if (!this.tgEscapeCharMapping.hasOwnProperty(key)) {
-                        continue
+                const isMarkdown = this.tgNotifyUrl && this.tgNotifyUrl.indexOf("parse_mode=Markdown") != -1
+                if (isMarkdown) {
+                    message = this.replaceUseMap(this.preTgEscapeCharMapping, message)
+                    let targetMapping = this.tgEscapeCharMapping
+                    if (this.tgNotifyUrl.indexOf("parse_mode=MarkdownV2") != -1) {
+                        targetMapping = this.tgEscapeCharMappingV2
                     }
-                    message = message.replace(key, this.tgEscapeCharMapping[key])
+                    message = this.replaceUseMap(targetMapping, message)
                 }
-                this.get({
-                    url: encodeURI(`${this.tgNotifyUrl}📌${this.name}\n${message}`)
-                }, (_error, _statusCode, _body) => {
-                    this.log(`Tg通知完毕`)
-                })
+                message = `📌${this.name}\n${message}`
+                if (isMarkdown) {
+                    message = this.replaceUseMap(this.finalTgEscapeCharMapping, message)
+                }
+                let u = `${this.tgNotifyUrl}${encodeURIComponent(message)}`
+                this.req.get({ url: u })
             } else {
                 let options = {}
                 const hasOpenUrl = !this.isEmpty(openUrl)
@@ -477,7 +524,9 @@ function ToolKit(scriptName, scriptId, options) {
                     if (this.isSurge() && hasAutoDismiss) {
                         options["auto-dismiss"] = autoDismiss
                     }
-                    if (hasMediaUrl) {}options["media-url"] = mediaUrl
+                    if (hasMediaUrl) {
+                    }
+                    options["media-url"] = mediaUrl
                     $notification.post(this.name, subtitle, message, options)
                 } else if (this.isQuanX()) {
                     if (hasOpenUrl) options["open-url"] = openUrl
