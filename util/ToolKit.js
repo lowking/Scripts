@@ -810,7 +810,7 @@ function ToolKit(scriptName, scriptId, options) {
             return $response.body
         }
 
-        isGetCookie(reg) {
+        isMatch(reg) {
             return !!($request.method != 'OPTIONS' && this.getRequestUrl().match(reg))
         }
 
