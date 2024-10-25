@@ -1042,10 +1042,10 @@
     {
       "id": "lkMiyousheCustom",
       "name": "米游社App自定义",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/zzzCustom.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/miyousheCustom.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
-        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png",
-        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png"
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/miyoushe.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/miyoushe.png"
       ],
       "keys": [
         "regionGamesKey"
@@ -1089,7 +1089,7 @@
       ],
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
-      "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzzCustom.js?raw=true",
+      "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/miyousheCustom.js?raw=true",
       "script_timeout": 10
     }
   ]
