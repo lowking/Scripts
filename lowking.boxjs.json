@@ -1040,8 +1040,8 @@
       "script_timeout": 10
     },
     {
-      "id": "lkZzzCustom",
-      "name": "ZZZ自定义",
+      "id": "lkMiyousheCustom",
+      "name": "米游社App自定义",
       "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/zzzCustom.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "icons": [
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png",
@@ -1052,28 +1052,28 @@
       ],
       "settings": [
         {
-          "id": "lkIsEnableLogZzzCustom",
+          "id": "lkIsEnableLogMiyousheCustom",
           "name": "开启/关闭日志",
           "val": true,
           "type": "boolean",
           "desc": "默认开启"
         },
         {
-          "id": "lkNotifyOnlyFailZzzCustom",
+          "id": "lkNotifyOnlyFailMiyousheCustom",
           "name": "只当执行失败才通知",
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
         },
         {
-          "id": "lkIsEnableTgNotifyZzzCustom",
+          "id": "lkIsEnableTgNotifyMiyousheCustom",
           "name": "开启/关闭Telegram通知",
           "val": false,
           "type": "boolean",
           "desc": "默认关闭"
         },
         {
-          "id": "lkTgNotifyUrlZzzCustom",
+          "id": "lkTgNotifyUrlMiyousheCustom",
           "name": "Telegram通知地址",
           "val": "",
           "type": "text",
