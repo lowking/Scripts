@@ -1048,7 +1048,8 @@
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/miyoushe.png"
       ],
       "keys": [
-        "regionGamesKey"
+        "regionGamesKey",
+        "homeTopBarKey"
       ],
       "settings": [
         {
@@ -1085,6 +1086,13 @@
           "val": "",
           "type": "text",
           "desc": "请填写要保留的游戏卡片，多个用\",\"隔开：新艾利都:url,天空岛；后面的url是卡片点击跳转链接，不改可以不写"
+        },
+        {
+          "id": "homeTopBarKey",
+          "name": "App首页顶栏",
+          "val": "",
+          "type": "text",
+          "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱:url,签到福利；后面的url是跳转链接，不改可以不写"
         }
       ],
       "author": "@lowking",
