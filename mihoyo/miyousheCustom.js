@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.0.0
+米哈游App自定义-lowking-v1.0.1
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -72,7 +72,7 @@ const main = () => {
         }, {
             topBarNames: ","
         })
-        const ret = resp.data.navigator.reduce((acc, cur) => {
+        let ret = resp.data.navigator.reduce((acc, cur) => {
             const name = `,${cur["name"]},`
             if (topBarNameMap.topBarNames.includes(name)) {
                 let url = topBarNameMap[cur["name"]]
@@ -86,6 +86,7 @@ const main = () => {
         if (ret.length == 0) {
             return false
         }
+        ret = sortByArray(ret, topBarNameMap.topBarNames.split(","), "name")
         resp.data.navigator = ret
         lk.done({body: JSON.stringify(resp)})
     }
@@ -125,10 +126,25 @@ const main = () => {
         if (ret.length == 0) {
             return false
         }
+        ret = sortByArray(ret, regionGamesMap.regionNames.split(","), "region_name")
         resp.data.list = ret
         lk.done({body: JSON.stringify(resp)})
     }
     return true
+}
+
+const sortByArray = (source, refer, key) => {
+    const elements = source.reduce((acc, cur) => {
+        acc[cur[key]] = cur
+        return acc
+    }, {})
+    return refer.reduce((acc, cur) => {
+        const element = elements[cur]
+        if (element) {
+            acc.push(element)
+        }
+        return acc
+    }, [])
 }
 
 if(!lk.isExecComm) {
