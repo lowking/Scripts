@@ -45,16 +45,5 @@
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10086.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10086.png" style="border-radius: 5px;" width="5%">🔴</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🔴</a>
 
-## ChangeLogs
-View the changelog [here](https://github.com/lowking/Scripts/blob/master/CHANGELOGS.MD).
-
-## To-do
-
-## Contribute +/-
-Corrections to existing codes.
-
-## Thanks
-<a target="_blank" href="https://jb.gg/OpenSourceSupport"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" style="border-radius: 5px;" width="10%">
-
 ## LICENSE
 Copyright © 2020-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.
