@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.0.1
+米哈游App自定义-lowking-v1.0.2
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -74,6 +74,7 @@ const main = () => {
         })
         let ret = resp.data.navigator.reduce((acc, cur) => {
             const name = `,${cur["name"]},`
+            lk.log(`顶栏项目：${cur["name"]}`)
             if (topBarNameMap.topBarNames.includes(name)) {
                 let url = topBarNameMap[cur["name"]]
                 if (url && url.startsWith("http")) {
@@ -114,6 +115,7 @@ const main = () => {
         })
         let ret = resp.data.list.reduce((acc, cur) => {
             const regionName = `,${cur["region_name"]},`
+            lk.log(`我的-卡片项目：${cur["name"]}`)
             if (regionGamesMap.regionNames.includes(regionName)) {
                 let regionUrl = regionGamesMap[cur["region_name"]]
                 if (regionUrl && regionUrl.startsWith("http")) {
