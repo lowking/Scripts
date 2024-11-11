@@ -1108,6 +1108,13 @@
           "val": "",
           "type": "text",
           "desc": "填写正则，多个用<>隔开，只要符合一个就显示"
+        },
+        {
+          "id": "coffeeTopPostFilterKey",
+          "name": "绝区零咖啡馆置顶过滤",
+          "val": "",
+          "type": "text",
+          "desc": "填写正则，多个用<>隔开，只要符合一个就不显示"
         }
       ],
       "author": "@lowking",
