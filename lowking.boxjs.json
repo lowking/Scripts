@@ -1049,7 +1049,8 @@
       ],
       "keys": [
         "regionGamesKey",
-        "homeTopBarKey"
+        "homeTopBarKey",
+        "homePageTabKey"
       ],
       "settings": [
         {
@@ -1093,6 +1094,13 @@
           "val": "",
           "type": "text",
           "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱:url,签到福利；后面的url是跳转链接，不改可以不写"
+        },
+        {
+          "id": "homePageTabKey",
+          "name": "App首页tab栏",
+          "val": "",
+          "type": "text",
+          "desc": "请填写要保留的tab栏，多个用\",\"隔开：咖啡馆,同人图。发现和官方tab无法自定义"
         }
       ],
       "author": "@lowking",
