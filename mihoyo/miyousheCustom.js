@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.0.3
+米哈游App自定义-lowking-v1.0.4
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -9,6 +9,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 # > 米哈游App自定义
 米哈游我的自定义 = requires-body=1,type=http-response,pattern=https:\/\/api-takumi-record.mihoyo.com\/game_record\/card\/api\/getGameRecordCard,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 米游社首页自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/home\/new,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
+米游社首页tab自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/forum\/api\/getDiscussionByGame\?gids=8,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 
 [MITM]
 hostname = %APPEND% api-takumi-record.mihoyo.com,
@@ -16,8 +17,10 @@ hostname = %APPEND% api-takumi-record.mihoyo.com,
 const lk = new ToolKit(`米游社App自定义`, `MiyousheCustom`)
 const regionGamesKey = 'regionGamesKey'
 const homeTopBarKey = 'homeTopBarKey'
+const homePageTabKey = 'homePageTabKey'
 const regionGames = lk.getVal(regionGamesKey, "")
 const homeTopBar = lk.getVal(homeTopBarKey, "")
+const homePageTab = lk.getVal(homePageTabKey, "")
 
 const main = () => {
     if (!lk.isRequest()) {
@@ -36,13 +39,20 @@ const main = () => {
                 },
                 {
                     "id": homeTopBarKey,
-                    "name": "App首页顶栏",
+                    "name": "App绝区零首页顶栏",
                     "val": "",
                     "type": "text",
                     "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱:url,签到福利；后面的url是跳转链接，不改可以不写"
                 },
+                {
+                    "id": homePageTabKey,
+                    "name": "App绝区零首页tab栏",
+                    "val": "",
+                    "type": "text",
+                    "desc": "请填写要保留的tab栏，多个用\",\"隔开：咖啡馆,同人图。发现和官方tab无法自定义"
+                },
             ],
-            "keys": [regionGamesKey, homeTopBarKey],
+            "keys": [regionGamesKey, homeTopBarKey, homePageTabKey],
             "script_timeout": 10
         }, {
             "script_url": "https://github.com/lowking/Scripts/blob/master/mihoyo/miyousheCustom.js",
@@ -51,6 +61,43 @@ const main = () => {
         })
         return false
     }
+    // 首页tab
+    // https://bbs-api.miyoushe.com/forum/api/getDiscussionByGame?gids=8&version=3
+    if (lk.isMatch(/\/forum\/api\/getDiscussionByGame/) && lk.isMatch(/gids=8/)) {
+        let resp = lk.getResponseBody()
+        resp = JSON.parse(resp)
+        if (resp?.retcode != 0) {
+            return false
+        }
+        if (resp?.data?.discussion?.forums.length <= 0) {
+            return false
+        }
+        const tabNameMap = homePageTab.split(",").reduce((acc, cur) => {
+            const split = cur.split(":")
+            if (split.length > 1) {
+                acc[split[0]] = `${split[1]}`
+            }
+            acc.name = `${acc.name}${split[0]},`
+            return acc
+        }, {
+            name: ","
+        })
+        let ret = resp.data.discussion.forums.reduce((acc, cur) => {
+            const name = `,${cur["name"]},`
+            lk.log(`tab项目：${cur["name"]}`)
+            if (tabNameMap.name.includes(name)) {
+                acc.push(cur)
+            }
+            return acc
+        }, [])
+        if (ret.length == 0) {
+            return false
+        }
+        ret = sortByArray(ret, tabNameMap.name.split(","), "name")
+        resp.data.discussion.forums = ret
+        lk.done({body: JSON.stringify(resp)})
+    }
+
     // 首页顶栏
     // https://bbs-api.miyoushe.com/apihub/api/home/new?device=iPhone16%2C1&gids=8&parts=1%2C3%2C4&version=3
     if (lk.isMatch(/\/apihub\/api\/home\/new/)) {
@@ -64,7 +111,7 @@ const main = () => {
         }
         const topBarNameMap = homeTopBar.split(",").reduce((acc, cur) => {
             const split = cur.split(":")
-            if (split.length > 1) {
+            if (split.length > 2) {
                 acc[split[0]] = `${split[1]}:${split[2]}`
             }
             acc.topBarNames = `${acc.topBarNames}${split[0]},`
@@ -105,7 +152,7 @@ const main = () => {
         }
         const regionGamesMap = regionGames.split(",").reduce((acc, cur) => {
             const split = cur.split(":")
-            if (split.length > 1) {
+            if (split.length > 2) {
                 acc[split[0]] = `${split[1]}:${split[2]}`
             }
             acc.regionNames = `${acc.regionNames}${split[0]},`
