@@ -1101,6 +1101,13 @@
           "val": "",
           "type": "text",
           "desc": "请填写要保留的tab栏，多个用\",\"隔开：咖啡馆,同人图。发现和官方tab无法自定义"
+        },
+        {
+          "id": "goodsRegFilterKey",
+          "name": "App兑换中心过滤",
+          "val": "",
+          "type": "text",
+          "desc": "填写正则，多个用<>隔开，只要符合一个就显示"
         }
       ],
       "author": "@lowking",
