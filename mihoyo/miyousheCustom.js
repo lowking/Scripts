@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.0.4
+米哈游App自定义-lowking-v1.1.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -10,6 +10,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 米哈游我的自定义 = requires-body=1,type=http-response,pattern=https:\/\/api-takumi-record.mihoyo.com\/game_record\/card\/api\/getGameRecordCard,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 米游社首页自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/home\/new,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 米游社首页tab自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/forum\/api\/getDiscussionByGame\?gids=8,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
+米游社兑换中心过滤 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/common\/homushop\/v1\/web\/goods\/list,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 
 [MITM]
 hostname = %APPEND% api-takumi-record.mihoyo.com,
@@ -18,9 +19,11 @@ const lk = new ToolKit(`米游社App自定义`, `MiyousheCustom`)
 const regionGamesKey = 'regionGamesKey'
 const homeTopBarKey = 'homeTopBarKey'
 const homePageTabKey = 'homePageTabKey'
+const goodsRegFilterKey = 'goodsRegFilterKey'
 const regionGames = lk.getVal(regionGamesKey, "")
 const homeTopBar = lk.getVal(homeTopBarKey, "")
 const homePageTab = lk.getVal(homePageTabKey, "")
+const goodsRegFilter = lk.getVal(goodsRegFilterKey, "")
 
 const main = () => {
     if (!lk.isRequest()) {
@@ -50,6 +53,13 @@ const main = () => {
                     "val": "",
                     "type": "text",
                     "desc": "请填写要保留的tab栏，多个用\",\"隔开：咖啡馆,同人图。发现和官方tab无法自定义"
+                },
+                {
+                    "id": goodsRegFilterKey,
+                    "name": "App兑换中心过滤",
+                    "val": "",
+                    "type": "text",
+                    "desc": "填写正则，多个用<>隔开，只要符合一个就显示"
                 },
             ],
             "keys": [regionGamesKey, homeTopBarKey, homePageTabKey],
@@ -95,6 +105,40 @@ const main = () => {
         }
         ret = sortByArray(ret, tabNameMap.name.split(","), "name")
         resp.data.discussion.forums = ret
+        lk.done({body: JSON.stringify(resp)})
+    }
+
+    // 兑换中心
+    // https://bbs-api.miyoushe.com/common/homushop/v1/web/goods/list?app_id=1&point_sn=myb&page_size=20&page=1&game=
+    if (lk.isMatch(/\/common\/homushop\/v1\/web\/goods\/list/) && lk.isMatch(/game=$/)) {
+        let resp = lk.getResponseBody()
+        resp = JSON.parse(resp)
+        if (resp?.retcode != 0) {
+            return false
+        }
+        if (resp?.data?.list.length <= 0) {
+            return false
+        }
+        let fn = []
+        const regArr = goodsRegFilter.split("<>")
+        if (regArr.length > 0) {
+            for (let i = 0; i < regArr.length; i++) {
+                let regFunc = (name) => {
+                    return name.match(new RegExp(regArr[i], "g"))
+                }
+                fn.push(regFunc)
+            }
+        }
+        resp.data.list = resp.data.list.reduce((acc, cur) => {
+            const name = cur["goods_name"]
+            for (const f of fn) {
+                if (f(name)) {
+                    acc.push(cur)
+                    break
+                }
+            }
+            return acc
+        }, [])
         lk.done({body: JSON.stringify(resp)})
     }
 
