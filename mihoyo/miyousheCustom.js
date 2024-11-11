@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.1.0
+米哈游App自定义-lowking-v1.2.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -11,6 +11,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 米游社首页自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/home\/new,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 米游社首页tab自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/forum\/api\/getDiscussionByGame\?gids=8,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 米游社兑换中心过滤 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/common\/homushop\/v1\/web\/goods\/list,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
+米游社绝区零咖啡馆置顶过滤 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/forumMain,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/miyousheCustom.js
 
 [MITM]
 hostname = %APPEND% api-takumi-record.mihoyo.com,
@@ -20,10 +21,12 @@ const regionGamesKey = 'regionGamesKey'
 const homeTopBarKey = 'homeTopBarKey'
 const homePageTabKey = 'homePageTabKey'
 const goodsRegFilterKey = 'goodsRegFilterKey'
+const coffeeTopPostFilterKey = 'coffeeTopPostFilterKey'
 const regionGames = lk.getVal(regionGamesKey, "")
 const homeTopBar = lk.getVal(homeTopBarKey, "")
 const homePageTab = lk.getVal(homePageTabKey, "")
 const goodsRegFilter = lk.getVal(goodsRegFilterKey, "")
+const coffeeTopPostFilter = lk.getVal(coffeeTopPostFilterKey, "")
 
 const main = () => {
     if (!lk.isRequest()) {
@@ -60,6 +63,13 @@ const main = () => {
                     "val": "",
                     "type": "text",
                     "desc": "填写正则，多个用<>隔开，只要符合一个就显示"
+                },
+                {
+                    "id": coffeeTopPostFilterKey,
+                    "name": "绝区零咖啡馆置顶过滤",
+                    "val": "",
+                    "type": "text",
+                    "desc": "填写正则，多个用<>隔开，只要符合一个就不显示"
                 },
             ],
             "keys": [regionGamesKey, homeTopBarKey, homePageTabKey],
@@ -105,6 +115,44 @@ const main = () => {
         }
         ret = sortByArray(ret, tabNameMap.name.split(","), "name")
         resp.data.discussion.forums = ret
+        lk.done({body: JSON.stringify(resp)})
+    }
+
+    // 咖啡馆置顶帖过滤
+    // https://bbs-api.miyoushe.com/apihub/api/forumMain?forum_id=57
+    if (lk.isMatch(/\/apihub\/api\/forumMain/) && lk.isMatch(/forum_id=57$/)) {
+        let resp = lk.getResponseBody()
+        resp = JSON.parse(resp)
+        if (resp?.retcode != 0) {
+            return false
+        }
+        if (resp?.data?.top_posts.length <= 0) {
+            return false
+        }
+        let fn = []
+        const regArr = coffeeTopPostFilter.split("<>")
+        if (regArr.length > 0) {
+            for (let i = 0; i < regArr.length; i++) {
+                let regFunc = (name) => {
+                    return name.match(new RegExp(regArr[i], "g"))
+                }
+                fn.push(regFunc)
+            }
+        }
+        resp.data.top_posts = resp.data.top_posts.reduce((acc, cur) => {
+            const subject = cur["subject"]
+            let isRetain = true
+            for (const f of fn) {
+                if (f(subject)) {
+                    isRetain = false
+                    break
+                }
+            }
+            if (isRetain) {
+                acc.push(cur)
+            }
+            return acc
+        }, [])
         lk.done({body: JSON.stringify(resp)})
     }
 
