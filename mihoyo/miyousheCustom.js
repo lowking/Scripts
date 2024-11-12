@@ -301,7 +301,7 @@ const main = async () => {
                             return acc
                         }, [])
                     }
-                    card.data[3].value = `${r1.length == 0 ? "-" : r1.join(" / ")} | ${r2.length == 0 ? "-" : r2.join(" / ")}`
+                    card.data[3].value = `${r1.length == 0 ? "-" : r1.join(" ")} | ${r2.length == 0 ? "-" : r2.join(" ")}`
                 }
                 ret.push(card)
             }
