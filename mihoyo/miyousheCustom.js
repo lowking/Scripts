@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.3.0
+米哈游App自定义-lowking-v1.3.1
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -275,6 +275,7 @@ const main = async () => {
                     card.url = regionUrl
                 }
                 if (regionName == ",新艾利都,") {
+                    const activeDays = card.data[0].value
                     const roleId = card["game_role_id"]
                     // 获取爬塔数据
                     const indexInfo = await getIndexInfo(roleId)
@@ -282,8 +283,8 @@ const main = async () => {
                     if (indexInfo?.data?.stats?.climbing_tower_layer) {
                         layer = `${indexInfo?.data?.stats?.climbing_tower_layer}`
                     }
-                    card.data[2].name = "鏖战纪录"
-                    card.data[2].value = layer
+                    card.data[0].name = "鏖战纪录"
+                    card.data[0].value = layer
                     // 获取式與防卫战数据
                     let r1, r2 = []
                     const challengeInfo = await getChallengeInfo(roleId, 1)
@@ -293,7 +294,8 @@ const main = async () => {
                             return acc
                         }, [])
                     }
-                    card.data[3].name = "式與防卫战"
+                    card.data[2].name = "本期式與"
+                    card.data[2].value = r1.length == 0 ? "-" : r1.join(" ")
                     const preChallengeInfo = await getChallengeInfo(roleId, 2)
                     if (preChallengeInfo?.data?.rating_list) {
                         r2 = preChallengeInfo.data.rating_list.reduce((acc, cur) => {
@@ -301,7 +303,10 @@ const main = async () => {
                             return acc
                         }, [])
                     }
-                    card.data[3].value = `${r1.length == 0 ? "-" : r1.join(" ")},${r2.length == 0 ? "-" : r2.join(" ")}`
+                    card.data[3].name = "上期式與"
+                    card.data[3].value = r2.length == 0 ? "-" : r2.join(" ")
+                    // 修改区服信息，显示活跃天数
+                    card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾`
                 }
                 ret.push(card)
             }
@@ -379,6 +384,21 @@ const sortByArray = (source, refer, key) => {
         }
         return acc
     }, [])
+}
+
+const numMap = {
+    "up": ["⁰", "¹", "²", "³", "⁴", "⁵", "⁶", "⁷", "⁸", "⁹"],
+    "down": ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"],
+}
+const convertNumericSymbol = (s, type) => {
+    let ret = []
+    for (const char of s.split("")) {
+        ret.push(numMap[type][Number(char)])
+    }
+    if (ret) {
+        return ret.join("")
+    }
+    return s
 }
 
 const getDs = (task, body="", query="") => {
