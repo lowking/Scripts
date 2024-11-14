@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.3.1
+米哈游App自定义-lowking-v1.3.2
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -306,7 +306,7 @@ const main = async () => {
                     card.data[3].name = "上期式與"
                     card.data[3].value = r2.length == 0 ? "-" : r2.join(" ")
                     // 修改区服信息，显示活跃天数
-                    card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾`
+                    card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾⁽${convertNumericSymbol(roleId, "up")}⁾`.replaceAll(/\n/g, "")
                 }
                 ret.push(card)
             }
@@ -434,7 +434,7 @@ const getDs = (task, body="", query="") => {
 }
 
 if(!lk.isExecComm) {
-    main().then((ret) => {
+    main().catch((err) => lk.logErr(err)).then((ret) => {
         if (!ret) {
             lk.done()
         }
