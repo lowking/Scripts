@@ -347,16 +347,13 @@ const getZzzInfo = async (title, uid, cookie) => new Promise((resolve, _reject) 
     })
 })
 
-const all = async () => {
-    if (!zzzUid || !zzzCookie || !zzzDfp || !zzzBbsCookie) {
-        throw "⚠️请先打开米游社获取cookie"
-    }
-    let title = '获取签到信息'
+const doSignIn = async () => {
     // 签到有验证码，配置n天后继续签到
     if (signInCountDownAmount > 0) {
         signInCountDownAmount--
         lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
     } else {
+        let title = '获取签到信息'
         await getZzzInfo(title, zzzUid, zzzCookie, zzzDfp).then((info) => {
             if (info?.retcode != 0) {
                 throw `获取签到信息异常，请重新获取cookie之后再尝试`
@@ -369,7 +366,7 @@ const all = async () => {
                 isSign
             }
             return info
-        }).then(async ({uid, cookie, dfp, isSign}) => {
+        }).then(async ({ uid, cookie, dfp, isSign }) => {
             title = '日常签到'
             if (!isSign) {
                 await signIn(title, uid, cookie, dfp).then((signRet) => {
@@ -388,12 +385,14 @@ const all = async () => {
             }
         })
     }
+}
 
+const doBbsSignIn = async () => {
     if (bbsSignInCountDownAmount > 0) {
         bbsSignInCountDownAmount--
         lk.setVal(bbsSignInCountDownAmountKey, bbsSignInCountDownAmount)
     } else {
-        title = '米游社打卡'
+        let title = '米游社打卡'
         await bbsSignIn(title, zzzBbsCookie, zzzDfp).then((signRet) => {
             lk.log(JSON.stringify(signRet))
             switch (signRet?.retcode) {
@@ -412,8 +411,10 @@ const all = async () => {
             }
         })
     }
+}
 
-    title = '米游社获取帖子'
+const doBbsVoteAndShare = async () => {
+    let title = '米游社获取帖子'
     await getBbsPost(title).then((postRet) => {
         if (postRet?.retcode != 0) {
             lk.appendNotifyInfo(`⚠️${title}异常：${postRet?.message}`)
@@ -481,6 +482,15 @@ const all = async () => {
             }
         })
     })
+}
+
+const all = async () => {
+    if (!zzzUid || !zzzCookie || !zzzDfp || !zzzBbsCookie) {
+        throw "⚠️请先打开米游社获取cookie"
+    }
+    await doSignIn()
+    await doBbsSignIn()
+    await doBbsVoteAndShare()
 }
 
 const getDs = (task, body) => {
