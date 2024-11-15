@@ -352,65 +352,65 @@ const doSignIn = async () => {
     if (signInCountDownAmount > 0) {
         signInCountDownAmount--
         lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
-    } else {
-        let title = '获取签到信息'
-        await getZzzInfo(title, zzzUid, zzzCookie, zzzDfp).then((info) => {
-            if (info?.retcode != 0) {
-                throw `获取签到信息异常，请重新获取cookie之后再尝试`
-            }
-            let isSign = info?.data?.is_sign
-            info = {
-                uid: zzzUid,
-                cookie: zzzCookie,
-                dfp: zzzDfp,
-                isSign
-            }
-            return info
-        }).then(async ({ uid, cookie, dfp, isSign }) => {
-            title = '日常签到'
-            if (!isSign) {
-                await signIn(title, uid, cookie, dfp).then((signRet) => {
-                    if (signRet?.retcode != 0) {
-                        throw `❌${title}失败：${signRet?.message}`
-                    }
-                    if (signRet?.data?.is_risk) {
-                        lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
-                        lk.setVal(signInCountDownAmountKey, 3)
-                        return
-                    }
-                    lk.appendNotifyInfo(`🎉${title}成功`)
-                })
-            } else {
-                lk.appendNotifyInfo(`⚠️${title}已经签到过了`)
-            }
-        })
+        return
     }
+    let title = '获取签到信息'
+    await getZzzInfo(title, zzzUid, zzzCookie, zzzDfp).then((info) => {
+        if (info?.retcode != 0) {
+            throw `获取签到信息异常，请重新获取cookie之后再尝试`
+        }
+        let isSign = info?.data?.is_sign
+        info = {
+            uid: zzzUid,
+            cookie: zzzCookie,
+            dfp: zzzDfp,
+            isSign
+        }
+        return info
+    }).then(async ({ uid, cookie, dfp, isSign }) => {
+        title = '日常签到'
+        if (isSign) {
+            lk.appendNotifyInfo(`⚠️${title}已经签到过了`)
+            return
+        }
+        await signIn(title, uid, cookie, dfp).then((signRet) => {
+            if (signRet?.retcode != 0) {
+                throw `❌${title}失败：${signRet?.message}`
+            }
+            if (signRet?.data?.is_risk) {
+                lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                lk.setVal(signInCountDownAmountKey, 3)
+                return
+            }
+            lk.appendNotifyInfo(`🎉${title}成功`)
+        })
+    })
 }
 
 const doBbsSignIn = async () => {
     if (bbsSignInCountDownAmount > 0) {
         bbsSignInCountDownAmount--
         lk.setVal(bbsSignInCountDownAmountKey, bbsSignInCountDownAmount)
-    } else {
-        let title = '米游社打卡'
-        await bbsSignIn(title, zzzBbsCookie, zzzDfp).then((signRet) => {
-            lk.log(JSON.stringify(signRet))
-            switch (signRet?.retcode) {
-                case 0:
-                    lk.appendNotifyInfo(`🎉${title}成功，获得${signRet?.data?.points}米游币`)
-                    break
-                case 1008:
-                    lk.appendNotifyInfo(`⚠️${title}异常：${signRet?.message}`)
-                    break
-                case 1034:
-                    lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
-                    lk.setVal(bbsSignInCountDownAmountKey, 3)
-                    break
-                default:
-                    lk.appendNotifyInfo(`⚠️${title}异常：${JSON.stringify(signRet)}`)
-            }
-        })
+        return
     }
+    let title = '米游社打卡'
+    await bbsSignIn(title, zzzBbsCookie, zzzDfp).then((signRet) => {
+        lk.log(JSON.stringify(signRet))
+        switch (signRet?.retcode) {
+            case 0:
+                lk.appendNotifyInfo(`🎉${title}成功，获得${signRet?.data?.points}米游币`)
+                break
+            case 1008:
+                lk.appendNotifyInfo(`⚠️${title}异常：${signRet?.message}`)
+                break
+            case 1034:
+                lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                lk.setVal(bbsSignInCountDownAmountKey, 3)
+                break
+            default:
+                lk.appendNotifyInfo(`⚠️${title}异常：${JSON.stringify(signRet)}`)
+        }
+    })
 }
 
 const doBbsVoteAndShare = async () => {
@@ -528,17 +528,17 @@ const getDs = (task, body) => {
 const main = () => {
     if (lk.isRequest()) {
         lk.done()
-    } else {
-        lk.boxJsJsonBuilder(BoxJsInfo, BoxJsParam)
-        all().catch((err) => {
-            lk.logErr(err)
-            lk.execFail()
-            lk.msg(``, err, openUrl, bannerUrl)
-        }).finally(() => {
-            lk.msg(``, ``, openUrl, bannerUrl)
-            lk.done()
-        })
+        return
     }
+    lk.boxJsJsonBuilder(BoxJsInfo, BoxJsParam)
+    all().catch((err) => {
+        lk.logErr(err)
+        lk.execFail()
+        lk.msg(``, err, openUrl, bannerUrl)
+    }).finally(() => {
+        lk.msg(``, ``, openUrl, bannerUrl)
+        lk.done()
+    })
 }
 
 if(!lk.isExecComm) main()
