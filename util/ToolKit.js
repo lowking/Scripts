@@ -442,8 +442,8 @@ function ToolKit(scriptName, scriptId, options) {
             return typeof require == "function" && !this.isJSBox()
         }
 
-        sleep(time) {
-            return new Promise((resolve) => setTimeout(resolve, time))
+        sleep(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms))
         }
 
         log(message) {
@@ -938,6 +938,19 @@ function ToolKit(scriptName, scriptId, options) {
                 if (new RegExp('(' + k + ')').test(format))
                     format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
             return format
+        }
+
+
+        getCookieProp(ca, cname) {
+            const name = cname + "="
+            ca = ca.split(";")
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim()
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length).replace("\"", "").trim()
+                }
+            }
+            return ""
         }
     })(scriptName, scriptId, options)
 }
