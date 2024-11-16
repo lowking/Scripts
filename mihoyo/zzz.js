@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.0
+绝区零-lowking-v1.1.1
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -379,6 +379,7 @@ const doSignIn = async () => {
             }
             if (signRet?.data?.is_risk) {
                 lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                lk.execFail()
                 lk.setVal(signInCountDownAmountKey, 3)
                 return
             }
@@ -402,12 +403,15 @@ const doBbsSignIn = async () => {
                 break
             case 1008:
                 lk.appendNotifyInfo(`⚠️${title}异常：${signRet?.message}`)
+                lk.execFail()
                 break
             case 1034:
                 lk.appendNotifyInfo(`❌${title}失败：触发风控验证码，请等待一段时间再试`)
+                lk.execFail()
                 lk.setVal(bbsSignInCountDownAmountKey, 3)
                 break
             default:
+                lk.execFail()
                 lk.appendNotifyInfo(`⚠️${title}异常：${JSON.stringify(signRet)}`)
         }
     })
@@ -418,6 +422,7 @@ const doBbsVoteAndShare = async () => {
     await getBbsPost(title).then((postRet) => {
         if (postRet?.retcode != 0) {
             lk.appendNotifyInfo(`⚠️${title}异常：${postRet?.message}`)
+            lk.execFail()
         }
         return postRet?.data?.list
     }).then(async (post) => {
@@ -479,6 +484,7 @@ const doBbsVoteAndShare = async () => {
                 lk.appendNotifyInfo(`🎉${title}成功`)
             } else {
                 lk.appendNotifyInfo(`❌${title}失败`)
+                lk.execFail()
             }
         })
     })
@@ -534,6 +540,8 @@ const releasePost = async (times, cookie, dfp) => {
             data = JSON.parse(data)
             if (data?.retcode == 0) {
                 ret.push(data?.data?.post_id)
+            } else {
+                lk.execFail()
             }
         })
         if (i < times - 1) {
@@ -571,6 +579,7 @@ const doReleasePost = async () => {
     await releasePost(times, zzzBbsCookie, zzzDfp).then(async (posts) => {
         if (!posts) {
             lk.appendNotifyInfo(``)
+            lk.execFail()
             return posts
         }
         lk.appendNotifyInfo(`${title}结果：${posts.length}/${times}`)
@@ -584,6 +593,8 @@ const doReleasePost = async () => {
             ret.forEach((r) => {
                 if (r?.retcode == 0) {
                     sucCount++
+                } else {
+                    lk.execFail()
                 }
             })
             lk.appendNotifyInfo(`删帖结果：${sucCount}/${ret.length}`)
