@@ -12,6 +12,7 @@ pasteStr=$(pbpaste -Prefer text)
 
 # 替换到所有脚本//ScriptableToolKit-start和//ScriptableToolKit-end之间的内容
 echo "批量替换.js中ScriptableToolKit开始"
+count=0
 while IFS= read -r -d '' i
 do
 	lineno=$(grep -n "//ScriptableToolKit-start" "$i")
@@ -24,8 +25,9 @@ do
 		    sed -i '' $lineno"d" "$i"
 		    sed -i '' "$(( lineno - 1)) r $targetPath/Scriptable/ScriptableToolKit.min.js" "$i"
 		    printf "%-20s %s\n" "替换行:$lineno" "$i"
+		    count=$(( count + 1))
 		fi
 	fi
 done < <(find $targetPath -name '*.js' -print0 ! -path '*node_modules')
-echo "批量替换.js中ScriptableToolKit完成"
+echo "批量替换.js中ScriptableToolKit完成。共替换"$count"个js"
 
