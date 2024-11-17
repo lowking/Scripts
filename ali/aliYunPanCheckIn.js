@@ -69,7 +69,7 @@ function getCookie() {
         let data = lk.getResponseBody()
         // lk.log(`获取到的cookie：${data}`)
         try {
-            data = JSON.parse(data)
+            data = data.o()
             let refreshToken = data["refresh_token"]
             if (refreshToken) {
                 lk.setVal(aliYunPanRefreshTokenKey, refreshToken)
@@ -110,11 +110,11 @@ function refreshToken() {
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
             },
-            body: JSON.stringify({
+            body: {
                 "grant_type": "refresh_token",
                 "app_id": "pJZInNHN2dZWk8qg",
                 "refresh_token": aliYunPanRefreshToken
-            })
+            }.s()
         }
         lk.post(url, (error, _response, data) => {
             try {
@@ -122,7 +122,7 @@ function refreshToken() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.hasOwnProperty("refresh_token")) {
                         aliYunPanToken = `Bearer ${dataObj["access_token"]}`
                         aliYunPanRefreshToken = dataObj["refresh_token"]
@@ -155,9 +155,9 @@ function getReward(day) {
                 Authorization: aliYunPanToken,
                 "User-Agent": lk.userAgent
             },
-            body: JSON.stringify({
+            body: {
                 "signInDay": day
-            })
+            }.s()
         }
         lk.post(url, (error, _response, data) => {
             try {
@@ -166,7 +166,7 @@ function getReward(day) {
                     lk.appendNotifyInfo(`❌第${day}天${t}失败，请稍后再试`)
                 } else {
                     lk.log(data)
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.success) {
                         lk.appendNotifyInfo(`✓${t}(第${day}天)，${dataObj?.result?.notice}`)
                     } else {
@@ -196,10 +196,10 @@ function doJoinTeam(joinTeamId) {
                 Authorization: aliYunPanToken,
                 "User-Agent": lk.userAgent
             },
-            body: JSON.stringify({
+            body: {
                 id: joinTeamId,
                 team: "blue"
-            })
+            }.s()
         }
         lk.post(url, async (error, _response, data) => {
             try {
@@ -207,7 +207,7 @@ function doJoinTeam(joinTeamId) {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (!dataObj.success) {
                         lk.execFail()
                         lk.prependNotifyInfo(dataObj.message)
@@ -239,7 +239,7 @@ function joinTeam(layer = 0) {
                 Authorization: aliYunPanToken,
                 "User-Agent": lk.userAgent
             },
-            body: JSON.stringify({})
+            body: {}.s()
         }
         lk.post(url, async (error, _response, data) => {
             try {
@@ -247,13 +247,13 @@ function joinTeam(layer = 0) {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.success) {
                         let joinedTeam = dataObj?.result?.joinTeam
                         let joinTeamId = dataObj?.result?.id
                         if (joinedTeam && joinTeamId) {
                             lk.appendNotifyInfo(`🎉${t}成功\n${dataObj?.result?.period}：${dataObj?.result?.joinCount}(${dataObj?.result[joinedTeam + "WinRate"]})`)
-                            lk.setVal(joinTeamRepeatKey, JSON.stringify(weekOfYear))
+                            lk.setVal(joinTeamRepeatKey, weekOfYear.s())
                         } else {
                             if (layer === 0) {
                                 await doJoinTeam(joinTeamId)
@@ -295,7 +295,7 @@ function signIn() {
                 Authorization: aliYunPanToken,
                 "User-Agent": lk.userAgent
             },
-            body: JSON.stringify({})
+            body: {}.s()
         }
         lk.post(url, async (error, _response, data) => {
             try {
@@ -303,7 +303,7 @@ function signIn() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.success) {
                         let prefix = ""
                         if (dataObj?.result?.signInLogs.length > 0) {

@@ -19,8 +19,8 @@ hostname = %APPEND% *.bilibili.com
 */
 
 const lk = new ToolKit(`哔哩哔哩大会员特权领取`, `BilibiliPrivilegeReceive`)
-const isEnableNotifyForGetCookie = JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive', true))
-let requestHeaders = JSON.parse(lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders'))
+const isEnableNotifyForGetCookie = lk.getVal('lkIsEnableNotifyForGetCookieBilibiliPrivilegeReceive', true).o()
+let requestHeaders = lk.getVal('lkBilibiliPrivilegeReceiveRequestHeaders').o()
 
 const headerTemp = {
     "Host": "api.bilibili.com",
@@ -78,7 +78,7 @@ function getCookie() {
                 cookieStr.match(/SESSDATA=/g) == null) {
                 lk.appendNotifyInfo(`❌获取Cookie无效`)
             } else {
-                lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', JSON.stringify(header))
+                lk.setVal('lkBilibiliPrivilegeReceiveRequestHeaders', header.s())
                 lk.appendNotifyInfo(`🎉获取Cookie成功`)
             }
         } else {
@@ -135,7 +135,7 @@ function getBBTicket() {
                     lk.execFail()
                     lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
                 } else {
-                    let ret = JSON.parse(data)
+                    let ret = data.o()
                     if (ret.code == 0) {
                         lk.appendNotifyInfo(`🎉${t}成功`)
                     } else {
@@ -144,7 +144,7 @@ function getBBTicket() {
                     }
                 }
                 if (!lk.execStatus) {
-                    lk.log(`请求内容：${JSON.stringify(url)}`)
+                    lk.log(`请求内容：${url.s()}`)
                 }
                 resolve()
             } catch (e) {
@@ -175,7 +175,7 @@ function getVipGoTicket() {
                     lk.execFail()
                     lk.appendNotifyInfo(`${t}失败❌请稍后再试`)
                 } else {
-                    let ret = JSON.parse(data)
+                    let ret = data.o()
                     if (ret.code == 0) {
                         lk.appendNotifyInfo(`🎉${t}成功`)
                     } else {
@@ -184,7 +184,7 @@ function getVipGoTicket() {
                     }
                 }
                 if (!lk.execStatus) {
-                    lk.log(`请求内容：${JSON.stringify(url)}`)
+                    lk.log(`请求内容：${url.s()}`)
                 }
                 resolve()
             } catch (e) {

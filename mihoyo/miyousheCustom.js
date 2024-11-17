@@ -98,7 +98,7 @@ const main = async () => {
     // https://bbs-api.miyoushe.com/forum/api/getDiscussionByGame?gids=8&version=3
     if (lk.isMatch(/\/forum\/api\/getDiscussionByGame/) && lk.isMatch(/gids=8/)) {
         let resp = lk.getResponseBody()
-        resp = JSON.parse(resp)
+        resp = resp.o()
         if (resp?.retcode != 0) {
             return false
         }
@@ -128,14 +128,14 @@ const main = async () => {
         }
         ret = sortByArray(ret, tabNameMap.name.split(","), "name")
         resp.data.discussion.forums = ret
-        lk.done({body: JSON.stringify(resp)})
+        lk.done({body: resp.s()})
     }
 
     // 咖啡馆置顶帖过滤
     // https://bbs-api.miyoushe.com/apihub/api/forumMain?forum_id=57
     if (lk.isMatch(/\/apihub\/api\/forumMain/) && lk.isMatch(/forum_id=57$/)) {
         let resp = lk.getResponseBody()
-        resp = JSON.parse(resp)
+        resp = resp.o()
         if (resp?.retcode != 0) {
             return false
         }
@@ -166,14 +166,14 @@ const main = async () => {
             }
             return acc
         }, [])
-        lk.done({body: JSON.stringify(resp)})
+        lk.done({body: resp.s()})
     }
 
     // 兑换中心
     // https://bbs-api.miyoushe.com/common/homushop/v1/web/goods/list?app_id=1&point_sn=myb&page_size=20&page=1&game=
     if (lk.isMatch(/\/common\/homushop\/v1\/web\/goods\/list/) && lk.isMatch(/game=$/)) {
         let resp = lk.getResponseBody()
-        resp = JSON.parse(resp)
+        resp = resp.o()
         if (resp?.retcode != 0) {
             return false
         }
@@ -200,14 +200,14 @@ const main = async () => {
             }
             return acc
         }, [])
-        lk.done({body: JSON.stringify(resp)})
+        lk.done({body: resp.s()})
     }
 
     // 首页顶栏
     // https://bbs-api.miyoushe.com/apihub/api/home/new?device=iPhone16%2C1&gids=8&parts=1%2C3%2C4&version=3
     if (lk.isMatch(/\/apihub\/api\/home\/new/)) {
         let resp = lk.getResponseBody()
-        resp = JSON.parse(resp)
+        resp = resp.o()
         if (resp?.retcode != 0) {
             return false
         }
@@ -241,14 +241,14 @@ const main = async () => {
         }
         ret = sortByArray(ret, topBarNameMap.topBarNames.split(","), "name")
         resp.data.navigator = ret
-        lk.done({body: JSON.stringify(resp)})
+        lk.done({body: resp.s()})
     }
 
     // 我的游戏卡片
     // https://api-takumi-record.mihoyo.com/game_record/card/api/getGameRecordCard?uid=
     if (lk.isMatch(/\/game_record\/card\/api\/getGameRecordCard/)) {
         let resp = lk.getResponseBody()
-        resp = JSON.parse(resp)
+        resp = resp.o()
         if (resp?.retcode != 0) {
             return false
         }
@@ -316,7 +316,7 @@ const main = async () => {
         }
         ret = sortByArray(ret, regionGamesMap.regionNames.split(","), "region_name")
         resp.data.list = ret
-        lk.done({body: JSON.stringify(resp)})
+        lk.done({body: resp.s()})
     }
     return true
 }
@@ -349,7 +349,7 @@ const getIndexInfo = async (roleId) => {
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/index?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
-        return JSON.parse(data)
+        return data.o()
     })
 }
 
@@ -368,7 +368,7 @@ const getChallengeInfo = async (roleId, scheduleType) => {
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/challenge?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
-        return JSON.parse(data)
+        return data.o()
     })
 }
 

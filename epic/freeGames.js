@@ -96,7 +96,7 @@ const processingResponse = (error, _response, data) => {
             lk.log(error)
             lk.appendNotifyInfo(`❌${title}失败，请稍后再试`)
         } else {
-            let dataObj = JSON.parse(data).data
+            let dataObj = data.o().data
             title = '处理响应数据'
             if (!dataObj.Catalog.searchStore.elements) {
                 return

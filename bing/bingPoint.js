@@ -133,7 +133,7 @@ function getCookie() {
             return obj
         }, {})
         try {
-            const bingHeader = JSON.stringify(headers.cookie)
+            const bingHeader = headers.cookie.s()
             if (!!bingHeader) {
                 lk.setVal(bingPointCookieKey, bingHeader)
                 lk.appendNotifyInfo('🎉成功获取cookie，可以关闭相应脚本')
@@ -151,10 +151,10 @@ async function dealMsg(dashBoard, newPoint) {
     return new Promise((resolve, _reject) => {
         let availablePoints = dashBoard?.dashboard?.userStatus?.availablePoints || "-"
         if (availablePoints != "-" && cachePoint) {
-            lk.setVal(bingCachePointKey, JSON.stringify(availablePoints))
+            lk.setVal(bingCachePointKey, availablePoints.s())
             let increaseAmount = availablePoints - cachePoint
             lk.prependNotifyInfo(`本次执行：${increaseAmount >= 0 ? "+" + increaseAmount : increaseAmount}`)
-            lk.setVal(bingIsContinueWhenZeroKey, JSON.stringify(increaseAmount + newPoint))
+            lk.setVal(bingIsContinueWhenZeroKey, (increaseAmount + newPoint).s())
         }
         resolve(`当前积分：${availablePoints}${newPoint > 0 ? "+" + newPoint : ""}   日常获得：${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgress || "-"}/${dashBoard?.dashboard?.userStatus?.counters?.dailyPoint[0]?.pointProgressMax || "-"}`)
     })
@@ -232,8 +232,8 @@ function doReportActForQuiz(title, item, rvt) {
             headers: bingPointHeader,
             body: `id=${item.name}&hash=${item.hash}&timeZone=480&activityAmount=1&__RequestVerificationToken=${rvt}`
         }
-        lk.log(JSON.stringify(url))
-        lk.log(JSON.stringify(item))
+        lk.log(url.s())
+        lk.log(item.s())
         lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
@@ -243,7 +243,7 @@ function doReportActForQuiz(title, item, rvt) {
                 } else {
                     // {"activity":{"id":"3484a93d-db98-490f-998e-10e64e481de7","points":10,"quantity":1,"timestamp":"2023-03-01T22:22:39.5968778+08:00","activityType":11,"channel":"","activitySubtype":"","currencyCode":"","purchasePrice":0.0,"orderId":""},"balance":157}
                     lk.log(data)
-                    data = JSON.parse(data)
+                    data = data.o()
                     if (data?.activity?.points) {
                         ret = 1
                     }
@@ -270,8 +270,8 @@ function doReportActForUrlreward(title, item, rvt) {
             headers: bingPointHeader,
             body: `id=${item.name}&hash=${item.hash}&timeZone=480&activityAmount=1&__RequestVerificationToken=${rvt}`
         }
-        lk.log(JSON.stringify(url))
-        lk.log(JSON.stringify(item))
+        lk.log(url.s())
+        lk.log(item.s())
         lk.post(url, (error, _response, data) => {
             try {
                 if (error) {
@@ -281,7 +281,7 @@ function doReportActForUrlreward(title, item, rvt) {
                 } else {
                     // {"activity":{"id":"3484a93d-db98-490f-998e-10e64e481de7","points":10,"quantity":1,"timestamp":"2023-03-01T22:22:39.5968778+08:00","activityType":11,"channel":"","activitySubtype":"","currencyCode":"","purchasePrice":0.0,"orderId":""},"balance":157}
                     lk.log(data)
-                    data = JSON.parse(data)
+                    data = data.o()
                     if (data?.activity?.points) {
                         ret = 1
                     }
@@ -313,7 +313,7 @@ function searchEdge() {
             resolve()
             return
         }
-        let h = JSON.parse(JSON.stringify(bingPointHeader))
+        let h = bingPointHeader.s().o()
         if (nowString != isSearchEdgeRepeat || searchEdgeCount < searchEdgeAmount) {
             for (let i = searchEdgeCount; i < searchEdgeAmount; i++) {
                 h["authority"] = "cn.bing.com"
@@ -346,7 +346,7 @@ function searchEdge() {
             try {
                 if (!isAlwaysSearch) {
                     lk.log(`保存今天(${nowString})搜索(Edge)次数：${searchEdgeCount}`)
-                    lk.setVal(searchEdgeCountKey, JSON.stringify(searchEdgeCount))
+                    lk.setVal(searchEdgeCountKey, searchEdgeCount.s())
                 }
                 lk.setVal(searchRepeatKey, nowString)
             } catch (e) {
@@ -374,7 +374,7 @@ function searchMobile() {
             resolve()
             return
         }
-        let h = JSON.parse(JSON.stringify(bingPointHeader))
+        let h = bingPointHeader.s().o()
         if (nowString != isSearchMobileRepeat || searchMobileCount < searchMobileAmount) {
             for (let i = searchMobileCount; i < searchMobileAmount; i++) {
                 h["authority"] = "cn.bing.com"
@@ -403,7 +403,7 @@ function searchMobile() {
             try {
                 if (!isAlwaysSearch) {
                     lk.log(`保存今天(${nowString})搜索(移动端)次数：${searchMobileCount}`)
-                    lk.setVal(searchMobileCountKey, JSON.stringify(searchMobileCount))
+                    lk.setVal(searchMobileCountKey, searchMobileCount.s())
                 }
                 lk.setVal(searchRepeatMobileKey, nowString)
             } catch (e) {
@@ -431,7 +431,7 @@ function searchPc() {
             resolve()
             return
         }
-        let h = JSON.parse(JSON.stringify(bingPointHeader))
+        let h = bingPointHeader.s().o()
         if (nowString != isSearchRepeat || searchPcCount < searchPcAmount) {
             for (let i = searchPcCount; i < searchPcAmount; i++) {
                 h["authority"] = "cn.bing.com"
@@ -463,7 +463,7 @@ function searchPc() {
             try {
                 if (!isAlwaysSearch) {
                     lk.log(`保存今天(${nowString})搜索(PC)次数：${searchPcCount}`)
-                    lk.setVal(searchPcCountKey, JSON.stringify(searchPcCount))
+                    lk.setVal(searchPcCountKey, searchPcCount.s())
                 }
                 lk.setVal(searchRepeatKey, nowString)
             } catch (e) {
@@ -484,7 +484,7 @@ function reportAct(dashBoard) {
         if ((promotionalItem = dashBoard?.dashboard?.promotionalItem)) {
             morePromotions.push(promotionalItem)
         }
-        // lk.log(JSON.stringify(morePromotions))
+        // lk.log(morePromotions.s())
         if (morePromotions.length > 0) {
             let todoCount = 0, sucCount = 0, failCount = 0, completeCount = 0, completePoint = 0
             morePromotions.forEach(_ = async (item) => {
@@ -584,7 +584,7 @@ function getDashBoard() {
                 } else {
                     let rvt = data.split("__RequestVerificationToken")[1].split("value=\"")[1].split("\"")[0]
                     url.url = `https://rewards.bing.com/api/getuserinfo?type=1&X-Requested-With=XMLHttpRequest&_=${lk.startTime}`
-                    let dashboard = JSON.parse(data.split("var dashboard = ")[1].split("\n")[0].slice(0, -2))
+                    let dashboard = data.split("var dashboard = ")[1].split("\n")[0].slice(0, -2).o()
                     // 和上面网页返回截取的结构一样
                     // lk.get(url, (error, _response, data) => {
                     //     if (error) {
@@ -592,9 +592,9 @@ function getDashBoard() {
                     //         lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                     //         resolve({})
                     //     } else {
-                    //         lk.log(JSON.stringify(dashboard))
-                    //         dashboard = JSON.parse(data)?.dashboard
-                    //         lk.log(JSON.stringify(dashboard))
+                    //         lk.log(dashboard.s())
+                    //         dashboard = data.o()?.dashboard
+                    //         lk.log(dashboard.s())
                     //         let dataObj = {
                     //             dashboard,
                     //             rvt
@@ -610,7 +610,7 @@ function getDashBoard() {
                 }
             } catch (e) {
                 lk.logErr(e)
-                lk.log(`bing返回数据：${data}\n${error}\n${JSON.stringify(_response)}`)
+                lk.log(`bing返回数据：${data}\n${error}\n${_response.s()}`)
                 lk.execFail()
                 lk.appendNotifyInfo(`❌${t}错误，请稍后再试，或者cookie过期，请重新抓取`)
                 resolve({})

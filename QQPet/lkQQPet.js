@@ -39,7 +39,7 @@ function getCookie() {
         lk.log(`qq宠物授权响应：${response}`)
         let obj
         try {
-            obj = JSON.parse(response)
+            obj = response.o()
         } catch (e) {
             lk.logErr(e)
             lk.appendNotifyInfo(`❌解析授权响应失败！请稍后再试`)
@@ -79,7 +79,7 @@ function dailySign() {
                 'User-Agent': 'QQ/8.4.5.626 CFNetwork/1191.2 Darwin/20.0.0',
                 'Connection': 'keep-alive'
             },
-            body : JSON.stringify({"ad":false,"day":1,"__src":2014})
+            body : {"ad":false,"day":1,"__src":2014}.s()
         }
         lk.post(options, (error, response, body) => {
             try {
@@ -88,7 +88,7 @@ function dailySign() {
                         lk.log(`🔁${qqPetCurUserTag}今天已经签到`)
                         lk.appendNotifyInfo(`🔁${qqPetCurUserTag}今天已经签到`)
                     } else {
-                        const obj = JSON.parse(body)
+                        const obj = body.o()
                         if (obj.items != undefined && obj.items.length > 0) {
                             lk.log(`🎉${qqPetCurUserTag}日常签到成功`)
                             let itemInfo = []

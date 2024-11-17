@@ -23,10 +23,10 @@ hostname = weibo.com
 */
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = new ToolKit(`微博超话签到`, `WeiboSTSign`)
-const isEnableLog = JSON.parse(lk.getVal('lkIsEnableLogWeiboST', true))
-const isClearCookie = JSON.parse(lk.getVal('lkIsClearCookie', false))
+const isEnableLog = lk.getVal('lkIsEnableLogWeiboST', true).o()
+const isClearCookie = lk.getVal('lkIsClearCookie', false).o()
 const userFollowSTKey = `lkUserFollowSTKey`
-var accounts = JSON.parse(lk.getVal(userFollowSTKey, false))
+var accounts = lk.getVal(userFollowSTKey, false).o()
 
 
 if (!lk.isExecComm) {
@@ -68,13 +68,13 @@ function superTalkSignIn(index, name, super_id) {
             }
         }
         lk.get(super_url, (error, response, data) => {
-            lk.log(`\n${JSON.stringify(data)}`);
+            lk.log(`\n${data.s()}`);
             try {
                 if (error) {
                     lk.execFail()
                     lk.appendNotifyInfo(`【${name}】超话签到错误！-${error}`)
                 } else {
-                    var obj = JSON.parse(data);
+                    var obj = data.o();
                     var code = obj.code;
                     var msg = obj.msg;
                     if (code == 100003) { // 行为异常，需要重新验证

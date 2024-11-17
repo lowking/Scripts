@@ -24,8 +24,8 @@ hostname = %APPEND% weibo.com
 */
 const signHeaderKey = 'lkWeiboSTSignHeaderKey'
 const lk = new ToolKit(`微博超话签到cookie`, `WeiboSTSign`, `weiboSTCookie.js`)
-const isEnableLog = JSON.parse(lk.getVal('lkIsEnableLogWeiboSTCookie', true))
-const isEnableGetCookie = JSON.parse(lk.getVal('lkIsEnableGetCookieWeiboST', true))
+const isEnableLog = lk.getVal('lkIsEnableLogWeiboSTCookie', true).o()
+const isEnableGetCookie = lk.getVal('lkIsEnableGetCookieWeiboST', true).o()
 const myFollowUrl = `https://weibo.com/p/1005051760825157/myfollow?relate=interested&pids=plc_main&ajaxpagelet=1&ajaxpagelet_v6=1&__ref=%2F1760825157%2Ffollow%3Frightmod%3D1%26wvr%3D6&_t=FM_159231991868741erested__97_page`
 const userFollowSTKey = `lkUserFollowSTKey`
 var superTalkList = []
@@ -45,7 +45,7 @@ async function getInfo() {
         //拿到cookie之后获取关注到超话列表
         await getFollowList(1)
         //持久化
-        lk.setVal(userFollowSTKey, JSON.stringify(superTalkList))
+        lk.setVal(userFollowSTKey, superTalkList.s())
         lk.log(`获取关注超话${superTalkList.length}个`)
     } else {
         lk.execFail()
@@ -78,7 +78,7 @@ function getFollowList(page) {
                 body.split(`<script>parent.FM.view(`).forEach((curStr) => {
                     if (curStr.indexOf(`关系列表模块`) != -1 && curStr.indexOf(`Pl_Official_RelationInterested`) != -1) {
                         let listStr = curStr.split(`)</script>`)[0]//.split(`"\n})</script>`)[0]
-                        listStr = JSON.parse(listStr)
+                        listStr = listStr.o()
                         listStr.html.split(`<div class="title W_fb W_autocut`).forEach((curST, index) => {
                             if (index > 0) {
                                 let superId = curST.split(`?`)[0].split(`/p/`)[1]
@@ -86,7 +86,7 @@ function getFollowList(page) {
                                 if (screenName.indexOf(`<img class=\\"W_face_radius\\"`) == -1 && !!screenName) {
                                     lk.log(`超话id：${superId}，超话名：${screenName}`);
                                     let st = [screenName, superId]
-                                    let listStr = JSON.stringify(superTalkList)
+                                    let listStr = superTalkList.s()
                                     if (listStr.indexOf(superId) == -1) {
                                         superTalkList.push(st)
                                         count++

@@ -83,7 +83,7 @@ function sign() {
         headers["Cookie"] = cookie
         headers["x-csrf-token"] = getCsrf(cookie)
         headers["Content-Type"] = "application/x-www-form-urlencoded"
-        const groupList = JSON.parse(lk.getVal(groupName))["groupList"]
+        const groupList = lk.getVal(groupName).o()["groupList"]
         const params = {
             url: needUrl.signUrl,
             method: "POST",
@@ -104,7 +104,7 @@ function sendRequest(params, groupItem) {
         lk.post(params, (error, response, body) => {
             try {
                 let content = ""
-                const res = JSON.parse(body)
+                const res = body.o()
                 const {status_code, message, data} = res
                 if (response.status == 200) {
                     if (status_code == "200" && message == "") {
@@ -155,7 +155,7 @@ function getFollowYuBa() {
         body: ""
     }
     lk.get(options, (error, response, data) => {
-        data = JSON.parse(data)
+        data = data.o()
         data = data.data
         let content = ""
         let groupList = []
@@ -169,9 +169,9 @@ function getFollowYuBa() {
         lk.appendNotifyInfo(`获取鱼吧关注列表成功🎉`)
         lk.setVal(
             groupName,
-            JSON.stringify({
+            {
                 groupList
-            })
+            }.s()
         )
 
         lk.msg(``)

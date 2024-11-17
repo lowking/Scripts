@@ -71,7 +71,7 @@ function getCookie() {
     if (lk.isMatch(/\/jump\/app\/conf/)) {
         lk.log(`开始获取cookie`)
         if ($request.headers) {
-            lk.setVal(jumpHeaderKey, JSON.stringify($request.headers))
+            lk.setVal(jumpHeaderKey, $request.headers.s())
             lk.appendNotifyInfo('🎉成功获取cookie，可以关闭相应脚本')
         } else {
             lk.appendNotifyInfo("❌获取cookie失败")
@@ -85,7 +85,7 @@ async function all() {
     if (!header) {
         throw "⚠️请先打开jump app获取cookie"
     }
-    let headers = JSON.parse(header)
+    let headers = header.o()
     await getUserInfo(headers).then(([userInfo, t]) => {
         if (!userInfo?.data?.userId) {
             throw `❌${userInfo?.msg || t + "失败"}，请重新获取token`
@@ -187,7 +187,7 @@ async function getUserInfo(headers) {
                     lk.log(error)
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    data = JSON.parse(data)
+                    data = data.o()
                 }
             } catch (e) {
                 lk.logErr(e)
@@ -215,7 +215,7 @@ async function getGamePlatforms(userId, headers) {
                     lk.log(error)
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    data = JSON.parse(data)
+                    data = data.o()
                 }
             } catch (e) {
                 lk.logErr(e)
@@ -236,7 +236,7 @@ function getGames(userId, moduleId, platformAlias, headers) {
         let url = {
             url: `${domain}/jump/favorite/appList`,
             headers,
-            body: JSON.stringify({
+            body: {
                 "userId": userId,
                 "offset": 0,
                 "priceHigh": -1,
@@ -246,7 +246,7 @@ function getGames(userId, moduleId, platformAlias, headers) {
                 "lowestPrice": 0,
                 "limit": 100,
                 "orderBy": 1
-            })
+            }.s()
         }
         lk.post(url, (error, _response, data) => {
             try {
@@ -255,7 +255,7 @@ function getGames(userId, moduleId, platformAlias, headers) {
                     lk.log(error)
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    data = JSON.parse(data)
+                    data = data.o()
                 }
             } catch (e) {
                 lk.logErr(e)
@@ -283,7 +283,7 @@ async function gameDetail(game, headers) {
                     lk.log(error)
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    data = JSON.parse(data)
+                    data = data.o()
                 }
             } catch (e) {
                 lk.logErr(e)
@@ -311,7 +311,7 @@ function allPrice(game, headers) {
                     lk.log(error)
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    data = JSON.parse(data)
+                    data = data.o()
                 }
             } catch (e) {
                 lk.logErr(e)

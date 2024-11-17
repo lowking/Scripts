@@ -35,7 +35,7 @@ if (!lk.isExecComm) {
                         "User-Agent": userAgent
                     }
                 }
-                lk.log(`${JSON.stringify(url)}`)
+                lk.log(`${url.s()}`)
                 lk.post(url, async (error, response, data) => {
                     try {
                         lk.log(data)
@@ -49,7 +49,7 @@ if (!lk.isExecComm) {
                                 await loginSonyClub()
                             }
                         } else {
-                            const result = JSON.parse(data)
+                            const result = data.o()
                             if (result.resultMsg[0].code == "00") {
                                 lk.appendNotifyInfo(`连续签到${result.resultData.successiveSignupDays}天🎉\n本次签到获得【${result.resultData.signupRankingOfDay}】成长值，共【${result.resultData.totalPoints}】成长值`)
                             } else if (result.resultMsg[0].code == "99") {
@@ -100,14 +100,14 @@ if (!lk.isExecComm) {
                     "User-Agent": userAgent,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
+                body: {
                     "channel": "WAP",
                     "loginID": loginId,
                     "password": pwd
-                })
+                }.s()
             };
             try {
-                lk.log(JSON.stringify(loginUrl))
+                lk.log(loginUrl.s())
                 lk.post(loginUrl, async (error, response, data) => {
                     try {
                         lk.log(data)
@@ -120,7 +120,7 @@ if (!lk.isExecComm) {
                                 await loginSonyClub()
                             }
                         } else {
-                            const result = JSON.parse(data)
+                            const result = data.o()
                             if (result.resultMsg[0].code == "00") {
                                 //登录成功，调用签到
                                 let accessToken = result.resultData["access_token"]

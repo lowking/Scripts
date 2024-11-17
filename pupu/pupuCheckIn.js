@@ -93,7 +93,7 @@ function getCookie() {
         let data = lk.getResponseBody()
         lk.log(`获取到的cookie：${data}`)
         try {
-            data = JSON.parse(data)
+            data = data.o()
             lk.setVal(pupuRefreshTokenKey, data.data["refresh_token"])
             lk.appendNotifyInfo('🎉成功获取朴朴refresh_token，可以关闭相应脚本')
         } catch (e) {
@@ -144,7 +144,7 @@ function getCouponList() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
                         // 等待到整点执行
@@ -168,7 +168,7 @@ function getCouponList() {
                         for (let curCount = 0; curCount < pupuRunCount; curCount++) {
                             for (let i = 0; i  < dataObj.items.length; i++) {
                                 const item = dataObj.items[i];
-                                lk.log(JSON.stringify(item))
+                                lk.log(item.s())
                                 if (todayAlreadyGetCouponIds.indexOf(`,${item["discount_id"]},`) != -1) {
                                     lk.log(`该券今天已经领取，跳过`)
                                     continue
@@ -250,12 +250,12 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                 Authorization: pupuToken,
                 "Content-Type": "application/json; charset=utf-8",
             },
-            body: JSON.stringify({
+            body: {
                 "discount": discount,
                 "time_type": 1,
                 "discount_group": discountGroup,
                 "store_id": storeId,
-            }),
+            }.s(),
         }
         lk.post(url, (error, _response, data) => {
             try {
@@ -264,7 +264,7 @@ function getCoupon(discount, discountGroup, discountName, discountAmount) {
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
                     lk.log(data)
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         resolve(`【${discountAmount}元-${discountName}】\n ${dataObj.data}\n${discount}`)
                     } else {
@@ -291,9 +291,9 @@ function refreshToken() {
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
             },
-            body: JSON.stringify({
-                  "refresh_token": pupuRefreshToken
-            })
+            body: {
+                "refresh_token": pupuRefreshToken
+            }.s()
         }
         lk.put(url, (error, _response, data) => {
             try {
@@ -302,7 +302,7 @@ function refreshToken() {
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
                     lk.log(data)
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
                         pupuToken = `Bearer ${dataObj["access_token"]}`
@@ -342,7 +342,7 @@ function getScore() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
                         lk.prependNotifyInfo(`🎉${t}成功，当前积分：${dataObj.coin}`)
@@ -385,7 +385,7 @@ function signIn() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
                         lk.prependNotifyInfo(`🎉${t}成功，获得【${dataObj['daily_sign_coin']}】积分`)
@@ -426,7 +426,7 @@ function share() {
                     lk.execFail()
                     lk.appendNotifyInfo(`❌${t}失败，请稍后再试`)
                 } else {
-                    let dataObj = JSON.parse(data)
+                    let dataObj = data.o()
                     if (dataObj.errcode == 0) {
                         dataObj = dataObj.data
                         lk.appendNotifyInfo(`🎉${t}成功`)

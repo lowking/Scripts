@@ -153,12 +153,12 @@ function compareDiff(curList) {
     return new Promise((resolve, reject) => {
         if ((!lk.isEmpty(curList)) && (Object.keys(curList).length > 0)) {
             let storedList = lk.getVal(bangumiListKey)
-            lk.setVal(bangumiListKey, JSON.stringify(curList))
+            lk.setVal(bangumiListKey, curList.s())
             if (lk.isEmpty(storedList)) {
                 lk.appendNotifyInfo(`首次运行，已保存追番列表`)
             } else {
                 try {
-                    storedList = JSON.parse(storedList)
+                    storedList = storedList.o()
                     if (Object.keys(storedList).length > 0) {
                         //curList转成对象
                         let curKeyList = []
@@ -261,7 +261,7 @@ function getFollowList(pn, ps, preList, type) {
                     lk.execFail()
                     lk.appendNotifyInfo(`获取追番列表失败❌请稍后再试`)
                 } else {
-                    let ret = JSON.parse(data)
+                    let ret = data.o()
                     if (ret.code == 0) {
                         let list = ret.data.list
                         let total = ret.data.total
@@ -289,7 +289,7 @@ function getFollowList(pn, ps, preList, type) {
                         } else {
                             preList = {}
                         }
-                        // lk.log(JSON.stringify(curList))
+                        // lk.log(curList.s())
                         // lk.appendNotifyInfo(`${pn}-${ps}-${total}-${preList.length}-${curList.length}`)
                         if (pn * ps < total) {
                             curList = await getFollowList(++pn, ps, curList, type)
@@ -302,7 +302,7 @@ function getFollowList(pn, ps, preList, type) {
                             lk.setVal(errCountKey, "0")
                         } else {
                             ++errCount
-                            lk.setVal(errCountKey, JSON.stringify(errCount))
+                            lk.setVal(errCountKey, errCount.s())
                         }
                     }
                 }
@@ -315,7 +315,7 @@ function getFollowList(pn, ps, preList, type) {
                     lk.setVal(errCountKey, "0")
                 } else {
                     ++errCount
-                    lk.setVal(errCountKey, JSON.stringify(errCount))
+                    lk.setVal(errCountKey, errCount.s())
                 }
             } finally {
                 resolve(curList)

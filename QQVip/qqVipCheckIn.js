@@ -31,14 +31,14 @@ hostname = %APPEND% proxy.vac.qq.com
 const signHeaderKey = 'lkQQSignHeaderKey'
 const blockListKey = 'lkQQSignBlockListKey'
 const lk = new ToolKit('QQ会员成长值签到', 'QQVipCheckIn')
-const isEnableNotifyForGetCookie = JSON.parse(lk.getVal('lkIsEnableNotifyForGetCookie', false))
-const isDeleteAllCookie = JSON.parse(lk.getVal('lkIsDeleteAllCookie', false))
-const isEnableGetCookie = JSON.parse(lk.getVal('lkIsEnableGetCookieQQVIP', true))
+const isEnableNotifyForGetCookie = lk.getVal('lkIsEnableNotifyForGetCookie', false).o()
+const isDeleteAllCookie = lk.getVal('lkIsDeleteAllCookie', false).o()
+const isEnableGetCookie = lk.getVal('lkIsEnableGetCookieQQVIP', true).o()
 const signurlVal = `https://iyouxi3.vip.qq.com/ams3.0.php?actid=403490&g_tk=`
 const praiseurlVal = `https://mq.vip.qq.com/m/growth/loadfrank?`
 const mainTitle = `QQ会员成长值签到`
-var accounts = JSON.parse(lk.getVal(signHeaderKey, []))
-var blockList = JSON.parse(lk.getVal(blockListKey, {}))
+var accounts = lk.getVal(signHeaderKey, []).o()
+var blockList = lk.getVal(blockListKey, {}).o()
 // accounts = []
 
 if (!lk.isExecComm) {
@@ -65,7 +65,7 @@ function getCookie() {
     const url = $request.url
     if ($request && $request.method != 'OPTIONS' && url.match(/\/cgi-bin\/srfentry/)) {
         try {
-            const qqheader = JSON.stringify($request.headers.Cookie)
+            const qqheader = $request.headers.Cookie.s()
             lk.log(qqheader)
             if (!!qqheader) {
                 let obj = {
@@ -82,8 +82,8 @@ function getCookie() {
                     }
                 }
                 accounts.push(obj)
-                lk.setVal(signHeaderKey, JSON.stringify(accounts))
-                lk.log(`${JSON.stringify(accounts)}`)
+                lk.setVal(signHeaderKey, accounts.s())
+                lk.log(`${accounts.s()}`)
                 lk.log(`${lk.getVal(signHeaderKey)}`)
                 if (isEnableNotifyForGetCookie) {
                     lk.appendNotifyInfo(`${lk.autoComplete(obj.qq, ``, ``, ` `, `10`, `0`, true, 3, 3, `*`)}获取cookie成功🎉`)
@@ -112,7 +112,7 @@ function withdrawRemind() {
                 url: encodeURI(`https://mq.vip.qq.com/m/growth/speedv3?ADTAG=vipcenter&_wvSb=1&_nav_alpha=true&_wv=1025&_wwv=132&_wvx=10&g_tk=${gtk}&ps_tk=${pstk}`),
                 headers: realHeader
             }
-            lk.log(JSON.stringify(url))
+            lk.log(url.s())
             lk.get(url, (error, response, data) => {
                 lk.log(error)
                 if (data.indexOf('<!') == 0) {
@@ -136,7 +136,7 @@ function withdrawRemind() {
 
 function signIn() {
     return new Promise(async (resolve, reject) => {
-        lk.log(`所有账号：${JSON.stringify(accounts)}`);
+        lk.log(`所有账号：${accounts.s()}`);
         if (!accounts || accounts.length <= 0) {
             lk.execFail()
             lk.appendNotifyInfo(`帐号列表为空，请获取cookie之后再试❌`)
@@ -147,7 +147,7 @@ function signIn() {
                 lk.appendNotifyInfo(`已清除所有cookie⭕️`)
             } else {
                 for (let i in accounts) {
-                    lk.log(`账号：${JSON.stringify(accounts[i])}`)
+                    lk.log(`账号：${accounts[i].s()}`)
                     await qqVipSignIn(i, accounts[i])
                     // 判断运行状态，失败则continue，不继续点赞
                     if (!lk.execStatus) {
@@ -218,7 +218,7 @@ function praise(index, obj){
         lk.get(url, (error, response, data) => {
             let list = null
             try {
-                const result = JSON.parse(data)
+                const result = data.o()
                 if (result.ret == 0) {
                     list = result.data
                 } else if (result.ret == -7) {
@@ -257,7 +257,7 @@ function doPraise(item, obj){
             }
             await lk.get(purl, (perror, presponse, pdata) => {
                 try {
-                    const presult = JSON.parse(pdata)
+                    const presult = pdata.o()
                     if (presult.ret == 0) {
                         lk.log(`给第${item["rank"]}名：${item["memo"]}点赞成功🎉`)
                         pcount++
@@ -296,7 +296,7 @@ function qqVipSignIn(index, obj) {
                 if (index == 3) {
                     lk.appendNotifyInfo(`【左滑 '查看' 以显示签到详情】`)
                 }
-                const result = JSON.parse(data)
+                const result = data.o()
                 if (result.ret == 0) {
                     notifyInfo += `🎉`
                 } else if (result.ret == 10601) {

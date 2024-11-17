@@ -17,25 +17,25 @@ const lk = new ToolKit(`斗鱼画质过滤`, `DouyuStreamQuality`)
 let respBody
 
 try {
-    respBody = JSON.parse(lk.getResponseBody())
-    lk.log(`respBodyRow: ${JSON.stringify(respBody, null, 2)}`)
+    respBody = lk.getResponseBody().o()
+    lk.log(`respBodyRow: ${respBody.s(null, 2)}`)
     let rateSettings = respBody?.data?.rateSetting
-    lk.log(`rateSettings: ${JSON.stringify(rateSettings, null, 2)}`)
+    lk.log(`rateSettings: ${rateSettings.s(null, 2)}`)
     if (rateSettings) {
         let best = rateSettings.reduce((pre, cur) => {
             return pre?.bit < cur?.bit ? cur : pre
         })
-        lk.log(`best: ${JSON.stringify(best)}`)
+        lk.log(`best: ${best.s()}`)
         // respBody.data.rateSetting = [best]
         respBody.data.short_raten = best.name
         // respBody.data.scnt_switch = 0
         respBody.data.rateSwitch = best.rate
         respBody.data.orate = best.rate
         respBody.data.rate = best.rate
-        lk.log(`respBodyModify: ${JSON.stringify(respBody, null, 2)}`)
-        lk.done({body: JSON.stringify(respBody)})
+        lk.log(`respBodyModify: ${respBody.s(null, 2)}`)
+        lk.done({body: respBody.s()})
     } else {
-        lk.log(`respBody: ${JSON.stringify(respBody, null, 2)}`)
+        lk.log(`respBody: ${respBody.s(null, 2)}`)
         lk.done()
     }
 } catch (e) {
