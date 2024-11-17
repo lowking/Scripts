@@ -10,7 +10,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 
 [Script]
 # > 绝区零
-绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/zzz.js
+绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
 */
 const lk = new ToolKit(`绝区零`, `Zzz`, {"httpApi": "ffff@10.0.0.6:6166"})
 const bannerUrl = 'https://images.gamebanana.com/img/Webpage/Game/Profile/Background/66868c3874664.jpg'
