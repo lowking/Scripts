@@ -69,6 +69,12 @@ function ToolKit(scriptName, scriptId, options) {
 
     return new (class {
         constructor(scriptName, scriptId, options) {
+            Object.prototype.s = function (replacer, space) {
+                return JSON.stringify(this, replacer, space)
+            }
+            String.prototype.o = function (reviver) {
+                return JSON.parse(this, reviver)
+            }
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
@@ -86,13 +92,13 @@ function ToolKit(scriptName, scriptId, options) {
 
             //默认脚本开关
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
-            this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : JSON.parse(this.isEnableLog)
+            this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : this.isEnableLog.o()
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
-            this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : JSON.parse(this.isNotifyOnlyFail)
+            this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : this.isNotifyOnlyFail.o()
 
             //tg通知开关
             this.isEnableTgNotify = this.getVal(`${this.prefix}IsEnableTgNotify${this.id}`)
-            this.isEnableTgNotify = this.isEmpty(this.isEnableTgNotify) ? false : JSON.parse(this.isEnableTgNotify)
+            this.isEnableTgNotify = this.isEmpty(this.isEnableTgNotify) ? false : this.isEnableTgNotify.o()
             this.tgNotifyUrl = this.getVal(`${this.prefix}TgNotifyUrl${this.id}`)
             this.isEnableTgNotify = this.isEnableTgNotify ? !this.isEmpty(this.tgNotifyUrl) : this.isEnableTgNotify
 
@@ -337,7 +343,7 @@ function ToolKit(scriptName, scriptId, options) {
             const rootDirDataFilePath = this.path.resolve(process.cwd(), this.boxJsJsonFile)
             const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
             const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-            const jsondata = JSON.stringify(boxJsJson, null, '\t')
+            const jsondata = boxJsJson.s(null, '\t')
             if (isCurDirDataFile) {
                 this.fs.writeFileSync(curDirDataFilePath, jsondata)
             } else if (isRootDirDataFile) {
@@ -346,7 +352,7 @@ function ToolKit(scriptName, scriptId, options) {
                 this.fs.writeFileSync(curDirDataFilePath, jsondata)
             }
 
-            let boxjsJson = JSON.parse(this.fs.readFileSync(boxjsJsonPath))
+            let boxjsJson = this.fs.readFileSync(boxjsJsonPath).o()
             if (!(boxjsJson.hasOwnProperty("apps") && Array.isArray(boxjsJson["apps"]) && boxjsJson["apps"].length > 0)) {
                 return
             }
@@ -359,7 +365,7 @@ function ToolKit(scriptName, scriptId, options) {
             } else {
                 boxjsJson.apps.push(boxJsJson)
             }
-            let ret = JSON.stringify(boxjsJson, null, 2)
+            let ret = boxjsJson.s(null, 2)
             if (!this.isEmpty(param)) {
                 for (const key in param) {
                     let val = param[key]
@@ -565,12 +571,12 @@ function ToolKit(scriptName, scriptId, options) {
             }
             const boxJsId = `${this.prefix}${this.id}`
             // 先从当前会话中获取boxjs的会话id
-            let boxjsCurSession = JSON.parse(this.getVal(this.boxjsCurSessionKey, "{}"))
+            let boxjsCurSession = this.getVal(this.boxjsCurSessionKey, "{}").o()
             if (!boxjsCurSession.hasOwnProperty(boxJsId)) {
                 return
             }
             let curSessionId = boxjsCurSession[boxJsId]
-            let boxjsSessions = JSON.parse(this.getVal(this.boxjsSessionsKey, "[]"))
+            let boxjsSessions = this.getVal(this.boxjsSessionsKey, "[]").o()
             if (boxjsSessions.length == 0) {
                 return
             }
@@ -603,7 +609,7 @@ function ToolKit(scriptName, scriptId, options) {
                     session.datas = curSessionDatas
                 }
             })
-            this.setVal(this.boxjsSessionsKey, JSON.stringify(boxjsSessions))
+            this.setVal(this.boxjsSessionsKey, boxjsSessions.s())
         }
 
         setVal(key, val) {
@@ -636,7 +642,7 @@ function ToolKit(scriptName, scriptId, options) {
             if (isCurDirDataFile || isRootDirDataFile) {
                 const datPath = isCurDirDataFile ? curDirDataFilePath : rootDirDataFilePath
                 try {
-                    return JSON.parse(this.fs.readFileSync(datPath))
+                    return this.fs.readFileSync(datPath).o()
                 } catch (e) {
                     return {}
                 }
@@ -655,7 +661,7 @@ function ToolKit(scriptName, scriptId, options) {
             const rootDirDataFilePath = this.path.resolve(process.cwd(), this.dataFile)
             const isCurDirDataFile = this.fs.existsSync(curDirDataFilePath)
             const isRootDirDataFile = !isCurDirDataFile && this.fs.existsSync(rootDirDataFilePath)
-            const jsondata = JSON.stringify(this.data)
+            const jsondata = this.data.s()
             if (isCurDirDataFile) {
                 this.fs.writeFileSync(curDirDataFilePath, jsondata)
             } else if (isRootDirDataFile) {
@@ -701,9 +707,9 @@ function ToolKit(scriptName, scriptId, options) {
                 options["header"] = options["headers"]
                 options["handler"] = function (resp) {
                     let error = resp.error
-                    if (error) error = JSON.stringify(resp.error)
+                    if (error) error = resp.error.s()
                     let body = resp.data
-                    if (typeof body == "object") body = JSON.stringify(resp.data)
+                    if (typeof body == "object") body = resp.data.s()
                     callback(error, this.adapterStatus(resp.response), body)
                 }
                 $http.get(options)
@@ -735,9 +741,9 @@ function ToolKit(scriptName, scriptId, options) {
                 options["header"] = options["headers"]
                 options["handler"] = function (resp) {
                     let error = resp.error
-                    if (error) error = JSON.stringify(resp.error)
+                    if (error) error = resp.error.s()
                     let body = resp.data
-                    if (typeof body == "object") body = JSON.stringify(resp.data)
+                    if (typeof body == "object") body = resp.data.s()
                     callback(error, this.adapterStatus(resp.response), body)
                 }
                 $http.post(options)
@@ -772,9 +778,9 @@ function ToolKit(scriptName, scriptId, options) {
                 options["header"] = options["headers"]
                 options["handler"] = function (resp) {
                     let error = resp.error
-                    if (error) error = JSON.stringify(resp.error)
+                    if (error) error = resp.error.s()
                     let body = resp.data
-                    if (typeof body == "object") body = JSON.stringify(resp.data)
+                    if (typeof body == "object") body = resp.data.s()
                     callback(error, this.adapterStatus(resp.response), body)
                 }
                 $http.post(options)
@@ -792,7 +798,7 @@ function ToolKit(scriptName, scriptId, options) {
             this.execCount++
             this.costTotalMs += ms
             this.log(`${info}耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
-            this.setVal(this.costTotalStringKey, JSON.stringify(`${this.costTotalMs},${this.execCount}`))
+            this.setVal(this.costTotalStringKey, `${this.costTotalMs},${this.execCount}`.s())
         }
 
         done(value = {}) {
