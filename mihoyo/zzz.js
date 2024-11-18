@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.1
+绝区零-lowking-v1.1.2
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -546,7 +546,7 @@ const releasePost = async (times, cookie, dfp) => {
             }
         })
         if (i < times - 1) {
-            await lk.sleep(3000)
+            await lk.sleep(10 * 1000)
         }
     }
     return ret
