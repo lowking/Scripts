@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.4
+绝区零-lowking-v1.1.5
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -10,7 +10,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 
 [Script]
 # > 绝区零
-绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
+绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,timeout=130,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
 */
 const lk = new ToolKit(`绝区零`, `Zzz`, {"httpApi": "ffff@10.0.0.6:6166"})
 const bannerUrl = 'https://images.gamebanana.com/img/Webpage/Game/Profile/Background/66868c3874664.jpg'
@@ -519,7 +519,7 @@ const releasePost = async (times, cookie, dfp) => {
             "lottery": {
             },
             "forum_id": "57",
-            // "draft_id": "1854556897794879488",
+            "draft_id": "1854556897794879488",
             "structured_content": "[{\"insert\":\"" + content + "\\n\"}]",
             "link_card_ids": [
             ],
@@ -527,7 +527,7 @@ const releasePost = async (times, cookie, dfp) => {
             "content": "<p>" + content + "<\/p>"
         }
         await lk.req.post({
-            url: "https://bbs-api.miyoushe.com/post/api/releasePost/v2",
+            url: `${bbsDomain}/post/api/draft/save`,
             headers: {
                 referer: "https://app.mihoyo.com",
                 "x-rpc-device_fp": dfp,
@@ -536,19 +536,55 @@ const releasePost = async (times, cookie, dfp) => {
                 ds: getDs(),
                 cookie
             },
-            body: body.s(),
-        }).then(({error, resp, data}) => {
+            body: {
+                "is_profit": false,
+                "forum_id": body.forum_id,
+                "view_type": 1,
+                "content": body.content,
+                "is_original": 0,
+                "topic_ids": [],
+                "structured_content": body.structured_content,
+                "subject": body.subject,
+                "cover": "",
+                "gids": body.gids
+            }.s(),
+        }).then(({ error, resp, data }) => {
+            lk.log(`草稿：${data}`)
             data = data.o()
             if (data?.retcode == 0) {
-                ret.push(data?.data?.post_id)
+                return data?.data?.draft_id
             } else {
-                lk.log(`发帖失败：${data.s()}`)
+                lk.log(`保存草稿失败：${data.s()}`)
                 lk.execFail()
             }
+        }).then(async (draftId) => {
+            if (!draftId) return
+            body.draft_id = draftId
+            await lk.req.post({
+                url: `${bbsDomain}/post/api/releasePost/v2`,
+                headers: {
+                    referer: "https://app.mihoyo.com",
+                    "x-rpc-device_fp": dfp,
+                    "x-rpc-client_type": 2,
+                    "x-rpc-app_version": appVersion,
+                    ds: getDs(),
+                    cookie
+                },
+                body: body.s(),
+            }).then(({ error, resp, data }) => {
+                data = data.o()
+                if (data?.retcode == 0) {
+                    ret.push(data?.data?.post_id)
+                } else {
+                    lk.log(`发帖失败：${body.s()}\n${data.s()}`)
+                    lk.execFail()
+                }
+            })
+            if (i < times - 1) {
+                // 间隔2分钟才能发帖成功
+                await lk.sleep(120 * 1000)
+            }
         })
-        if (i < times - 1) {
-            await lk.sleep(10 * 1000)
-        }
     }
     return ret
 }
@@ -559,7 +595,7 @@ const deletePost = async (title, postId, cookie, dfp) => {
         "post_id": `${postId}`
     }
     return await lk.req.post({
-        url: "https://bbs-api.miyoushe.com/post/api/deletePost",
+        url: `${bbsDomain}/post/api/deletePost`,
         headers: {
             referer: "https://app.mihoyo.com",
             "x-rpc-device_fp": dfp,
@@ -569,7 +605,7 @@ const deletePost = async (title, postId, cookie, dfp) => {
             cookie
         },
         body: body.s(),
-    }).then(({error, resp, data}) => {
+    }).then(({ error, resp, data }) => {
         return data.o()
     })
 }
@@ -587,7 +623,6 @@ const doReleasePost = async () => {
         lk.appendNotifyInfo(`${title}结果：${posts.length}/${times}`)
         return posts
     }).then(async (posts) => {
-        await lk.sleep(2000)
         await Promise.all(posts.map(async (p) => {
             return await deletePost(`删除帖子：${p}`, p, zzzBbsCookie, zzzDfp)
         })).then((ret) => {
