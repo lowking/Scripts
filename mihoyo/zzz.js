@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.3
+绝区零-lowking-v1.1.4
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -197,7 +197,7 @@ const bbsSignIn = async (title, cookie, dfp) => new Promise((resolve, _reject) =
 const getBbsPost = async title => new Promise((resolve, _reject) => {
     lk.log(title)
     lk.get({
-        url: `${bbsDomain}/post/api/getForumPostList?forum_id=57&is_good=false&is_hot=false&page=1&page_size=7&sort_type=1`,
+        url: `${bbsDomain}/post/api/getForumPostList?forum_id=57&is_good=false&is_hot=false&page=1&page_size=14&sort_type=1`,
         headers: {
             referer: "https://app.mihoyo.com",
         },
