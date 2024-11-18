@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.2
+绝区零-lowking-v1.1.3
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -542,6 +542,7 @@ const releasePost = async (times, cookie, dfp) => {
             if (data?.retcode == 0) {
                 ret.push(data?.data?.post_id)
             } else {
+                lk.log(`发帖失败：${data.s()}`)
                 lk.execFail()
             }
         })
