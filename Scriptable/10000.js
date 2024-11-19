@@ -87,7 +87,6 @@ const queryfee = () => new Promise((resolve) => {
         } catch (e) {
             requestState ^= 1 << 1
             lk.execFail()
-            lk.log('查询余额异常')
             lk.logErr(e)
             lk.log(JSON.stringify(data))
             lk.log(`查询余额异常，请求体：${JSON.stringify(url)}`)
@@ -103,6 +102,14 @@ const formatFlow = number => {
         return {count: n.toFixed(2), unit: 'M'}
     }
     return {count: (n / 1024).toFixed(2), unit: 'G'}
+}
+
+const getVoiceRet = data => {
+    let ret = 0
+    ret = data?.items[0]?.items.filter(i => i.unitTypeId == "1").reduce((acc, cur) => {
+        return (acc + Number(cur.balanceAmount)) || 0
+    }, ret)
+    return ret
 }
 
 const queryMeal = () => new Promise((resolve) => {
@@ -126,7 +133,7 @@ const queryMeal = () => new Promise((resolve) => {
                     flowRes = '0 MB'
                 }
                 // flowRes = '[流量] ' + flowRes
-                voiceRes = data.hasOwnProperty("voiceBalance") ? `${data.voiceBalance}分钟` : '0分钟'
+                voiceRes = `${getVoiceRet(data)}分钟`
             } else {
                 throw new Error("查询套餐失败")
             }
@@ -134,7 +141,6 @@ const queryMeal = () => new Promise((resolve) => {
         } catch (e) {
             requestState ^= 1 << 2
             lk.execFail()
-            lk.log('查询套餐异常')
             lk.logErr(e)
             lk.log(JSON.stringify(data))
             lk.log(`查询套餐异常，请求体：${JSON.stringify(url)}`)
