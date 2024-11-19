@@ -576,28 +576,39 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         phoneSizes() {
             return {
+                // 16 Pro Max
+                "2868": {
+                    small: 510,
+                    medium: 1092,
+                    large: 1146,
+                    left: 114,
+                    right: 696,
+                    top: 276,
+                    middle: 912,
+                    bottom: 1548,
+                },
                 // 14 Pro Max
                 "2796": {
-                  small: 510,
-                  medium: 1092,
-                  large: 1146,
-                  left: 99,
-                  right: 681,
-                  top: 282,
-                  middle: 918,
-                  bottom: 1554
+                    small: 510,
+                    medium: 1092,
+                    large: 1146,
+                    left: 99,
+                    right: 681,
+                    top: 282,
+                    middle: 918,
+                    bottom: 1554
                 },
 
                 // 14 Pro
                 "2556": {
-                  small: 474,
-                  medium: 1014,
-                  large: 1062,
-                  left: 82,
-                  right: 622,
-                  top: 270,
-                  middle: 858,
-                  bottom: 1446
+                    small: 474,
+                    medium: 1014,
+                    large: 1062,
+                    left: 82,
+                    right: 622,
+                    top: 270,
+                    middle: 858,
+                    bottom: 1446
                 },
 
                 // 12 Pro Max

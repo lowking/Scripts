@@ -2,7 +2,7 @@
 targetPath="/Users/lowking/Desktop/Scripts"
 
 # 执行min
-uglifyjs $targetPath/Scriptable/ScriptableToolKit.js -m -o $targetPath/Scriptable/ScriptableToolKit.min.js
+uglifyjs $targetPath/Scriptable/ScriptableToolKit.js -o $targetPath/Scriptable/ScriptableToolKit.min.js
 
 # 复制min文件内容
 pbcopy < $targetPath/Scriptable/ScriptableToolKit.min.js
