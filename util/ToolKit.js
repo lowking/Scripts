@@ -69,10 +69,13 @@ function ToolKit(scriptName, scriptId, options) {
 
     return new (class {
         constructor(scriptName, scriptId, options) {
-            Object.prototype.s = (replacer, space) => {
+            // ! 无法使用匿名函数，会导致内部this指针指向错误无法获取数据
+            Object.prototype.s = function (replacer, space) {
+                if (typeof this === "string") return this
                 return JSON.stringify(this, replacer, space)
             }
-            String.prototype.o = (reviver) => {
+            Object.prototype.o = function (reviver) {
+                if (typeof this === "object") return this
                 return JSON.parse(this, reviver)
             }
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
