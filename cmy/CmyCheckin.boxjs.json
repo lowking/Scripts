@@ -177,6 +177,11 @@
 							"id": "content",
 							"name": "发送内容",
 							"type": "textarea"
+						},
+						{
+							"id": "limit",
+							"name": "限制时间单位ms",
+							"type": "number"
 						}
 					]
 				}
