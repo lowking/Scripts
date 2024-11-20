@@ -176,7 +176,7 @@
 						{
 							"id": "content",
 							"name": "发送内容",
-							"type": "text"
+							"type": "textarea"
 						}
 					]
 				}
