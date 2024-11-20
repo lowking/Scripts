@@ -5,7 +5,7 @@
 [Script]
 阿里云盘签到 = type=cron,cronexp="0 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/ali/aliYunPanCheckIn.js,script-update-interval=0
 
-绝区零 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,timeout=130,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js,script-update-interval=0
+绝区零 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,timeout=150,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js,script-update-interval=0
 
 顺丰签到 = type=cron,cronexp="30 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/sfexpress/sfexpress.js,script-update-interval=0
 

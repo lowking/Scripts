@@ -10,24 +10,35 @@ pbcopy < $targetPath/util/ToolKit.min.js
 # 从剪辑版复制内容
 pasteStr=$(pbpaste -Prefer text)
 
-# 替换到所有脚本//ToolKit-start和//ToolKit-end之间的内容
+#获取版本号
+tkVersion=$(grep -n "v\d\.\d\.\d" "${targetPath}/util/ToolKit.js")
+if [ -n "$tkVersion" ]; then
+    line=()
+    IFS=" " read -r -a line <<< "$tkVersion"
+    tkVersion=${line[2]}
+    echo $tkVersion
+fi
+# 替换到所有脚本// * ToolKit v所在行和下一行的内容
 echo "批量替换.js中ToolKit开始"
 count=0
 while IFS= read -r -d '' i
 do
-	lineno=$(grep -n "//ToolKit-start" "$i")
+	lineno=$(grep -n "// \* ToolKit v" "$i")
 	if [ -n "$lineno" ]; then
 		array=()
 		IFS=":" read -r -a array <<< "$lineno"
-		lineno=$(( array[0] + 1 ))
+		lineno=$(( array[0] ))
 		if [ $lineno -ge 1 ]; then
 		    sed -i '' $lineno"G" "$i"
 		    sed -i '' $lineno"d" "$i"
-		    sed -i '' "$(( lineno - 1)) r $targetPath/util/ToolKit.min.js" "$i"
+		    sed -i '' "$(( lineno - 1)) a\\
+// * ToolKit $tkVersion" "$i"
+		    sed -i '' $(( lineno + 1 ))"G" "$i"
+		    sed -i '' $(( lineno + 1 ))"d" "$i"
+		    sed -i '' "$(( lineno )) r $targetPath/util/ToolKit.min.js" "$i"
 		    printf "%-20s %s\n" "替换行:$lineno" "$i"
 		    count=$(( count + 1))
 		fi
 	fi
 done < <(find $targetPath -name '*.js' -print0 ! -path '*node_modules')
-echo "批量替换.js中ToolKit完成。共替换"$count"个js"
-
+echo "批量替换.js中ToolKit完成。共替换${count}个js"

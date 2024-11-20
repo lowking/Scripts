@@ -1,25 +1,28 @@
 /**
+ * v1.1.1
  * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
  * 兼容surge，quantumult x，loon，node环境
  * 并且加入一些好用的方法
  * 方法如下：
- *      isEmpty： 判断字符串是否是空（undefined，null，空串）
- *      getRequestUrl： 获取请求的url（目前仅支持surge和quanx）
- *      getResponseBody： 获取响应体（目前仅支持surge和quanx）
- *      boxJsJsonBuilder：构建最简默认boxjs配置json
- *      randomString： 生成随机字符串
- *      autoComplete： 自动补齐字符串
- *      customReplace： 自定义替换
- *      hash： 字符串做hash
+ *      isEmpty: 判断字符串是否是空（undefined，null，空串）
+ *      getRequestUrl: 获取请求的url（目前仅支持surge和quanx）
+ *      getResponseBody: 获取响应体（目前仅支持surge和quanx）
+ *      boxJsJsonBuilder: 构建最简默认boxjs配置json
+ *      randomString: 生成随机字符串
+ *      autoComplete: 自动补齐字符串
+ *      customReplace: 自定义替换
+ *      toDBC: 转换全角字符
+ *      hash: 字符串做hash
+ *      formatDate: 格式化时间
+ *      getCookieProp: 从cookie串获取属性
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
  * @param scriptName 脚本名，用于通知时候的标题
  * @param scriptId 每个脚本唯一的id，用于存储持久化的时候加入key
- * @param options 传入一些参数，目前参数如下；
- *                                      httpApi=ffff@3.3.3.18:6166（这个是默认值，本人surge调试脚本用，可自行修改）
- *                                      target_boxjs_json_path=/Users/lowking/Desktop/Scripts/lowking.boxjs.json（生成boxjs配置的目标文件路径）
- * @constructor
+ * @param options 传入一些参数，目前参数如下：
+ *                httpApi: ffff@3.3.3.18:6166（这个是默认值，surge调试脚本用，可自行修改）
+ *                targetBoxjsJsonPath: /Users/lowking/Desktop/Scripts/lowking.boxjs.json（生成boxjs配置的目标文件路径）
  */
 function ToolKit(scriptName, scriptId, options) {
     class Request {
@@ -28,7 +31,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         fetch(options, method = 'GET') {
-            options = typeof options === 'string' ? {url: options} : options
+            options = typeof options === 'string' ? { url: options } : options
             let fetcher
             switch (method) {
                 case 'PUT':
@@ -42,7 +45,17 @@ function ToolKit(scriptName, scriptId, options) {
             }
 
             const doFetch = new Promise((resolve, reject) => {
-                fetcher.call(this, options, (error, response, data) => error ? reject(error) : resolve({error, response, data}))
+                fetcher.call(this, options, (error, response, data) => error ?
+                    reject({
+                        error,
+                        response,
+                        data
+                    }) :
+                    resolve({
+                        error,
+                        response,
+                        data
+                    }))
             })
 
             const delayFetch = (promise, timeout = 5000) => {
@@ -86,40 +99,40 @@ function ToolKit(scriptName, scriptId, options) {
             this.dataFile = this.getRealPath(`${this.prefix}${this.id}.dat`)
             this.boxJsJsonFile = this.getRealPath(`${this.prefix}${this.id}.boxjs.json`)
 
-            //surge http api等一些扩展参数
+            // surge http api等一些扩展参数
             this.options = options
 
-            //命令行入参
+            // 命令行入参
             this.isExecComm = false
 
-            //默认脚本开关
+            // 默认脚本开关
             this.isEnableLog = this.getVal(`${this.prefix}IsEnableLog${this.id}`)
             this.isEnableLog = this.isEmpty(this.isEnableLog) ? true : this.isEnableLog.o()
             this.isNotifyOnlyFail = this.getVal(`${this.prefix}NotifyOnlyFail${this.id}`)
             this.isNotifyOnlyFail = this.isEmpty(this.isNotifyOnlyFail) ? false : this.isNotifyOnlyFail.o()
 
-            //tg通知开关
+            // tg通知开关
             this.isEnableTgNotify = this.getVal(`${this.prefix}IsEnableTgNotify${this.id}`)
             this.isEnableTgNotify = this.isEmpty(this.isEnableTgNotify) ? false : this.isEnableTgNotify.o()
             this.tgNotifyUrl = this.getVal(`${this.prefix}TgNotifyUrl${this.id}`)
             this.isEnableTgNotify = this.isEnableTgNotify ? !this.isEmpty(this.tgNotifyUrl) : this.isEnableTgNotify
 
-            //计时部分
+            // 计时部分
             this.costTotalStringKey = `${this.prefix}CostTotalString${this.id}`
             this.costTotalString = this.getVal(this.costTotalStringKey)
             this.costTotalString = this.isEmpty(this.costTotalString) ? `0,0` : this.costTotalString.replace("\"", "")
             this.costTotalMs = this.costTotalString.split(",")[0]
             this.execCount = this.costTotalString.split(",")[1]
-            this.costTotalMs = this.isEmpty(this.costTotalMs) ? 0 : parseInt(this.costTotalMs)
-            this.execCount = this.isEmpty(this.execCount) ? 0 : parseInt(this.execCount)
+            this.sleepTotalMs = 0
 
             this.logSeparator = '\n██'
+            this.spaceSeparator = '  '
             this.now = new Date()
             this.startTime = this.now.getTime()
             this.node = (() => {
                 if (this.isNode()) {
                     const request = require('request')
-                    return ({request})
+                    return ({ request })
                 } else {
                     return (null)
                 }
@@ -127,11 +140,11 @@ function ToolKit(scriptName, scriptId, options) {
             this.execStatus = true
             this.notifyInfo = []
 
-            //boxjs相关
+            // boxjs相关
             this.boxjsCurSessionKey = "chavy_boxjs_cur_sessions"
             this.boxjsSessionsKey = "chavy_boxjs_sessions"
 
-            //tg消息转义配置
+            // tg消息转义配置
             this.preTgEscapeCharMapping = {
                 '|\`|': ',backQuote,'
             }
@@ -168,7 +181,7 @@ function ToolKit(scriptName, scriptId, options) {
             this.execComm()
         }
 
-        //当执行命令的目录不是脚本所在目录时，自动把文件路径改成指令传入的路径并返回完整文件路径
+        // 当执行命令的目录不是脚本所在目录时，自动把文件路径改成指令传入的路径并返回完整文件路径
         getRealPath(fileName) {
             if (this.isNode()) {
                 let targetPath = process.argv.slice(1, 2)[0].split("/")
@@ -180,7 +193,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         async execComm() {
-            //支持node命令，实现发送手机测试
+            // 支持node命令，实现发送手机测试
             if (!this.isNode()) {
                 return
             }
@@ -193,13 +206,11 @@ function ToolKit(scriptName, scriptId, options) {
             this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本！`)
             if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
                 this.log(`未设置options，使用默认值`)
-                //设置默认值
                 if (this.isEmpty(this.options)) {
                     this.options = {}
                 }
                 this.options.httpApi = `ffff@10.0.0.6:6166`
             } else {
-                //判断格式
                 if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
                     isHttpApiErr = true
                     this.log(`❌httpApi格式错误！格式：ffff@3.3.3.18:6166`)
@@ -262,8 +273,8 @@ function ToolKit(scriptName, scriptId, options) {
             }
             let boxjsJsonPath = "/Users/lowking/Desktop/Scripts/lowking.boxjs.json"
             // 从传入参数param读取配置的boxjs的json文件路径
-            if (param && param.hasOwnProperty("target_boxjs_json_path")) {
-                boxjsJsonPath = param["target_boxjs_json_path"]
+            if (param && param.hasOwnProperty("targetBoxjsJsonPath")) {
+                boxjsJsonPath = param["targetBoxjsJsonPath"]
             }
             if (!this.fs.existsSync(boxjsJsonPath)) {
                 return
@@ -451,7 +462,16 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         sleep(ms) {
+            this.sleepTotalMs += ms
             return new Promise((resolve) => setTimeout(resolve, ms))
+        }
+
+        randomSleep(minMs, maxMs) {
+            return this.sleep(this.randomNumber(minMs, maxMs))
+        }
+
+        randomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min)
         }
 
         log(message) {
@@ -461,12 +481,11 @@ function ToolKit(scriptName, scriptId, options) {
         logErr(message) {
             this.execStatus = true
             if (this.isEnableLog) {
-                console.log(`${this.logSeparator}${this.name}执行异常:`)
-                console.log(message)
-                if (!message.message) {
-                    return
+                if (!this.isEmpty(message.message)) {
+                    message = `${message}\n${this.spaceSeparator}${message.message.s()}`
                 }
-                console.log(`\n${message.message}`)
+                message = `${this.logSeparator}${this.name}执行异常:\n${this.spaceSeparator}${message}`
+                console.log(message)
             }
         }
 
@@ -482,7 +501,7 @@ function ToolKit(scriptName, scriptId, options) {
 
         msg(subtitle, message, openUrl, mediaUrl, copyText, autoDismiss) {
             if (!this.isRequest() && this.isNotifyOnlyFail && this.execStatus) {
-                //开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
+                // * 开启了当且仅当执行失败的时候通知，并且执行成功了，这时候不通知
                 return
             }
             if (this.isEmpty(message)) {
@@ -497,7 +516,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
             if (this.isEnableTgNotify) {
                 this.log(`${this.name}Tg通知开始`)
-                //处理特殊字符
+                // 处理特殊字符
                 const isMarkdown = this.tgNotifyUrl && this.tgNotifyUrl.indexOf("parse_mode=Markdown") != -1
                 if (isMarkdown) {
                     message = this.replaceUseMap(this.preTgEscapeCharMapping, message)
@@ -567,7 +586,7 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         updateBoxjsSessions(key, val) {
-            // 避免死循环
+            // * 避免死循环
             if (key == this.boxjsSessionsKey) {
                 return
             }
@@ -702,7 +721,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(error, this.adapterStatus(response), body)
                 })
             } else if (this.isJSBox()) {
-                // not test yet
+                // ! not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -736,7 +755,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(error, this.adapterStatus(response), body)
                 })
             } else if (this.isJSBox()) {
-                // not test yet
+                // ! not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -759,7 +778,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(error, this.adapterStatus(response), body)
                 })
             } else if (this.isQuanX()) {
-                // no test
+                // ! not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -773,7 +792,7 @@ function ToolKit(scriptName, scriptId, options) {
                     callback(error, this.adapterStatus(response), body)
                 })
             } else if (this.isJSBox()) {
-                // not test yet
+                // ! not test yet
                 if (typeof options == "string") options = {
                     url: options
                 }
@@ -789,18 +808,33 @@ function ToolKit(scriptName, scriptId, options) {
             }
         }
 
+        sum(a, b) {
+            let aa = Array.from(a, Number), bb = Array.from(b, Number), ret = [], c = 0,
+                i = Math.max(a.length, b.length)
+            while (i--) {
+                c += (aa.pop() || 0) + (bb.pop() || 0)
+                ret.unshift(c % 10)
+                c = Math.floor(c / 10)
+            }
+            while (c) {
+                ret.unshift(c % 10)
+                c = Math.floor(c / 10)
+            }
+            return ret.join('')
+        }
+
         costTime() {
-            let info = `${this.name}执行完毕！`
+            let info = `${this.name}, 执行完毕！`
             if (this.isNode() && this.isExecComm) {
                 info = `指令【${this.comm[1]}】执行完毕！`
             }
             const endTime = new Date().getTime()
             const ms = endTime - this.startTime
             const costTime = ms / 1000
-            this.execCount++
-            this.costTotalMs += ms
-            this.log(`${info}耗时【${costTime}】秒\n总共执行【${this.execCount}】次，平均耗时【${((this.costTotalMs / this.execCount) / 1000).toFixed(4)}】秒`)
-            this.setVal(this.costTotalStringKey, `${this.costTotalMs},${this.execCount}`.s())
+            const count = this.sum(this.execCount, "1")
+            const total = this.sum(this.costTotalMs, ms.s())
+            this.log(`${info}\n${this.spaceSeparator}耗时【${costTime}】秒（含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒）\n${this.spaceSeparator}总共执行【${count}】次，平均耗时【${((Number(total) / Number(this.execCount)) / 1000).toFixed(4)}】秒`)
+            this.setVal(this.costTotalStringKey, `${total},${count}`.s())
         }
 
         done(value = {}) {
@@ -929,7 +963,10 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         /**
-         * formatDate  y:年 M:月 d:日 q:季 H:时 m:分 s:秒 S:毫秒
+         * 时间格式化
+         * @param date
+         * @param format y:年 M:月 d:日 q:季 H:时 m:分 s:秒 S:毫秒
+         * @return {*}
          */
         formatDate(date, format) {
             let o = {
@@ -948,7 +985,12 @@ function ToolKit(scriptName, scriptId, options) {
             return format
         }
 
-
+        /**
+         * 从cookie串中获取属性值
+         * @param ca
+         * @param cname
+         * @return {string}
+         */
         getCookieProp(ca, cname) {
             const name = cname + "="
             ca = ca.split(";")
