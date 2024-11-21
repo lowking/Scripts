@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 targetPath="/Users/lowking/Desktop/Scripts"
-
-# 执行min
-uglifyjs $targetPath/util/ToolKit.js -o $targetPath/util/ToolKit.min.js
-
-# 复制min文件内容
-pbcopy < $targetPath/util/ToolKit.min.js
-
-# 从剪辑版复制内容
-pasteStr=$(pbpaste -Prefer text)
-
 #获取版本号
 tkVersion=$(grep -n "v\d\.\d\.\d" "${targetPath}/util/ToolKit.js")
 if [ -n "$tkVersion" ]; then
@@ -18,6 +8,12 @@ if [ -n "$tkVersion" ]; then
     tkVersion=${line[2]}
     echo $tkVersion
 fi
+# 执行min
+minify --js-keep-var-names -o $targetPath/util/ToolKit.min.js $targetPath/util/ToolKit.js
+# 复制min文件内容
+pbcopy < $targetPath/util/ToolKit.min.js
+# 从剪辑版复制内容
+pasteStr=$(pbpaste -Prefer text)
 # 替换到所有脚本// * ToolKit v所在行和下一行的内容
 echo "批量替换.js中ToolKit开始"
 count=0
@@ -29,12 +25,16 @@ do
 		IFS=":" read -r -a array <<< "$lineno"
 		lineno=$(( array[0] ))
 		if [ $lineno -ge 1 ]; then
+		    # 在注释行下新建一行
 		    sed -i '' $lineno"G" "$i"
+		    # 删除注释行
 		    sed -i '' $lineno"d" "$i"
+		    # 在注释行上一行末尾追加新的注释
 		    sed -i '' "$(( lineno - 1)) a\\
 // * ToolKit $tkVersion" "$i"
-		    sed -i '' $(( lineno + 1 ))"G" "$i"
-		    sed -i '' $(( lineno + 1 ))"d" "$i"
+            # 删除注释行下一行到下100行，也就是文件末尾
+		    sed -i '' $(( lineno + 1 ))","$(( lineno + 100 ))"d" "$i"
+		    # 在注释行后追加文件的内容
 		    sed -i '' "$(( lineno )) r $targetPath/util/ToolKit.min.js" "$i"
 		    printf "%-20s %s\n" "替换行:$lineno" "$i"
 		    count=$(( count + 1))

@@ -1,5 +1,5 @@
 /**
- * v1.1.1
+ * v1.1.2
  * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
  * 兼容surge，quantumult x，loon，node环境
  * 并且加入一些好用的方法
@@ -833,7 +833,8 @@ function ToolKit(scriptName, scriptId, options) {
             const costTime = ms / 1000
             const count = this.sum(this.execCount, "1")
             const total = this.sum(this.costTotalMs, ms.s())
-            this.log(`${info}\n${this.spaceSeparator}耗时【${costTime}】秒（含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒）\n${this.spaceSeparator}总共执行【${count}】次，平均耗时【${((Number(total) / Number(this.execCount)) / 1000).toFixed(4)}】秒`)
+            const average = ((Number(total) / Number(count)) / 1000).toFixed(4)
+            this.log(`${info}\n${this.spaceSeparator}耗时【${costTime}】秒（含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒）\n${this.spaceSeparator}总共执行【${count}】次，平均耗时【${average}】秒`)
             this.setVal(this.costTotalStringKey, `${total},${count}`.s())
         }
 
