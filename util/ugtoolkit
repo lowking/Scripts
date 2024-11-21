@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 targetPath="/Users/lowking/Desktop/Scripts"
 #获取版本号
-tkVersion=$(grep -n "v\d\.\d\.\d" "${targetPath}/util/ToolKit.js")
+tkVersion=$(grep -n "v\d*\.\d*\.\d*" "${targetPath}/util/ToolKit.js")
 if [ -n "$tkVersion" ]; then
     line=()
     IFS=" " read -r -a line <<< "$tkVersion"
