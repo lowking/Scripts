@@ -1,4 +1,4 @@
-// * 监控eu.org域名审核-lowking-v1.0.2
+// * 监控eu.org域名审核-lowking-v1.0.3
 const lk = new ToolKit(`eu.org`, `Eu.org`, {"httpApi": "ffff@10.0.0.6:6166"})
 const cookieKey = 'euOrgCookieKey'
 const cacheKey = 'euOrgCacheKey'
@@ -71,7 +71,7 @@ const all = async () => {
             const td = tr.querySelector('td')
             let domain = td.textContent || ""
             if (domain) {
-                domainList.push(domain)
+                domainList.push(domain.trim())
             }
         }
         // 如果缓存有数据则进行比对，看看是否有新增的域名
