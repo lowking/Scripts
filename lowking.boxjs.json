@@ -1168,6 +1168,13 @@
           "val": "",
           "type": "text",
           "desc": "电脑F12复制请求的cookie"
+        },
+        {
+          "id": "euOrgCacheKey",
+          "name": "域名缓存",
+          "val": "",
+          "type": "text",
+          "desc": "用于比对域名，提醒哪些域名通过审核"
         }
       ],
       "author": "@lowking",
