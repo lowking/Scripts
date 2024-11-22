@@ -1,5 +1,5 @@
 /**
- * v1.2.0
+ * v1.2.1
  * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
  * 兼容surge，quantumult x，loon，node环境
  * 并且加入一些好用的方法
@@ -482,11 +482,15 @@ function ToolKit(scriptName, scriptId, options) {
         logErr(message) {
             this.execStatus = true
             if (this.isEnableLog) {
-                if (!this.isEmpty(message.message)) {
-                    message = `${message}\n${this.spaceSeparator}${message.message.s()}`
+                let msg = ""
+                if (!this.isEmpty(message.error)) {
+                    msg = `${msg}\n${this.spaceSeparator}${message.error.s()}`
                 }
-                message = `${this.logSeparator}${this.name}执行异常:\n${this.spaceSeparator}${message}`
-                console.log(message)
+                if (!this.isEmpty(message.message)) {
+                    msg = `${msg}\n${this.spaceSeparator}${message.message.s()}`
+                }
+                msg = `${this.logSeparator}${this.name}执行异常:${this.spaceSeparator}${msg}`
+                console.log(msg)
             }
         }
 
