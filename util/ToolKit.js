@@ -1,5 +1,5 @@
 /**
- * v1.1.2
+ * v1.2.0
  * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
  * 兼容surge，quantumult x，loon，node环境
  * 并且加入一些好用的方法
@@ -15,6 +15,7 @@
  *      hash: 字符串做hash
  *      formatDate: 格式化时间
  *      getCookieProp: 从cookie串获取属性
+ *      parseHTML: html转dom，需要surge用webview引擎
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
  *
@@ -1002,6 +1003,17 @@ function ToolKit(scriptName, scriptId, options) {
                 }
             }
             return ""
+        }
+
+        /**
+         * html转dom
+         * @param htmlString
+         * @return {HTMLElement}
+         */
+        parseHTML(htmlString) {
+            let parser = new DOMParser();
+            let document = parser.parseFromString(htmlString, 'text/html');
+            return document.body;
         }
     })(scriptName, scriptId, options)
 }
