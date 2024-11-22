@@ -1,4 +1,4 @@
-// * 监控eu.org域名审核-lowking-v1.0.0
+// * 监控eu.org域名审核-lowking-v1.0.1
 const lk = new ToolKit(`eu.org`, `Eu.org`, {"httpApi": "ffff@10.0.0.6:6166"})
 const cookieKey = 'euOrgCookieKey'
 const cacheKey = 'euOrgCacheKey'
@@ -30,6 +30,9 @@ const BoxJsParam = {
 }
 
 const all = async () => {
+    if (!cookie) {
+        throw "⚠️请先在boxjs填写cookie"
+    }
     await lk.req.get({
         url: 'https://nic.eu.org/arf/en/',
         headers: {
