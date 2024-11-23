@@ -1,4 +1,4 @@
-// * 监控eu.org域名审核-lowking-v1.0.3
+// * 监控eu.org域名审核-lowking-v1.0.4
 const lk = new ToolKit(`eu.org`, `Eu.org`, {"httpApi": "ffff@10.0.0.6:6166"})
 const cookieKey = 'euOrgCookieKey'
 const cacheKey = 'euOrgCacheKey'
@@ -61,6 +61,10 @@ const all = async () => {
         }
     }).then(({ error, resp, data }) => {
         let parsedHtml = lk.parseHTML(data)
+        if (parsedHtml.querySelector('[id="id_password"]')) {
+            lk.appendNotifyInfo('⚠️cookie已过期，请重新获取')
+            return
+        }
         const trs = parsedHtml.querySelectorAll('table > tbody > tr')
         if (trs.length <= 1) {
             return
