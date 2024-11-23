@@ -1,5 +1,5 @@
 /**
- * v1.2.1
+ * v1.3.0 build 6
  * 根据自己的习惯整合各个开发者而形成的工具包（@NobyDa, @chavyleung）
  * 兼容surge，quantumult x，loon，node环境
  * 并且加入一些好用的方法
@@ -18,11 +18,15 @@
  *      parseHTML: html转dom，需要surge用webview引擎
  *
  * ⚠️当开启当且仅当执行失败的时候通知选项，请在执行失败的地方执行execFail()
+ * ⚠️可以直接命令行执行：node util/example/ToolKitDemo.js p iphone，把脚本发送到iphone执行
+ *   iphone可以通过构造函数options传入，具体用法如下
  *
  * @param scriptName 脚本名，用于通知时候的标题
  * @param scriptId 每个脚本唯一的id，用于存储持久化的时候加入key
  * @param options 传入一些参数，目前参数如下：
  *                httpApi: ffff@3.3.3.18:6166（这个是默认值，surge调试脚本用，可自行修改）
+ *                         也可以传入一个对象配置传入多台设备，在不同设备运行
+ *                         格式：{iphone:"ffff@3.3.3.18:6166", ipad:"ffff@3.3.3.19:6166"}
  *                targetBoxjsJsonPath: /Users/lowking/Desktop/Scripts/lowking.boxjs.json（生成boxjs配置的目标文件路径）
  */
 function ToolKit(scriptName, scriptId, options) {
@@ -202,7 +206,6 @@ function ToolKit(scriptName, scriptId, options) {
             if (this.comm[1] != "p") {
                 return
             }
-            let isHttpApiErr = false
             this.isExecComm = true
             this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本！`)
             if (this.isEmpty(this.options) || this.isEmpty(this.options.httpApi)) {
@@ -212,23 +215,34 @@ function ToolKit(scriptName, scriptId, options) {
                 }
                 this.options.httpApi = `ffff@10.0.0.6:6166`
             } else {
-                if (!/.*?@.*?:[0-9]+/.test(this.options.httpApi)) {
-                    isHttpApiErr = true
+                let httpApi = this.options.httpApi
+                if (typeof httpApi == "object") {
+                    const targetDevice = this.comm[2]
+                    if (httpApi[targetDevice]) {
+                        httpApi = httpApi[targetDevice]
+                    } else {
+                        const keys = Object.keys(httpApi)
+                        httpApi = keys[0] ? httpApi[keys[0]] : "error"
+                    }
+                }
+                if (!/.*?@.*?:[0-9]+/.test(httpApi)) {
                     this.log(`❌httpApi格式错误！格式：ffff@3.3.3.18:6166`)
                     this.done()
+                    return
                 }
+                this.options.httpApi = httpApi
             }
-            if (!isHttpApiErr) {
-                this.callApi(this.comm[2])
-            }
+            this.callApi(this.comm[2])
         }
 
         callApi(timeout) {
             // 直接用接收到文件路径，解决在不同目录下都可以使用 node xxxx/xxx.js p 指令发送脚本给手机执行
             // let fname = this.getCallerFileNameAndLine().split(":")[0].replace("[", "")
             let fname = this.comm[0]
-            let httpApiHost = this.options.httpApi.split("@")[1]
-            this.log(`获取【${fname}】内容传给【${httpApiHost}】`)
+            const deviceName = this.comm[2]
+            const httpApiHost = this.options.httpApi.split("@")[1]
+            const targetDevice = deviceName ? deviceName : httpApiHost
+            this.log(`获取【${fname}】内容传给【${targetDevice}】`)
             let scriptStr = ''
             this.fs = this.fs ? this.fs : require('fs')
             this.path = this.path ? this.path : require('path')
@@ -259,7 +273,7 @@ function ToolKit(scriptName, scriptId, options) {
                 json: true
             }
             this.post(options, (_error, _response, _data) => {
-                this.log(`已将脚本【${fname}】发给【${httpApiHost}】`)
+                this.log(`已将脚本【${fname}】发给【${targetDevice}】`)
                 this.done()
             })
         }
@@ -839,7 +853,10 @@ function ToolKit(scriptName, scriptId, options) {
             const count = this.sum(this.execCount, "1")
             const total = this.sum(this.costTotalMs, ms.s())
             const average = ((Number(total) / Number(count)) / 1000).toFixed(4)
-            this.log(`${info}\n${this.spaceSeparator}耗时【${costTime}】秒（含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒）\n${this.spaceSeparator}总共执行【${count}】次，平均耗时【${average}】秒`)
+            info = `${info}\n${this.spaceSeparator}耗时【${costTime}】秒（含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒）`
+            info = `${info}\n${this.spaceSeparator}总共执行【${count}】次，平均耗时【${average}】秒`
+            info = `${info}\n${this.spaceSeparator}ToolKit v1.3.0 build 6 by lowking.`
+            this.log(info)
             this.setVal(this.costTotalStringKey, `${total},${count}`.s())
         }
 
