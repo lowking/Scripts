@@ -490,13 +490,15 @@ const show = w => new Promise(async (resolve) => {
     resolve(widget)
 })
 
-const main = async () => {
+const main = async (isLimit) => {
     try {
         // *电信似乎没有这个限制
         if (false && now.getDate() == 1) {
             // 每个月1号维护查询不到数据
             lk.log('每个月1号维护查询不到数据，直接降级处理')
             widget = await createWidget(widget, title, '-', '-', '-')
+        } else if (isLimit) {
+            widget = await createWidget(widget, title, await lk.getVal('subt', 'local', '-'), await lk.getVal('flowRes', 'local', '-'), await lk.getVal('voiceRes', 'local', '-'))
         } else {
             await updateCookie(loginUrl)
             await queryfee()
@@ -551,13 +553,7 @@ const renderWebView = async () => {
 
 if (config.runsInWidget) {
     lk.log('在小组件运行')
-    if (await lk.checkLimit()) {
-        lk.execFail()
-        lk.saveLog()
-        // widget = await createWidget(widget, title, await $.getVal('subt', 'local', '-'), await $.getVal('flowRes', 'local', '-'), await $.getVal('voiceRes', 'local', '-'))
-        return false;
-    }
-    await main()
+    await main(await lk.checkLimit())
 } else {
     lk.log('手动运行')
     let enter = await lk.widgetEnter([{name:{zh:"预览",en:"Preview"}, callback: main}], true)
