@@ -1,24 +1,119 @@
 #!/usr/bin/env bash
+useNoMinify=$1
 targetPath="/Users/lowking/Desktop/Scripts"
 #获取版本号和buildId
 tkVersion=$(grep -n "v\d*\.\d*\.\d*" "${targetPath}/util/ToolKit.js")
 buildId=0
+buildInfo=""
 if [ -n "$tkVersion" ]; then
     line=()
     IFS=" " read -r -a line <<< "$tkVersion"
     tkVersion=${line[2]}
     buildId=${line[4]}
-    echo $tkVersion "build" $(( buildId + 1 ))
+    buildInfo="${tkVersion} build $(( buildId + 1 ))"
     # 更新js中buildId
     sed -i "" "s/${tkVersion} build ${buildId}/${tkVersion} build $(( buildId + 1 ))/g" "${targetPath}/util/ToolKit.js"
 fi
 # 执行min
-minify --js-keep-var-names -o $targetPath/util/ToolKit.min.js $targetPath/util/ToolKit.js
+minify --js-keep-var-names -o "${targetPath}/util/ToolKit.min.js" "${targetPath}/util/ToolKit.js"
+batchReplacement() {
+    local tarr=$1
+    local prefix=$2
+    for var in ${tarr[@]};
+    do
+        val=`echo ${var##*,}`
+        key=`echo ${var%%,*}`
+        sed -i "" "s/${prefix}${key}/${prefix}${val}/g" "${targetPath}/util/ToolKit.min.js"
+    done
+}
+# 根据配置批量替换
+funcArr=(
+isMarkdown,fa
+getRealPath,fb
+checkPath,fc
+execComm,fd
+callApi,fe
+replaceUseMap,ff
+updateBoxjsSessions,fg
+loadData,fh
+writeData,fi
+responseDataAdapter,fj
+statusAdapter,fk
+costTime,fl
+)
+echo "压缩方法名..."
+batchReplacement "${funcArr[*]}"
+varArr=(
+prefix,a
+dataFile,b
+boxJsJsonFile,c
+options,d
+isExecComm,e
+isEnableLog,f
+isNotifyOnlyFail,g
+isEnableTgNotify,h
+tgNotifyUrl,i
+costTotalStringKey,j
+costTotalString,k
+costTotalMs,l
+execCount,m
+sleepTotalMs,n
+logSeparator,o
+twoSpace,p
+startTime,q
+execStatus,r
+notifyInfo,s
+boxjsCurSessionKey,t
+boxjsSessionsKey,u
+preTgEscapeCharMapping,v
+finalTgEscapeCharMapping,w
+tgEscapeCharMappingV2,x
+tgEscapeCharMapping,y
+execComm,z
+)
+echo "压缩this.相关变量名..."
+batchReplacement "${varArr[*]}" "this\."
+batchReplacement "${varArr[*]}" "this?\."
+echo "压缩常规变量名..."
+parameterArr=(
+fileName,_a
+targetPath,_b
+curDirDataFilePath,_c
+rootDirDataFilePath,_d
+isCurDirDataFile,_e
+isRootDirDataFile,_f
+jsondata,_g
+targetDevice,_h
+fname,_i
+xKey,_j
+httpApiHost,_k
+deviceName,_l
+datPath,_m
+loseParamSet,_n
+isMarkdown,_o
+boxjsJsonPath,_p
+needAppendKeys,_q
+domain,_r
+tabString,_s
+targetMapping,_t
+hasOpenUrl,_u
+hasMediaUrl,_v
+hasCopyText,_w
+hasAutoDismiss,_x
+boxJsId,_y
+boxjsCurSession,_z
+boxjsSessions,_aa
+curSessionDatas,_ab
+session,_ac
+isExists,_ad
+)
+batchReplacement "${parameterArr[*]}"
 # 复制min文件内容
-pbcopy < $targetPath/util/ToolKit.min.js
+pbcopy < "${targetPath}/util/ToolKit.min.js"
 # 从剪辑版复制内容
 pasteStr=$(pbpaste -Prefer text)
 # 替换到所有脚本// * ToolKit v所在行和下一行的内容
+echo $buildInfo
 echo "批量替换.js中ToolKit开始"
 count=0
 while IFS= read -r -d '' i
