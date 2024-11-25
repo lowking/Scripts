@@ -1,5 +1,5 @@
 /**
- * v1.3.1 build 71
+ * v1.3.1 build 80
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -239,8 +239,8 @@ function ToolKit(scriptName, scriptId, options) {
 
         callApi(timeout, httpApi) {
             let fname = this.comm[0]
-            const deviceName = this.comm[2]
             const [ xKey, httpApiHost ] = httpApi.split("@")
+            const deviceName = this.isNumeric(this.comm[2]) ? this.comm[3] || httpApiHost : this.comm[2]
             const targetDevice = deviceName ? deviceName : httpApiHost
             this.log(`获取【${fname}】内容传给【${targetDevice}】`)
             this.fs = this.fs ? this.fs : require('fs')
@@ -483,6 +483,9 @@ function ToolKit(scriptName, scriptId, options) {
                     msg = `${msg}\n${this.twoSpace}${message.message.s()}`
                 }
                 msg = `${this.logSeparator}${this.name}执行异常:${this.twoSpace}${msg}`
+                if (message) {
+                    msg = `${msg}\n${this.twoSpace}${message.s()}`
+                }
                 console.log(msg)
             }
         }
@@ -683,11 +686,11 @@ function ToolKit(scriptName, scriptId, options) {
             const tabString = `${this.twoSpace}${this.twoSpace}`
             let ret = ""
             Object.keys(data).forEach((key) => {
-                let lines = data[key].s().split("\n")
+                let lines = data[key]?.s().split("\n")
                 if (key == "output") {
                     lines = lines.slice(0, -2)
                 }
-                ret = `${ret}\n${tabString}${key}:\n${tabString}${this.twoSpace}${lines.join(`\n${tabString}${this.twoSpace}`)}`
+                ret = `${ret}\n${tabString}${key}:\n${tabString}${this.twoSpace}${lines?.join(`\n${tabString}${this.twoSpace}`)}`
             })
             return ret
         }
@@ -831,7 +834,7 @@ function ToolKit(scriptName, scriptId, options) {
             const average = ((Number(total) / Number(count)) / 1000).toFixed(4)
             info = `${info}\n${this.twoSpace}耗时【${costTime}】秒(含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒)`
             info = `${info}\n${this.twoSpace}总共执行【${count}】次,平均耗时【${average}】秒`
-            info = `${info}\n${this.twoSpace}ToolKit v1.3.1 build 71 by lowking.`
+            info = `${info}\n${this.twoSpace}ToolKit v1.3.1 build 80 by lowking.`
             this.log(info)
             this.setVal(this.costTotalStringKey, `${total},${count}`.s())
         }
@@ -857,6 +860,10 @@ function ToolKit(scriptName, scriptId, options) {
 
         isEmpty(obj) {
             return typeof obj == "undefined" || obj == null || obj == "" || obj == "null" || obj == "undefined" || obj.length === 0
+        }
+
+        isNumeric(s) {
+            return !isNaN(parseFloat(s)) && isFinite(s)
         }
 
         randomString(len, chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890') {
