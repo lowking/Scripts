@@ -48,7 +48,7 @@ prefix,a
 dataFile,b
 boxJsJsonFile,c
 options,d
-isExecComm,e
+comm,e
 isEnableLog,f
 isNotifyOnlyFail,g
 isEnableTgNotify,h
