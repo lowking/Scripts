@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-useNoMinify=$1
+isDev=$1
 targetPath="/Users/lowking/Desktop/Scripts"
 #获取版本号和buildId
 tkVersion=$(grep -n "v\d*\.\d*\.\d*" "${targetPath}/util/ToolKit.js")
@@ -12,10 +12,16 @@ if [ -n "$tkVersion" ]; then
     buildId=${line[4]}
     buildInfo="${tkVersion} build $(( buildId + 1 ))"
     # 更新js中buildId
-    sed -i "" "s/${tkVersion} build ${buildId}/${tkVersion} build $(( buildId + 1 ))/g" "${targetPath}/util/ToolKit.js"
+    newVersion="${tkVersion} build $(( buildId + 1 ))"
+    sed -i "" "s/${tkVersion} build ${buildId}/${newVersion}/g" "${targetPath}/util/ToolKit.js"
 fi
 # 执行min
-minify --js-keep-var-names -o "${targetPath}/util/ToolKit.min.js" "${targetPath}/util/ToolKit.js"
+if [ $isDev == "dev" ]; then
+    cp -f "${targetPath}/util/ToolKit.js" "${targetPath}/util/ToolKit.min.js"
+else
+    minify --js-keep-var-names -o "${targetPath}/util/ToolKit.min.js" "${targetPath}/util/ToolKit.js"
+fi
+sed -i "" "s/ToolKit\./ToolKit ${newVersion}\./g" "${targetPath}/util/ToolKit.min.js"
 batchReplacement() {
     local tarr=$1
     local prefix=$2
@@ -87,7 +93,6 @@ targetDevice,_h
 fname,_i
 xKey,_j
 httpApiHost,_k
-deviceName,_l
 datPath,_m
 loseParamSet,_n
 isMarkdown,_o

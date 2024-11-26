@@ -1,5 +1,5 @@
 /**
- * v1.3.1 build 121
+ * v1.3.2 build 132
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -211,7 +211,7 @@ function ToolKit(scriptName, scriptId, options) {
             }
             this.isExecComm = true
             this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本!`)
-            let httpApi = this.options.httpApi
+            let httpApi = this.options.httpApi, targetDevice
             if (this.isEmpty(this?.options?.httpApi)) {
                 this.log(`未设置options,使用默认值`)
                 if (this.isEmpty(this?.options)) {
@@ -220,12 +220,17 @@ function ToolKit(scriptName, scriptId, options) {
                 this.options.httpApi = `ffff@10.0.0.6:6166`
             } else {
                 if (typeof httpApi == "object") {
-                    const targetDevice = this.comm[2]
+                    targetDevice = this.isNumeric(this.comm[2]) ? this.comm[3] || "unknown" : this.comm[2]
                     if (httpApi[targetDevice]) {
                         httpApi = httpApi[targetDevice]
                     } else {
                         const keys = Object.keys(httpApi)
-                        httpApi = keys[0] ? httpApi[keys[0]] : "error"
+                        if (keys[0]) {
+                            targetDevice = keys[0]
+                            httpApi = httpApi[keys[0]]
+                        } else {
+                            httpApi = "error"
+                        }
                     }
                 }
                 if (!/.*?@.*?:[0-9]+/.test(httpApi)) {
@@ -234,14 +239,12 @@ function ToolKit(scriptName, scriptId, options) {
                     return
                 }
             }
-            this.callApi(this.comm[2], httpApi)
+            this.callApi(this.comm[2], targetDevice, httpApi)
         }
 
-        callApi(timeout, httpApi) {
+        callApi(timeout, targetDevice, httpApi) {
             let fname = this.comm[0]
             const [ xKey, httpApiHost ] = httpApi.split("@")
-            const deviceName = this.isNumeric(this.comm[2]) ? this.comm[3] || httpApiHost : this.comm[2]
-            const targetDevice = deviceName ? deviceName : httpApiHost
             this.log(`获取【${fname}】内容传给【${targetDevice}】`)
             this.fs = this.fs ? this.fs : require('fs')
             this.path = this.path ? this.path : require('path')
@@ -834,7 +837,7 @@ function ToolKit(scriptName, scriptId, options) {
             const average = ((Number(total) / Number(count)) / 1000).toFixed(4)
             info = `${info}\n${this.twoSpace}耗时【${costTime}】秒(含休眠${this.sleepTotalMs ? (this.sleepTotalMs / 1000).toFixed(4) : 0}秒)`
             info = `${info}\n${this.twoSpace}总共执行【${count}】次,平均耗时【${average}】秒`
-            info = `${info}\n${this.twoSpace}ToolKit v1.3.1 build 121 by lowking.`
+            info = `${info}\n${this.twoSpace}ToolKit.`
             this.log(info)
             this.setVal(this.costTotalStringKey, `${total},${count}`.s())
         }
