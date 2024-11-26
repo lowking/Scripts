@@ -76,7 +76,7 @@ const queryfee = () => new Promise((resolve) => {
         try {
             lk.log(data)
             data = JSON.parse(data)
-            if (data.result === 10000) {
+            if (data.result === 10000 && data.serviceResultCode == "0") {
                 subt = `${parseFloat(parseInt(data.totalBalanceAvailable) / 100).toFixed(2)}¥`
             } else if (data.result === -10000) {
                 subt = `已欠费`
@@ -125,7 +125,7 @@ const queryMeal = () => new Promise((resolve) => {
         try {
             lk.log(data)
             data = JSON.parse(data)
-            if (data.result === 10000) {
+            if (data.result === 10000 && data.serviceResultCode == "0") {
                 if (data.hasOwnProperty("balance")) {
                     flowRes = formatFlow(data.balance)
                     flowRes = `${flowRes.count} ${flowRes.unit}B`
