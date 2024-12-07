@@ -1,5 +1,5 @@
 /**
- * v1.3.2 build 133
+ * v1.3.2 build 139
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -211,13 +211,14 @@ function ToolKit(scriptName, scriptId, options) {
             }
             this.isExecComm = true
             this.log(`开始执行指令【${this.comm[1]}】=> 发送到其他终端测试脚本!`)
-            let httpApi = this.options.httpApi, targetDevice
+            let httpApi = this.options?.httpApi, targetDevice
             if (this.isEmpty(this?.options?.httpApi)) {
                 this.log(`未设置options,使用默认值`)
                 if (this.isEmpty(this?.options)) {
                     this.options = {}
                 }
                 this.options.httpApi = `ffff@10.0.0.6:6166`
+                httpApi = this.options.httpApi
             } else {
                 if (typeof httpApi == "object") {
                     targetDevice = this.isNumeric(this.comm[2]) ? this.comm[3] || "unknown" : this.comm[2]
