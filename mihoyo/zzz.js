@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.6
+绝区零-lowking-v1.1.7
 
 cookie获取自己抓包，能不能用随缘
 ⚠️只测试过surge没有其他app自行测试
@@ -499,7 +499,7 @@ const releasePost = async (times, cookie, dfp) => {
         const content = `${lk.formatDate(lk.now, "yyyy-MM-dd")}.${i+1}`
         let body = {
             "is_original": 0,
-            "subject": "日常任务发完就删",
+            "subject": "日常任务发完就删，求评论收藏🫵🏻",
             "gids": 8,
             "contribution_act": {
                 "act_id": null,
