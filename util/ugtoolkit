@@ -47,8 +47,10 @@ responseDataAdapter,fj
 statusAdapter,fk
 costTime,fl
 )
-echo "压缩方法名..."
-batchReplacement "${funcArr[*]}"
+if [ $isDev != "dev" ]; then
+    echo "压缩方法名..."
+    batchReplacement "${funcArr[*]}"
+fi
 varArr=(
 prefix,a
 dataFile,b
@@ -77,10 +79,12 @@ tgEscapeCharMappingV2,x
 tgEscapeCharMapping,y
 execComm,z
 )
-echo "压缩this.相关变量名..."
-batchReplacement "${varArr[*]}" "this\."
-batchReplacement "${varArr[*]}" "this?\."
-echo "压缩常规变量名..."
+if [ $isDev != "dev" ]; then
+    echo "压缩this.相关变量名..."
+    batchReplacement "${varArr[*]}" "this\."
+    batchReplacement "${varArr[*]}" "this?\."
+    echo "压缩常规变量名..."
+fi
 parameterArr=(
 fileName,_a
 targetPath,_b
@@ -112,7 +116,9 @@ curSessionDatas,_ab
 session,_ac
 isExists,_ad
 )
-batchReplacement "${parameterArr[*]}"
+if [ $isDev != "dev" ]; then
+    batchReplacement "${parameterArr[*]}"
+fi
 # 复制min文件内容
 pbcopy < "${targetPath}/util/ToolKit.min.js"
 # 从剪辑版复制内容

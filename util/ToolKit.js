@@ -1,5 +1,5 @@
 /**
- * v1.3.2 build 140
+ * v1.3.2 build 144
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -247,7 +247,7 @@ function ToolKit(scriptName, scriptId, options) {
         callApi(timeout, targetDevice, httpApi) {
             let fname = this.comm[0]
             const [ xKey, httpApiHost ] = httpApi.split("@")
-            this.log(`获取【${fname}】内容传给【${targetDevice}】`)
+            this.log(`获取【${fname}】内容传给【${targetDevice || httpApiHost}】`)
             this.fs = this.fs ? this.fs : require('fs')
             this.path = this.path ? this.path : require('path')
             const { curDirDataFilePath, rootDirDataFilePath, isCurDirDataFile, isRootDirDataFile } = this.checkPath(fname)
@@ -701,6 +701,9 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         statusAdapter(response) {
+            if (!response) {
+                return response
+            }
             response.status = response?.status || response?.statusCode
             delete response.statusCode
             return response
