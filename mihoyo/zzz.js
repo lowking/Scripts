@@ -1,7 +1,8 @@
 /*
-绝区零-lowking-v1.1.7
+绝区零-lowking-v1.1.8
 
 cookie获取自己抓包，能不能用随缘
+超时设置久点，中间要等待10分钟发第二个帖子完成任务
 ⚠️只测试过surge没有其他app自行测试
 
 ************************
@@ -10,7 +11,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 
 [Script]
 # > 绝区零
-绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,timeout=150,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
+绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,timeout=700,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
 */
 const lk = new ToolKit(`绝区零`, `Zzz`, {"httpApi": "ffff@10.0.0.6:6166"})
 const bannerUrl = 'https://images.gamebanana.com/img/Webpage/Game/Profile/Background/66868c3874664.jpg'
@@ -581,8 +582,8 @@ const releasePost = async (times, cookie, dfp) => {
                 }
             })
             if (i < times - 1) {
-                // 间隔2分钟才能发帖成功
-                await lk.sleep(120 * 1000)
+                // 间隔10分钟
+                await lk.sleep(10 * 60 * 1000)
             }
         })
     }
