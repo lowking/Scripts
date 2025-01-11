@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.3.2
+米哈游App自定义-lowking-v1.3.3
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -296,15 +296,14 @@ const main = async () => {
                     }
                     card.data[2].name = "本期式與"
                     card.data[2].value = r1.length == 0 ? "-" : r1.join(" ")
-                    const preChallengeInfo = await getChallengeInfo(roleId, 2)
-                    if (preChallengeInfo?.data?.rating_list) {
-                        r2 = preChallengeInfo.data.rating_list.reduce((acc, cur) => {
-                            acc.push(`${cur.times}${cur.rating}`)
-                            return acc
-                        }, [])
+                    let memoryBattleFieldScore = "-", memoryBattleFieldRankPercent = "-", memoryBattleFieldStar = "-"
+                    if (indexInfo?.data?.stats?.memory_battlefield) {
+                        memoryBattleFieldScore = `${indexInfo?.data?.stats?.memory_battlefield?.total_score}`
+                        memoryBattleFieldRankPercent = `${(indexInfo?.data?.stats?.memory_battlefield?.rank_percent/100).toFixed(2)}%`
+                        memoryBattleFieldStar = `${indexInfo?.data?.stats?.memory_battlefield?.total_star}`
                     }
-                    card.data[3].name = "上期式與"
-                    card.data[3].value = r2.length == 0 ? "-" : r2.join(" ")
+                    card.data[3].name = memoryBattleFieldRankPercent == "-" ? "-" : `${memoryBattleFieldRankPercent} ${memoryBattleFieldStar}★`
+                    card.data[3].value = memoryBattleFieldScore
                     // 修改区服信息，显示活跃天数
                     card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾⁽${convertNumericSymbol(roleId, "up")}⁾`.replaceAll(/\n/g, "")
                 }
