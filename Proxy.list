@@ -2,3 +2,8 @@
 DOMAIN,clientaccess.10086.cn
 # > da
 DOMAIN,deviantart.com
+# > plex
+DOMAIN,downloads.plex.tv
+DOMAIN,metadata-static.plex.tv
+DOMAIN,metadata.provider.plex.tv
+DOMAIN,meta.plex.tv

@@ -3,3 +3,7 @@ DOMAIN-SUFFIX,bimiacg2.net
 DOMAIN-SUFFIX,cmy.network
 DOMAIN-SUFFIX,rewards.bing.com
 DOMAIN-SUFFIX,routerlogin.net
+# > plex
+DOMAIN,v4.plex.tv
+DOMAIN-SUFFIX,amazonaws.com
+DOMAIN-SUFFIX,plex.direct
