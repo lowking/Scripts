@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.8
+绝区零-lowking-v1.1.9
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -8,7 +8,6 @@ cookie获取自己抓包，能不能用随缘
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 ************************
-
 [Script]
 # > 绝区零
 绝区零 = type=cron,cronexp="0 10 0 * * ?",wake-system=1,timeout=700,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js
@@ -17,8 +16,11 @@ const lk = new ToolKit(`绝区零`, `Zzz`, {"httpApi": "ffff@10.0.0.6:6166"})
 const bannerUrl = 'https://images.gamebanana.com/img/Webpage/Game/Profile/Background/66868c3874664.jpg'
 const domain = 'https://act-nap-api.mihoyo.com'
 const bbsDomain = 'https://bbs-api.miyoushe.com'
+const cloudGameDomain = 'https://cg-nap-api.mihoyo.com'
 const zzzUidKey = 'zzzUidKey'
 const zzzCookieKey = 'zzzCookieKey'
+const zzzCloudGameCookieKey = 'zzzCloudGameCookieKey'
+const zzzComboTokenKey = 'zzzComboTokenKey'
 const zzzDfpKey = 'zzzDfpKey'
 const zzzBbsCookieKey = 'zzzBbsCookieKey'
 const appVersionKey = 'appVersionKey'
@@ -29,6 +31,8 @@ const bbsSignInCountDownAmountKey = 'zzzBbsSignInCountDownAmountKey'
 const openUrlKey = 'zzzOpenUrlKey'
 let zzzUid = lk.getVal(zzzUidKey)
 let zzzCookie = lk.getVal(zzzCookieKey)
+let zzzCloudGameCookie = lk.getVal(zzzCloudGameCookieKey)
+let zzzComboToken = lk.getVal(zzzComboTokenKey)
 let zzzDfp = lk.getVal(zzzDfpKey)
 let zzzBbsCookie = lk.getVal(zzzBbsCookieKey)
 let appVersion = lk.getVal(appVersionKey, "2.71.1")
@@ -88,6 +92,20 @@ const BoxJsInfo = {
             "desc": "米游社cookie"
         },
         {
+            "id": zzzCloudGameCookieKey,
+            "name": "绝区零云游戏cookie",
+            "val": "",
+            "type": "text",
+            "desc": "绝区零云游戏cookie"
+        },
+        {
+            "id": zzzComboTokenKey,
+            "name": "绝区零云游戏combo_token",
+            "val": "",
+            "type": "text",
+            "desc": "绝区零云游戏combo_token"
+        },
+        {
             "id": bbsSignInCountDownAmountKey,
             "name": "n次执行之后才进行打卡",
             "val": 0,
@@ -116,8 +134,8 @@ const BoxJsInfo = {
             "desc": "rtvTthKxEyreVXQCnhluFgLXPOFKPHlA"
         },
     ],
-    "keys": [zzzUidKey, zzzCookieKey, zzzDfpKey, zzzBbsCookieKey, appVersionKey, salt6xKey, saltK2Key],
-    "script_timeout": 10
+    "keys": [zzzUidKey, zzzCookieKey, zzzCloudGameCookieKey, zzzComboTokenKey, zzzDfpKey, zzzBbsCookieKey, appVersionKey, salt6xKey, saltK2Key],
+    "script_timeout": 700
 }
 
 const BoxJsParam = {
@@ -349,11 +367,105 @@ const getZzzInfo = async (title, uid, cookie) => new Promise((resolve, _reject) 
     })
 })
 
-const doSignIn = async () => {
-    // 签到有验证码，配置n天后继续签到
-    if (signInCountDownAmount > 0) {
-        signInCountDownAmount--
-        lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
+const doCloudGameDailyCheck = async () => {
+    let freeTime = await doGetFreeTime()
+    await doCloudLogin().then(async (ret) => {
+        if (!ret) return
+        let nowFreeTime = await doGetFreeTime()
+        let differenceValue = nowFreeTime - freeTime
+        let msg = `🎉云游戏时长：${nowFreeTime}分钟`
+        if (differenceValue != 0) {
+            msg = `${msg}(${differenceValue >= 0 ? "+" : "-"}${differenceValue})`
+        }
+        lk.appendNotifyInfo(msg)
+    })
+}
+
+const doGetFreeTime = async () => {
+    let title = "获取云绝区零当前免费时长"
+    lk.log(title)
+    return await lk.req.get({
+        url: `${cloudGameDomain}/nap_cn/cg/wallet/wallet/get`,
+        headers: {
+            "x-rpc-language": "zh-cn",
+            "x-rpc-device_model": "iPhone16,1",
+            "user-agent": "%E4%BA%91%C2%B7%E7%BB%9D%E5%8C%BA%E9%9B%B6/2 CFNetwork/1568.300.101 Darwin/24.2.0",
+            "x-rpc-vendor_id": 2,
+            "x-rpc-device_name": "iPhone",
+            "x-rpc-cps": "appstore",
+            "x-rpc-cg_game_biz": "nap_cn",
+            "x-rpc-cg_game_id": 9000357,
+            "content-length": 0,
+            "x-rpc-channel": "appstore",
+            "x-rpc-app_version": "1.4.3",
+            "accept-language": "zh-CN,zh-Hans;q=0.9",
+            "x-rpc-op_biz": "clgm_nap-cn",
+            "x-rpc-device_id": "7BE6388C-8C3D-470A-A2D9-699523FC7CC3",
+            "x-rpc-client_type": 1,
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br",
+            "x-rpc-sys_version": "18.2",
+            "x-rpc-combo_token": zzzComboToken,
+            cookie: zzzCloudGameCookie,
+        },
+    }).then(({ error, resp, data }) => {
+        lk.log(`${title}：${data}`)
+        data = data.o()
+        if (data?.retcode != 0) {
+            lk.log(`${title}失败：${data.s()}`)
+            lk.execFail()
+            return -1
+        } else {
+            let freeTime = data?.data?.free_time?.free_time || "- "
+            return freeTime
+        }
+    })
+}
+
+const doCloudLogin = async () => {
+    let title = "云绝区零登录"
+    lk.log(title)
+    return await lk.req.post({
+        url: `${cloudGameDomain}/nap_cn/cg/gamer/api/login`,
+        headers: {
+            "x-rpc-language": "zh-cn",
+            "x-rpc-device_model": "iPhone16,1",
+            "user-agent": "%E4%BA%91%C2%B7%E7%BB%9D%E5%8C%BA%E9%9B%B6/2 CFNetwork/1568.300.101 Darwin/24.2.0",
+            "x-rpc-vendor_id": 2,
+            "x-rpc-device_name": "iPhone",
+            "x-rpc-cps": "appstore",
+            "x-rpc-cg_game_biz": "nap_cn",
+            "x-rpc-cg_game_id": 9000357,
+            "content-length": 0,
+            "x-rpc-channel": "appstore",
+            "x-rpc-app_version": "1.4.3",
+            "accept-language": "zh-CN,zh-Hans;q=0.9",
+            "x-rpc-op_biz": "clgm_nap-cn",
+            "x-rpc-device_id": "7BE6388C-8C3D-470A-A2D9-699523FC7CC3",
+            "x-rpc-client_type": 1,
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br",
+            "x-rpc-sys_version": "18.2",
+            "x-rpc-combo_token": zzzComboToken,
+            cookie: zzzCloudGameCookie,
+        },
+    }).then(({ error, resp, data }) => {
+        lk.log(`${title}：${data}`)
+        data = data.o()
+        if (data?.retcode != 0) {
+            lk.log(`${title}失败：${data.s()}`)
+            lk.execFail()
+            return false
+        }
+        return true
+    })
+}
+
+    const doSignIn = async () => {
+        // 签到有验证码，配置n天后继续签到
+        if (signInCountDownAmount > 0) {
+            signInCountDownAmount--
+            lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
         return
     }
     let title = '获取签到信息'
@@ -645,10 +757,13 @@ const all = async () => {
     if (!zzzUid || !zzzCookie || !zzzDfp || !zzzBbsCookie) {
         throw "⚠️请先打开米游社获取cookie"
     }
-    await doSignIn()
-    await doBbsSignIn()
-    await doBbsVoteAndShare()
-    await doReleasePost()
+    if (zzzCloudGameCookie && zzzComboToken) {
+        await doCloudGameDailyCheck()
+    }
+    // await doSignIn()
+    // await doBbsSignIn()
+    // await doBbsVoteAndShare()
+    // await doReleasePost()
 }
 
 const getDs = (task, body) => {

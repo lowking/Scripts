@@ -884,6 +884,8 @@
       "keys": [
         "zzzUidKey",
         "zzzCookieKey",
+        "zzzCloudGameCookieKey",
+        "zzzComboTokenKey",
         "zzzDfpKey",
         "zzzBbsCookieKey",
         "appVersionKey",
@@ -917,7 +919,7 @@
           "name": "Telegram通知地址",
           "val": "",
           "type": "text",
-          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+          "desc": "Tg的通知地址,如: https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         },
         {
           "id": "zzzOpenUrlKey",
@@ -962,6 +964,20 @@
           "desc": "米游社cookie"
         },
         {
+          "id": "zzzCloudGameCookieKey",
+          "name": "绝区零云游戏cookie",
+          "val": "",
+          "type": "text",
+          "desc": "绝区零云游戏cookie"
+        },
+        {
+          "id": "zzzComboTokenKey",
+          "name": "绝区零云游戏combo_token",
+          "val": "",
+          "type": "text",
+          "desc": "绝区零云游戏combo_token"
+        },
+        {
           "id": "zzzBbsSignInCountDownAmountKey",
           "name": "n次执行之后才进行打卡",
           "val": 0,
@@ -993,7 +1009,7 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true",
-      "script_timeout": 10
+      "script_timeout": 700
     },
     {
       "id": "lkEpicFreeGames",
