@@ -7,8 +7,6 @@
 
 eu.org审核 = type=cron,cronexp="10 1 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/others/eu.org.js,script-update-interval=0
 
-绝区零 = type=cron,cronexp="0 2 0 * * ?",wake-system=1,timeout=700,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js,script-update-interval=0
-
 贴吧 = type=cron,cronexp="50 2 0 * * ?",wake-system=1,timeout=120,script-path=https://raw.githubusercontent.com/chavyleung/scripts/master/tieba/tieba.js,script-update-interval=0
 
 索尼俱乐部 = type=cron,cronexp="10 3 0 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/sony/sonyClub.js,script-update-interval=0
@@ -17,6 +15,8 @@ eu.org审核 = type=cron,cronexp="10 1 0 * * ?",wake-system=1,script-path=https:
 Jump游戏价格监控 = type=cron,cronexp="0 30 17 * * ?",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/jump/jumpPrice.js,script-update-interval=0
 
 EPIC限免 = type=cron,cronexp="0 0 0 * * 6",wake-system=1,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/epic/freeGames.js
+
+绝区零 = type=cron,cronexp="0 0 13 * * ?",wake-system=1,timeout=700,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/zzz.js,script-update-interval=0
 
 ##############常开获取cookie##############
 [MITM]
