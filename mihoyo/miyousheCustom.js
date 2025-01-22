@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.3.3
+米哈游App自定义-lowking-v1.3.4
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -283,7 +283,13 @@ const main = async () => {
                     if (indexInfo?.data?.stats?.climbing_tower_layer) {
                         layer = `${indexInfo?.data?.stats?.climbing_tower_layer}`
                     }
-                    card.data[0].name = "鏖战纪录"
+                    let climbingTowerMvpNum = "-"
+                    if (indexInfo?.data?.stats?.climbing_tower_s2) {
+                        let climbingTowerLayer = indexInfo?.data?.stats?.climbing_tower_s2?.climbing_tower_layer || "-"
+                        climbingTowerMvpNum = indexInfo?.data?.stats?.climbing_tower_s2?.floor_mvp_num || "-"
+                        layer = `${layer} / ${climbingTowerLayer}`
+                    }
+                    card.data[0].name = `无伤: ${climbingTowerMvpNum}`
                     card.data[0].value = layer
                     // 获取式與防卫战数据
                     let r1, r2 = []
