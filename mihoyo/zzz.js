@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.1.9
+绝区零-lowking-v1.2.0
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -376,6 +376,9 @@ const doCloudGameDailyCheck = async () => {
         let msg = `🎉云游戏时长：${nowFreeTime}分钟`
         if (differenceValue != 0) {
             msg = `${msg}(${differenceValue >= 0 ? "+" : "-"}${differenceValue})`
+        }
+        if (nowFreeTime >= 540) {
+            lk.msg('', `⚠️云游戏免费时常${nowFreeTime}分钟，记得使用哦！`)
         }
         lk.appendNotifyInfo(msg)
     })
