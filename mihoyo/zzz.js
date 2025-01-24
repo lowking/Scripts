@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.2.0
+绝区零-lowking-v1.3.0
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -367,10 +367,33 @@ const getZzzInfo = async (title, uid, cookie) => new Promise((resolve, _reject) 
     })
 })
 
+const getCloudGameHeaders = () => ({
+    "x-rpc-language": "zh-cn",
+    "x-rpc-device_model": "iPhone16,1",
+    "user-agent": "%E4%BA%91%C2%B7%E7%BB%9D%E5%8C%BA%E9%9B%B6/2 CFNetwork/1568.300.101 Darwin/24.2.0",
+    "x-rpc-vendor_id": 2,
+    "x-rpc-device_name": "iPhone",
+    "x-rpc-cps": "appstore",
+    "x-rpc-cg_game_biz": "nap_cn",
+    "x-rpc-cg_game_id": 9000357,
+    "content-length": 0,
+    "x-rpc-channel": "appstore",
+    "x-rpc-app_version": "1.4.3",
+    "accept-language": "zh-CN,zh-Hans;q=0.9",
+    "x-rpc-op_biz": "clgm_nap-cn",
+    "x-rpc-device_id": "7BE6388C-8C3D-470A-A2D9-699523FC7CC3",
+    "x-rpc-client_type": 1,
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br",
+    "x-rpc-sys_version": "18.2",
+    "x-rpc-combo_token": zzzComboToken,
+    cookie: zzzCloudGameCookie,
+})
+
 const doCloudGameDailyCheck = async () => {
     let freeTime = await doGetFreeTime()
     await doCloudLogin().then(async (ret) => {
-        if (!ret) return
+        if (!ret) return false
         let nowFreeTime = await doGetFreeTime()
         let differenceValue = nowFreeTime - freeTime
         let msg = `🎉云游戏时长：${nowFreeTime}分钟`
@@ -381,6 +404,40 @@ const doCloudGameDailyCheck = async () => {
             lk.msg('', `⚠️云游戏免费时常${nowFreeTime}分钟，记得使用哦！`)
         }
         lk.appendNotifyInfo(msg)
+        return true
+    }).then((ret) => {
+        if (!ret) return
+        let title = "获取通知"
+        // list notification
+        await lk.req.get({
+            url: `${cloudGameDomain}/nap_cn/cg/gamer/api/listNotifications?is_sort=true&status=NotificationStatusUnread&type=NotificationTypePopup`,
+            headers: getCloudGameHeaders(),
+        }).then(({ error, resp, data }) => {
+            data = data.o()
+            if (data?.retcode != 0) {
+                lk.log(`${title}失败：${data.s()}`)
+                lk.execFail()
+                return []
+            }
+            let ret = []
+            if (data?.data?.list) {
+                ret = data.data.list
+            }
+            return ret.filter((notification) => notification?.msg.indexOf("每日登录") != -1)
+        }).then((ret) => {
+            if (!ret) return
+            // ack notification
+            ret.forEach((notification) => {
+                if (!notification?.id) return
+                await lk.req.post({
+                    url: `${cloudGameDomain}/nap_cn/cg/gamer/api/ackNotification`,
+                    headers: getCloudGameHeaders(),
+                    body: {
+                        id: notification.id,
+                    }.s()
+                })
+            })
+        })
     })
 }
 
@@ -389,28 +446,7 @@ const doGetFreeTime = async () => {
     lk.log(title)
     return await lk.req.get({
         url: `${cloudGameDomain}/nap_cn/cg/wallet/wallet/get`,
-        headers: {
-            "x-rpc-language": "zh-cn",
-            "x-rpc-device_model": "iPhone16,1",
-            "user-agent": "%E4%BA%91%C2%B7%E7%BB%9D%E5%8C%BA%E9%9B%B6/2 CFNetwork/1568.300.101 Darwin/24.2.0",
-            "x-rpc-vendor_id": 2,
-            "x-rpc-device_name": "iPhone",
-            "x-rpc-cps": "appstore",
-            "x-rpc-cg_game_biz": "nap_cn",
-            "x-rpc-cg_game_id": 9000357,
-            "content-length": 0,
-            "x-rpc-channel": "appstore",
-            "x-rpc-app_version": "1.4.3",
-            "accept-language": "zh-CN,zh-Hans;q=0.9",
-            "x-rpc-op_biz": "clgm_nap-cn",
-            "x-rpc-device_id": "7BE6388C-8C3D-470A-A2D9-699523FC7CC3",
-            "x-rpc-client_type": 1,
-            "accept": "*/*",
-            "accept-encoding": "gzip, deflate, br",
-            "x-rpc-sys_version": "18.2",
-            "x-rpc-combo_token": zzzComboToken,
-            cookie: zzzCloudGameCookie,
-        },
+        headers: getCloudGameHeaders(),
     }).then(({ error, resp, data }) => {
         lk.log(`${title}：${data}`)
         data = data.o()
@@ -430,28 +466,7 @@ const doCloudLogin = async () => {
     lk.log(title)
     return await lk.req.post({
         url: `${cloudGameDomain}/nap_cn/cg/gamer/api/login`,
-        headers: {
-            "x-rpc-language": "zh-cn",
-            "x-rpc-device_model": "iPhone16,1",
-            "user-agent": "%E4%BA%91%C2%B7%E7%BB%9D%E5%8C%BA%E9%9B%B6/2 CFNetwork/1568.300.101 Darwin/24.2.0",
-            "x-rpc-vendor_id": 2,
-            "x-rpc-device_name": "iPhone",
-            "x-rpc-cps": "appstore",
-            "x-rpc-cg_game_biz": "nap_cn",
-            "x-rpc-cg_game_id": 9000357,
-            "content-length": 0,
-            "x-rpc-channel": "appstore",
-            "x-rpc-app_version": "1.4.3",
-            "accept-language": "zh-CN,zh-Hans;q=0.9",
-            "x-rpc-op_biz": "clgm_nap-cn",
-            "x-rpc-device_id": "7BE6388C-8C3D-470A-A2D9-699523FC7CC3",
-            "x-rpc-client_type": 1,
-            "accept": "*/*",
-            "accept-encoding": "gzip, deflate, br",
-            "x-rpc-sys_version": "18.2",
-            "x-rpc-combo_token": zzzComboToken,
-            cookie: zzzCloudGameCookie,
-        },
+        headers: getCloudGameHeaders(),
     }).then(({ error, resp, data }) => {
         lk.log(`${title}：${data}`)
         data = data.o()
