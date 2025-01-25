@@ -778,10 +778,10 @@ const all = async () => {
     if (zzzCloudGameCookie && zzzComboToken) {
         await doCloudGameDailyCheck()
     }
-    // await doSignIn()
-    // await doBbsSignIn()
-    // await doBbsVoteAndShare()
-    // await doReleasePost()
+    await doSignIn()
+    await doBbsSignIn()
+    await doBbsVoteAndShare()
+    await doReleasePost()
 }
 
 const getDs = (task, body) => {
