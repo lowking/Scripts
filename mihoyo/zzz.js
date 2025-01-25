@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.3.0
+绝区零-lowking-v1.3.1
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -405,7 +405,7 @@ const doCloudGameDailyCheck = async () => {
         }
         lk.appendNotifyInfo(msg)
         return true
-    }).then((ret) => {
+    }).then(async (ret) => {
         if (!ret) return
         let title = "获取通知"
         // list notification
@@ -427,7 +427,7 @@ const doCloudGameDailyCheck = async () => {
         }).then((ret) => {
             if (!ret) return
             // ack notification
-            ret.forEach((notification) => {
+            ret.forEach(async (notification) => {
                 if (!notification?.id) return
                 await lk.req.post({
                     url: `${cloudGameDomain}/nap_cn/cg/gamer/api/ackNotification`,
@@ -778,10 +778,10 @@ const all = async () => {
     if (zzzCloudGameCookie && zzzComboToken) {
         await doCloudGameDailyCheck()
     }
-    await doSignIn()
-    await doBbsSignIn()
-    await doBbsVoteAndShare()
-    await doReleasePost()
+    // await doSignIn()
+    // await doBbsSignIn()
+    // await doBbsVoteAndShare()
+    // await doReleasePost()
 }
 
 const getDs = (task, body) => {
