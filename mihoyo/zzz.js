@@ -479,11 +479,11 @@ const doCloudLogin = async () => {
     })
 }
 
-    const doSignIn = async () => {
-        // 签到有验证码，配置n天后继续签到
-        if (signInCountDownAmount > 0) {
-            signInCountDownAmount--
-            lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
+const doSignIn = async () => {
+    // 签到有验证码，配置n天后继续签到
+    if (signInCountDownAmount > 0) {
+        signInCountDownAmount--
+        lk.setVal(signInCountDownAmountKey, signInCountDownAmount)
         return
     }
     let title = '获取签到信息'
