@@ -16,7 +16,7 @@ if [ -n "$tkVersion" ]; then
     sed -i "" "s/${tkVersion} build ${buildId}/${newVersion}/g" "${targetPath}/util/ToolKit.js"
 fi
 # 执行min
-if [ $isDev == "dev" ]; then
+if [ "$isDev" == "dev" ]; then
     cp -f "${targetPath}/util/ToolKit.js" "${targetPath}/util/ToolKit.min.js"
 else
     minify --js-keep-var-names -o "${targetPath}/util/ToolKit.min.js" "${targetPath}/util/ToolKit.js"
@@ -47,7 +47,7 @@ responseDataAdapter,fj
 statusAdapter,fk
 costTime,fl
 )
-if [ $isDev != "dev" ]; then
+if [ "$isDev" != "dev" ]; then
     echo "压缩方法名..."
     batchReplacement "${funcArr[*]}"
 fi
@@ -79,7 +79,7 @@ tgEscapeCharMappingV2,x
 tgEscapeCharMapping,y
 execComm,z
 )
-if [ $isDev != "dev" ]; then
+if [ "$isDev" != "dev" ]; then
     echo "压缩this.相关变量名..."
     batchReplacement "${varArr[*]}" "this\."
     batchReplacement "${varArr[*]}" "this?\."
@@ -116,7 +116,7 @@ curSessionDatas,_ab
 session,_ac
 isExists,_ad
 )
-if [ $isDev != "dev" ]; then
+if [ "$isDev" != "dev" ]; then
     batchReplacement "${parameterArr[*]}"
 fi
 # 复制min文件内容

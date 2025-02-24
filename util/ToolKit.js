@@ -1,5 +1,5 @@
 /**
- * v1.3.2 build 144
+ * v1.3.2 build 151
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
