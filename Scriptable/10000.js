@@ -492,30 +492,23 @@ const show = w => new Promise(async (resolve) => {
 
 const main = async (isLimited) => {
     try {
-        // *电信似乎没有这个限制
-        if (false && now.getDate() == 1) {
-            // 每个月1号维护查询不到数据
-            lk.log('每个月1号维护查询不到数据，直接降级处理')
-            widget = await createWidget(widget, title, '-', '-', '-')
+        if (!isLimited) {
+            await updateCookie(loginUrl)
+            await queryfee()
+            await queryMeal()
+        }
+        // 执行失败，降级处理
+        if (!lk.execStatus || isLimited) {
+            lk.log('整个流程有错误发生或者限制运行频率，降级处理，读取上次成功执行的数据')
+            lk.log(`读取数据：${await lk.getDataFile('local')}`)
+            subt = await lk.getVal('subt', 'local', '-')
+            flowRes = await lk.getVal('flowRes', 'local', '-')
+            voiceRes = await lk.getVal('voiceRes', 'local', '-')
+            widget = await createWidget(widget, title, subt, flowRes, voiceRes)
         } else {
-            if (!isLimited) {
-                await updateCookie(loginUrl)
-                await queryfee()
-                await queryMeal()
-            }
-            // 执行失败，降级处理
-            if (!lk.execStatus || isLimited) {
-                lk.log('整个流程有错误发生或者限制运行频率，降级处理，读取上次成功执行的数据')
-                lk.log(`读取数据：${await lk.getDataFile('local')}`)
-                subt = await lk.getVal('subt', 'local', '-')
-                flowRes = await lk.getVal('flowRes', 'local', '-')
-                voiceRes = await lk.getVal('voiceRes', 'local', '-')
-                widget = await createWidget(widget, title, subt, flowRes, voiceRes)
-            } else {
-                lk.log('整个流程执行正常')
-                lk.log(`${subt}${flowRes}${voiceRes}`)
-                widget = await show(widget)
-            }
+            lk.log('整个流程执行正常')
+            lk.log(`${subt}${flowRes}${voiceRes}`)
+            widget = await show(widget)
         }
         lk.saveLog()
         widget.presentSmall()
