@@ -22,13 +22,13 @@
  */
 
 const lk = nobyda()
-const token = !lk.getVal('lkGithubMonitorToken') ? "null" : lk.getVal('lkGithubMonitorToken')
-const isEnableLog = !lk.getVal('lkGithubMonitorIsEnableLog') ? true : JSON.parse(lk.getVal('lkGithubMonitorIsEnableLog'))
+const token = lk.getVal('lkGithubMonitorToken', 'null')
+const isEnableLog = JSON.parse(lk.getVal('lkGithubMonitorIsEnableLog', true))
 if(token=="null"){
     lk.msg(`Github监控`, ``, `未获取到token❌`)
     lk.done()
 }
-const tgNotifyUrl = !lk.getVal('lkGithubMonitorTgNotifyUrl') ? "null" : lk.getVal('lkGithubMonitorTgNotifyUrl')
+const tgNotifyUrl = lk.getVal('lkGithubMonitorTgNotifyUrl', 'null')
 if (tgNotifyUrl == "null") {
     lk.msg(`Github监控`, ``, `请填写tg通知url❌`)
     lk.done()
@@ -36,7 +36,7 @@ if (tgNotifyUrl == "null") {
 
 let repositories
 try {
-    repositories = !lk.getVal('lkGithubMonitorRepo') ? [] : JSON.parse(lk.getVal('lkGithubMonitorRepo'))
+    repositories = JSON.parse(lk.getVal('lkGithubMonitorRepo', []))
 } catch (e) {
     lk.msg(`Github监控`, ``, `监控仓库json格式错误❌`)
     lk.done()

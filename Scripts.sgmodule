@@ -1,5 +1,11 @@
 #!name=Scripts by lowking. Self-use
 #!desc=该模块自用，脚本合集
+#!category=Self
+#!arguments=repoPrefix,repoSuffix
+#!arguments-desc=repoPrefix：个人代码托管url前缀\nrepoSuffix：个人代码托管url后缀
+
+[URL Rewrite]
+(http[s]?:\/\/rule.l\/)(?<author>[\w]+[\/])(?<repo>[\w]+[\/])(?<branch>[\w]+[\/])(?<path>.+) {{{repoPrefix}}}$2$3raw/$4$5{{{repoSuffix}}} 302
 
 [Rule]
 # > 京东  去启动广告，必须是REJECT-TINYGIF, 否则比价会失效
@@ -17,15 +23,11 @@ URL-REGEX,https://api.bilibili.com/x/v2/dm/ad,REJECT
 # 彩云获取经纬度，虽然和上面的一样，但是数据结构不一样
 彩云位置 = type=http-request, pattern=https://weather-data.apple.com, script-path=https://raw.githubusercontent.com/Peng-YM/QuanX/master/Tasks/caiyun.js, require-body=false
 
-# 哔哩哔哩自动根据番剧自动切换地区
-Bili Region = type=http-response,pattern=^https:\/\/ap(p|i)\.bilibili\.com\/(pgc\/view\/(v\d\/)?app|x(\/v\d)?\/view\/video)\/(season|online)\?access_key,requires-body=1,max-size=0,control-api=1,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/Bili_Auto_Regions.js
+# > bilbii 换区、评分
+哔哩换区 = type=http-response,pattern=^https:\/\/ap(p|i)\.bili(bili|api)\.(com|net)\/(pgc\/view\/v\d\/app\/season|x\/offline\/version)\?,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/Bili_Auto_Regions.js
+哔哩搜索 = type=http-request,pattern=^https:\/\/ap(p|i)\.bili(bili|api)\.(com|net)\/x\/v\d\/search(\/type)?\?.+?%20(%E6%B8%AF|%E5%8F%B0|%E4%B8%AD)&,script-path=https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/Bili_Auto_Regions.js
 
-# 个人中心
-http-response https://app.bilibili.com/x/v2/account/mine\?access_key requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/onewayticket255/Surge-Script/master/surge%20bilibili%20account.js,tag=哔哩哔哩个人中心(精简)
-http-response https://app.bilibili.com/x/v2/view\?access_key requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/onewayticket255/Surge-Script/master/surge%20bilibili%20view%20relate.js,tag=哔哩哔哩个人中心(精简)
-http-response https://api.bilibili.com/x/v2/reply/main\?access_key requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/onewayticket255/Surge-Script/master/surge%20bilibili%20reply.js,tag=哔哩哔哩个人中心(精简)
-http-response https://api.live.bilibili.com/xlive/app-room/v1/index/getInfoByRoom\?access_key requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/onewayticket255/Surge-Script/master/surge%20bilibili%20live.js,tag=哔哩哔哩直播
-
+斗鱼画质过滤 = requires-body=1,type=http-response,pattern=https:\/\/playclient\.douyucdn\.cn\/lapi\/live\/appGetPlayer\/stream,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/douyu/streamQuality.js
 
 [MITM]
-hostname = %APPEND% api.live.bilibili.com, www.bilibili.com, app.bilibili.com, api.bilibili.com, api.m.jd.com, trade-acs.m.taobao.com, weather-data.apple.com
+hostname = %APPEND% playclient.douyucdn.cn, ap?.bilibili.com, ap?.biliapi.net, api.m.jd.com, trade-acs.m.taobao.com, weather-data.apple.com

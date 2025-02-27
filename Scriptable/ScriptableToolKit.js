@@ -7,6 +7,8 @@
  *      autoComplete： 自动补齐字符串
  *      customReplace： 自定义替换
  *      formatDate： 日期格式化
+ *      formatTimeDuring： 毫秒数转换成n天m小时
+ *      fileLengthFormat： 文件大小单位转换
  *
  * 基于Scriptable的api封装的方法（用法可以参考该目录下/example中的demo）：
  *      require({scriptName, url = '', reload = false})： 引入第三方js库
@@ -143,14 +145,15 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         }
 
         async checkLimit() {
-            const lastRunningTime = await this.getVal('lastRunningTime', 'local', 0)
+            const lastRunningTime = await this.getVal(`${this.prefix}LastRunningTime${this.id}`, 'local', 0)
             const runLimitNum = this.getResultByKey(`${this.prefix}RunLimitNum${this.id}`, 300000)
-            if (lastRunningTime > 0) {
+            this.log(`上次运行时间：${lastRunningTime}，运行频率限制：${runLimitNum}`)
+            if (lastRunningTime >= 0) {
                 if (this.now.getTime() - lastRunningTime <= runLimitNum) {
                     this.appendNotifyInfo('限制运行')
                     this.isLimited = true
                 } else {
-                    await this.setVal('lastRunningTime', this.now.getTime(), 'local')
+                    await this.setVal(`${this.prefix}LastRunningTime${this.id}`, this.now.getTime(), 'local')
                 }
             }
             return this.isLimited
@@ -185,14 +188,12 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     message = this.notifyInfo
                 }
                 // 校验lklog目录是否存在
-                if (this.icloud.isDirectory(this.logDir)) {
-                    // write log
-                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
-                } else {
+                if (!this.icloud.isDirectory(this.logDir)) {
                     // create dir
                     this.icloud.createDirectory(this.logDir, true)
-                    this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
                 }
+                // write log
+                this.icloud.writeString(`${this.logDir}/${this.formatDate(this.now, 'yyyyMMddHHmmss')}.log`, message)
             }
         }
 
@@ -216,9 +217,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         logErr(message) {
             this.execStatus = false
             if (this.isEnableLog) {
-                console.log(`${this.logSeparator}${this.name}执行异常:`)
-                console.log(message)
-                console.log(`\n${message.message}`)
+                console.warn(`${this.logSeparator}${this.name}执行异常:`)
+                console.warn(message)
+                console.warn(`\n${message.message}`)
             }
         }
 
@@ -229,7 +230,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
         /**
          * get value from container
          * @param key
-         * @param container this.local or this.icloud
+         * @param container local or icloud
          */
         async getVal(key, container, defaultValue) {
             let containerInstance = this.getContainer(container)
@@ -238,7 +239,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 let realDataFile = containerInstance.joinPath(containerInstance.documentsDirectory(), this.dataFile)
                 if (!containerInstance.fileExists(realDataFile)) {
                     await this.setVal(key, defaultValue, container)
-                    return Promise.resolve(defaultValue)
+                    return defaultValue
                 }
                 data = await containerInstance.readString(realDataFile)
                 data = JSON.parse(data)
@@ -246,10 +247,10 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 throw e
             }
             if (data.hasOwnProperty(key)) {
-                return Promise.resolve(data[key])
+                return data[key]
             } else {
                 await this.setVal(key, defaultValue, container)
-                return Promise.resolve(defaultValue)
+                return defaultValue
             }
         }
 
@@ -270,6 +271,26 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 throw e
             }
             return Promise.resolve(data)
+        }
+
+        async saveImage(fileName, image, container) {
+            let containerInstance = this.getContainer(container)
+            let imagePath = containerInstance.joinPath(containerInstance.documentsDirectory(), `${this.prefix}${this.id}/${fileName}`)
+            let imageDir = imagePath.substring(0, imagePath.lastIndexOf("/") + 1)
+            if (!containerInstance.isDirectory(imageDir)) {
+                containerInstance.createDirectory(imageDir, true)
+            }
+            containerInstance.writeImage(imagePath, image)
+        }
+
+        async getImage(fileName, container) {
+            let containerInstance = this.getContainer(container)
+            let imagePath = containerInstance.joinPath(containerInstance.documentsDirectory(), `${this.prefix}${this.id}/${fileName}`)
+            if (!containerInstance.fileExists(imagePath)) {
+                this.logErr(`file not exist: ${imagePath}`)
+                return false
+            }
+            return await containerInstance.readImage(imagePath)
         }
 
         /**
@@ -293,7 +314,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 data = {}
             }
             data[key] = val
-            containerInstance.writeString(realDataFile, JSON.stringify(data))
+            await containerInstance.writeString(realDataFile, JSON.stringify(data))
         }
 
         async get(options, callback = () => {}) {
@@ -301,10 +322,15 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             request.url = options.url
             request.method = 'GET'
             request.headers = options.headers
-            const result = await request.loadString()
-            callback(request.response, result)
+            try {
+                const result = await request.loadString()
+                callback(request.response, result)
+                return result
+            } catch (e) {
+                this.logErr(e)
+                callback(undefined, undefined)
+            }
 
-            return result
         }
 
         async post(options, callback = () => {}) {
@@ -313,10 +339,15 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             request.body = options.body
             request.method = 'POST'
             request.headers = options.headers
-            const result = await request.loadString()
-            callback(request.response, result)
-
-            return result
+            request.timeout = 5000
+            try {
+                const result = await request.loadString()
+                callback(request.response, result)
+                return result
+            } catch (e) {
+                this.logErr(e)
+                callback(undefined, undefined)
+            }
         }
 
         async loadScript ({scriptName, url}) {
@@ -366,12 +397,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return typeof obj == "undefined" || obj == null || obj == "" || obj == "null"
         }
 
-        isWorkingDays(now){
+        isWorkingDays(now, workingDaysFlag = 'curlybraces', holidayFlag = 'gamecontroller') {
             return new Promise(async (resolve, reject) => {
                 let sp = "≈"
                 const d = this.formatDate(now, 'yyyy-MM-dd')
-                // 0工作日 1休息日 2节假日
-                // enum(0, 1, 2, 3), // 节假日类型，分别表示 工作日、周末、节日、调休。
+                // 0工作日 1休息日 2节假日 3补班
                 let resultStr = 0
                 try {
                     let curDate = await this.getVal('curDateCache', 'local', 'fff')
@@ -397,9 +427,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                                     // 接口错误
                                     resultStr = "❌"
                                 } else {
-                                    this.setVal('curDateCacheErrorTime', '', 'local')
                                     resultStr = resultStr.type.type
-                                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                                 }
                             }
                         })
@@ -409,7 +437,7 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                     this.logErr(e)
                 } finally {
                     // 写入文件系统
-                    this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
+                    await this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
                     if (resultStr == "❌") {
                         resolve(resultStr)
                         // 写入错误时间，便于5分钟后重新请求
@@ -417,7 +445,9 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                         this.setVal('curDateCache', '', 'local')
                         this.setVal('curDateCacheErrorTime', `${this.now.getTime()}`, 'local')
                     } else {
-                        resolve(resultStr == 0 ? workingDaysFlag : holidayFlag)
+                        this.setVal('curDateCacheErrorTime', '', 'local')
+                        this.setVal('curDateCache', `${d}${sp}${resultStr}`, 'local')
+                        resolve(resultStr == 0 || resultStr == 3 ? workingDaysFlag : holidayFlag)
                     }
                 }
 
@@ -547,6 +577,41 @@ function ScriptableToolKit(scriptName, scriptId, options) {
 
         phoneSizes() {
             return {
+                // 16 Pro Max
+                "2868": {
+                    small: 510,
+                    medium: 1092,
+                    large: 1146,
+                    left: 114,
+                    right: 696,
+                    top: 276,
+                    middle: 912,
+                    bottom: 1548,
+                },
+                // 14 Pro Max
+                "2796": {
+                    small: 510,
+                    medium: 1092,
+                    large: 1146,
+                    left: 99,
+                    right: 681,
+                    top: 282,
+                    middle: 918,
+                    bottom: 1554
+                },
+
+                // 14 Pro
+                "2556": {
+                    small: 474,
+                    medium: 1014,
+                    large: 1062,
+                    left: 82,
+                    right: 622,
+                    top: 270,
+                    middle: 858,
+                    bottom: 1446
+                },
+
                 // 12 Pro Max
                 "2778": {
                     small: 510,
@@ -825,11 +890,11 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             return await this.generateAlert(this.curLang.s30, options)
         }
 
-        async handleOperations(index){
+        async handleOperations(index) {
             await this.operations[index].callback()
         }
 
-        cleanCache(){
+        cleanCache() {
             this.log(this.curLang.s34)
             let filePath = this.local.joinPath(this.local.documentsDirectory(), this.dataFile)
             if (this.local.fileExists(filePath)) {
@@ -840,6 +905,51 @@ function ScriptableToolKit(scriptName, scriptId, options) {
                 this.local.remove(filePath)
             }
             this.log(this.curLang.s35)
+        }
+
+        formatTimeDuring(total, lang = "zh", n = 0) {
+            total = Number(total);
+            let zhUnitArr = ["毫秒", "秒", "分钟", "小时", "天", "月", "年"];
+            let enUnitArr = ["ms", "s", "min", "h", "d", "m", "y"];
+            let scaleArr = [1000.0, 60.0, 60.0, 24.0, 30.0, 12.0, 100];
+            let len = total;
+            if (len > scaleArr[n]) {
+                len = total / scaleArr[n];
+                return this.formatTimeDuring(len, lang, ++n);
+            } else {
+                let unit = zhUnitArr[n]
+                if (lang === "en") {
+                    unit = enUnitArr[n]
+                }
+                return len.toFixed(2) + "" + unit;
+            }
+        }
+
+        fileLengthFormat(total, unit = "", toByte = false) {
+            total = Number(total);
+            var unitArr = ["", "KB", "MB", "GB", "TB", "PB", "EB", "ZB"];
+            var n = 0;
+            try {
+                n = unitArr.indexOf(unit);
+            } catch (e) {
+                throw e;
+            }
+            if (toByte) {
+                if (n == 0) {
+                    return total;
+                }
+                return this.fileLengthFormat(total * 1024, unitArr[--n], true);
+            }
+            var len = total;
+            if (len > 1000) {
+                len = total / 1024.0;
+                return this.fileLengthFormat(len, unitArr[++n]);
+            } else {
+                if (n == 0) {
+                    return len.toFixed(2);
+                }
+                return len.toFixed(2) + " " + unitArr[n];
+            }
         }
     })(scriptName, scriptId, options)
 }

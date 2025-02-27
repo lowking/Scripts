@@ -1,0 +1,122 @@
+{
+  "id": "lowking.app.sub",
+  "name": "lowking应用订阅",
+  "author": "@lowking",
+  "icon": "https://avatars0.githubusercontent.com/u/33308659?s=460&u=9223074586cb14f2ae7ee0953515f8781ded8be9&v=4",
+  "repo": "https://github.com/lowking/Scripts/",
+  "apps": [
+    {
+      "id": "lk.weiboST",
+      "name": "微博超话",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "keys": [
+        "lkWeiboSTSignHeaderKey",
+        "lkUserFollowSTKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogWeiboSTSign",
+          "name": "开启/关闭日志（签到脚本）",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailWeiboSTSign",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableLogWeiboSTCookie",
+          "name": "开启/关闭日志（获取Cookie脚本）",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkIsClearCookie",
+          "name": "开启/关闭删除Cookie",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableGetCookieWeiboST",
+          "name": "开启/关闭获取Cookie",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkIsEnableTgNotifyWeiboSTSign",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlWeiboSTSign",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js",
+      "script": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/weibo.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/weibo.png"
+      ]
+    },
+    {
+      "id": "lkDouyuYubaSign",
+      "name": "斗鱼鱼吧签到",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/douyu.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png"
+      ],
+      "keys": [
+        "CookieDY",
+        "GroupDY"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogDouyuYubaSign",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailDouyuYubaSign",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyDouyuYubaSign",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlDouyuYubaSign",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        }
+      ],
+      "author": "@demo2099, @lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true"
+    }
+  ]
+}

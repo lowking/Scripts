@@ -8,7 +8,7 @@
     {
       "id": "lk.qqvip",
       "name": "QQ会员成长值签到",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "desc_html": "因为接口失效，列表点赞功能移除，只有签到</br>⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/QQVip/qqVipCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
       "keys": [
         "lkQQSignHeaderKey"
       ],
@@ -76,73 +76,6 @@
       "icons": [
         "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/qqvip.png",
         "https://raw.githubusercontent.com/Orz-3/mini/master/Color/qqvip.png"
-      ]
-    },
-    {
-      "id": "lk.weiboST",
-      "name": "微博超话",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true'><font class='red--text'>点我查看</font></a>】",
-      "keys": [
-        "lkWeiboSTSignHeaderKey",
-        "lkUserFollowSTKey"
-      ],
-      "settings": [
-        {
-          "id": "lkIsEnableLogWeiboSTSign",
-          "name": "开启/关闭日志（签到脚本）",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
-        },
-        {
-          "id": "lkNotifyOnlyFailWeiboSTSign",
-          "name": "只当执行失败才通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkIsEnableLogWeiboSTCookie",
-          "name": "开启/关闭日志（获取Cookie脚本）",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
-        },
-        {
-          "id": "lkIsClearCookie",
-          "name": "开启/关闭删除Cookie",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkIsEnableGetCookieWeiboST",
-          "name": "开启/关闭获取Cookie",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
-        },
-        {
-          "id": "lkIsEnableTgNotifyWeiboSTSign",
-          "name": "开启/关闭Telegram通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkTgNotifyUrlWeiboSTSign",
-          "name": "Telegram通知地址",
-          "val": "",
-          "type": "text",
-          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
-        }
-      ],
-      "author": "@lowking",
-      "repo": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js",
-      "script": "https://github.com/lowking/Scripts/blob/master/weibo/weiboST.js?raw=true",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/weibo.png",
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/weibo.png"
       ]
     },
     {
@@ -242,7 +175,10 @@
       ],
       "keys": [
         "lkVmidBilibiliBangumiMonitor",
-        "lkBilibiliBangumiList"
+        "lkBilibiliBangumiList0",
+        "lkBilibiliBangumiList1",
+        "lkBilibiliBangumiList2",
+        "lkBilibiliBangumiList3"
       ],
       "settings": [
         {
@@ -281,6 +217,13 @@
           "desc": "每次请求番剧数量，避免数据太大导致错误"
         },
         {
+          "id": "lkBilibiliBangumiLimitNo",
+          "name": "番剧异常通知限制数量",
+          "val": 10,
+          "type": "number",
+          "desc": "有时候B站番剧会更新数据，导致大量番剧更新，设置一个数字，番剧更新数量超过这个数字不通知"
+        },
+        {
           "id": "lkBilibiliBangumiFollowStatus",
           "name": "追番筛选",
           "val": "2",
@@ -307,54 +250,8 @@
         }
       ],
       "author": "@lowking",
-      "repo": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js",
-      "script": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true"
-    },
-    {
-      "id": "lkDouyuYubaSign",
-      "name": "斗鱼鱼吧签到",
-      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true'><font class='red--text'>点我查看</font></a>】",
-      "icons": [
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/douyu.png",
-        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/douyu.png"
-      ],
-      "keys": [
-        "CookieDY",
-        "GroupDY"
-      ],
-      "settings": [
-        {
-          "id": "lkIsEnableLogDouyuYubaSign",
-          "name": "开启/关闭日志",
-          "val": true,
-          "type": "boolean",
-          "desc": "默认开启"
-        },
-        {
-          "id": "lkNotifyOnlyFailDouyuYubaSign",
-          "name": "只当执行失败才通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkIsEnableTgNotifyDouyuYubaSign",
-          "name": "开启/关闭Telegram通知",
-          "val": false,
-          "type": "boolean",
-          "desc": "默认关闭"
-        },
-        {
-          "id": "lkTgNotifyUrlDouyuYubaSign",
-          "name": "Telegram通知地址",
-          "val": "",
-          "type": "text",
-          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
-        }
-      ],
-      "author": "@demo2099, @lowking",
       "repo": "https://github.com/lowking/Scripts",
-      "script": "https://github.com/lowking/Scripts/blob/master/douyu/yubaSign.js?raw=true"
+      "script": "https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js?raw=true"
     },
     {
       "id": "lkGithubMonitorPushTg",
@@ -376,7 +273,27 @@
           "type": "textarea",
           "autoGrow": true,
           "rows": 5,
-          "desc": "仓库地址 (JSON 格式)"
+          "desc": "仓库地址 (JSON 格式)",
+          "primary": [
+            "name"
+          ],
+          "child": [
+            {
+              "id": "name",
+              "name": "描述",
+              "type": "text"
+            },
+            {
+              "id": "url",
+              "name": "仓库链接",
+              "type": "text"
+            },
+            {
+              "id": "file_names",
+              "name": "文件",
+              "type": "text"
+            }
+          ]
         },
         {
           "id": "lkGithubMonitorToken",
@@ -465,7 +382,8 @@
         "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/pupu.png"
       ],
       "keys": [
-        "lkPuPuTokenKey"
+        "lkPuPuTokenKey",
+        "lkPuPuRefreshTokenKey"
       ],
       "settings": [
         {
@@ -502,6 +420,34 @@
           "val": "",
           "type": "text",
           "desc": "朴朴token"
+        },
+        {
+          "id": "lkPuPuRefreshTokenKey",
+          "name": "朴朴refresh_token",
+          "val": "",
+          "type": "text",
+          "desc": "朴朴refresh_token"
+        },
+        {
+          "id": "lkPuPuSec",
+          "name": "抢券等待至xx秒",
+          "val": 59,
+          "type": "number",
+          "desc": "默认59s"
+        },
+        {
+          "id": "lkPuPuMsec",
+          "name": "抢券等待至xxx毫秒",
+          "val": 0,
+          "type": "number",
+          "desc": "默认0ms"
+        },
+        {
+          "id": "pupuRunCount",
+          "name": "抢签到第一并发数",
+          "val": 2,
+          "type": "number",
+          "desc": "默认2"
         }
       ],
       "author": "@lowking",
@@ -615,6 +561,642 @@
       "author": "@lowking",
       "repo": "https://github.com/lowking/Scripts",
       "script": "https://github.com/lowking/Scripts/blob/master/hifini/hifiniSign.js?raw=true"
+    },
+    {
+      "id": "lkAliYunPanCheckIn",
+      "name": "阿里云盘签到",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/ali/aliYunPanCheckIn.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPana.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/aliYunPan.png"
+      ],
+      "keys": [
+        "lkAliYunPanTokenKey",
+        "lkAliYunPanRefreshTokenKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogAliYunPanCheckIn",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailAliYunPanCheckIn",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyAliYunPanCheckIn",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlAliYunPanCheckIn",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "lkAliYunPanTokenKey",
+          "name": "阿里云盘token",
+          "val": "",
+          "type": "text",
+          "desc": "阿里云盘token"
+        },
+        {
+          "id": "lkAliYunPanRefreshTokenKey",
+          "name": "阿里云盘refresh_token",
+          "val": "",
+          "type": "text",
+          "desc": "阿里云盘refresh_token"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/ali/aliYunPanCheckIn.js?raw=true"
+    },
+    {
+      "id": "lkBingPoint",
+      "name": "Bing积分",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bingPoint.png"
+      ],
+      "keys": [
+        "bingIsExecUSKey",
+        "bingNicknameKey",
+        "bingPointCookieKey",
+        "bingResetHoursKey",
+        "bingSearchCookieMobileKey",
+        "bingSearchCookieKey",
+        "bingSearchRepeatKey",
+        "searchRepeatMobileKey",
+        "bingSearchPcCountKey",
+        "searchPcAmountKey",
+        "bingSearchMobileCountKey",
+        "searchMobileAmountKey",
+        "bingPointAppTokenKey",
+        "bingPointAppTokenTypeKey",
+        "bingPointAppRefreshTokenKey",
+        "bingPointAppClientIdKey",
+        "bingCachePointKey",
+        "bingIsContinueWhenZeroKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogBingPoint",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailBingPoint",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyBingPoint",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlBingPoint",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "bingIsExecUSKey",
+          "name": "是否执行美区任务",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "bingNicknameKey",
+          "name": "昵称(随意设置)",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "bingResetHoursKey",
+          "name": "Bing每日任务重置时间",
+          "val": 8,
+          "type": "number",
+          "desc": "写小时数，默认：8"
+        },
+        {
+          "id": "bingPointCookieKey",
+          "name": "Bing积分cookie",
+          "val": "",
+          "type": "text",
+          "desc": "Bing积分cookie"
+        },
+        {
+          "id": "bingSearchCookieMobileKey",
+          "name": "Bing每日搜索cookie(移动端)",
+          "val": "",
+          "type": "text",
+          "desc": "请使用手机打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
+        },
+        {
+          "id": "bingSearchCookieKey",
+          "name": "Bing每日搜索cookie(PC)",
+          "val": "",
+          "type": "text",
+          "desc": "请使用电脑打开https://cn.bing.com/search?q=test抓去对应请求的cookie"
+        },
+        {
+          "id": "bingSearchRepeatKey",
+          "name": "Bing每日搜索重复执行校验日期存储(PC&Edge)",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "searchRepeatMobileKey",
+          "name": "Bing每日搜索重复执行校验日期存储(移动端)",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "bingSearchPcCountKey",
+          "name": "Bing每日搜索次数记录(PC)",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "searchPcAmountKey",
+          "name": "Bing每日搜索次数上限(PC)",
+          "val": 10,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "bingSearchMobileCountKey",
+          "name": "Bing每日搜索次数记录(移动端)",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "searchMobileAmountKey",
+          "name": "Bing每日搜索次数上限(移动端)",
+          "val": 10,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "bingPointAppTokenKey",
+          "name": "Bing App token",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app获取token"
+        },
+        {
+          "id": "bingPointAppTokenTypeKey",
+          "name": "Bing App token type",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app获取"
+        },
+        {
+          "id": "bingPointAppRefreshTokenKey",
+          "name": "Bing App refresh_token",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app重新登录获取refresh_token"
+        },
+        {
+          "id": "bingPointAppClientIdKey",
+          "name": "Bing App client_id",
+          "val": "",
+          "type": "text",
+          "desc": "请打开bing app重新登录获取client_id"
+        },
+        {
+          "id": "bingCachePointKey",
+          "name": "缓存当前积分，用于计算增值",
+          "val": 0,
+          "type": "number",
+          "desc": ""
+        },
+        {
+          "id": "bingIsContinueWhenZeroKey",
+          "name": "缓存本次执行积分的增量(不懂不需要改)",
+          "val": 1,
+          "type": "number",
+          "desc": "为0时(积分没增加)，不再执行搜索，避免不必要的请求"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/bing/bingPoint.js?raw=true",
+      "script_timeout": 180
+    },
+    {
+      "id": "lkJumpPrice",
+      "name": "Jump游戏价格监控",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/jump.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/jump.png"
+      ],
+      "keys": [
+        "jumpHeaderKey",
+        "jumpDifferenceLowestPercentp",
+        "jumpCountry"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogJumpPrice",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailJumpPrice",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyJumpPrice",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlJumpPrice",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "jumpDifferenceLowestPercentp",
+          "name": "过滤 史低折扣-当前折扣 <= 该值的游戏",
+          "val": 0.15,
+          "type": "number",
+          "desc": "写小数，默认：0.15，如：0.8-0.7<=0.15。避免一直等史低，错过差一点史低的价格"
+        },
+        {
+          "id": "jumpCountry",
+          "name": "监控区服",
+          "val": "Steam国区,日本,美国",
+          "type": "text",
+          "desc": "要监控哪些区服，可以先运行一次看看日志。默认值：Steam国区,日本,美国"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/jump/jumpPrice.js?raw=true",
+      "script_timeout": 5
+    },
+    {
+      "id": "lkZzz",
+      "name": "绝区零",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png"
+      ],
+      "keys": [
+        "zzzUidKey",
+        "zzzCookieKey",
+        "zzzCloudGameCookieKey",
+        "zzzComboTokenKey",
+        "zzzDfpKey",
+        "zzzBbsCookieKey",
+        "appVersionKey",
+        "salt6xKey",
+        "saltK2Key"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogZzz",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailZzz",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyZzz",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlZzz",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址,如: https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "zzzOpenUrlKey",
+          "name": "点击跳转链接",
+          "val": "mihoyobbs://webview?link=https%3A%2F%2Fact.mihoyo.com%2Fbbs%2Fevent%2Fsignin%2Fzzz%2Fe202406242138391.html%3Fact_id%3De202406242138391%26bbs_auth_required%3Dtrue%26bbs_presentation_style%3Dfullscreen",
+          "type": "text",
+          "desc": "点击跳转链接"
+        },
+        {
+          "id": "zzzUidKey",
+          "name": "绝区零Uid",
+          "val": "",
+          "type": "text",
+          "desc": "填写游戏内的uid"
+        },
+        {
+          "id": "zzzCookieKey",
+          "name": "日常签到cookie",
+          "val": "",
+          "type": "text",
+          "desc": ""
+        },
+        {
+          "id": "zzzSignInCountDownAmountKey",
+          "name": "n次执行之后才进行日常签到",
+          "val": 0,
+          "type": "number",
+          "desc": "n次执行之后才进行日常签到"
+        },
+        {
+          "id": "zzzDfpKey",
+          "name": "设备指纹",
+          "val": "",
+          "type": "text",
+          "desc": "设备指纹"
+        },
+        {
+          "id": "zzzBbsCookieKey",
+          "name": "米游社cookie",
+          "val": "",
+          "type": "text",
+          "desc": "米游社cookie"
+        },
+        {
+          "id": "zzzCloudGameCookieKey",
+          "name": "绝区零云游戏cookie",
+          "val": "",
+          "type": "text",
+          "desc": "绝区零云游戏cookie"
+        },
+        {
+          "id": "zzzComboTokenKey",
+          "name": "绝区零云游戏combo_token",
+          "val": "",
+          "type": "text",
+          "desc": "绝区零云游戏combo_token"
+        },
+        {
+          "id": "zzzBbsSignInCountDownAmountKey",
+          "name": "n次执行之后才进行打卡",
+          "val": 0,
+          "type": "number",
+          "desc": "n次执行之后才进行打卡"
+        },
+        {
+          "id": "appVersionKey",
+          "name": "米游社API版本",
+          "val": "2.71.1",
+          "type": "text",
+          "desc": "米游社API版本"
+        },
+        {
+          "id": "salt6xKey",
+          "name": "salt 6x",
+          "val": "t0qEgfub6cvueAPgR5m9aQWWVciEer7v",
+          "type": "text",
+          "desc": "t0qEgfub6cvueAPgR5m9aQWWVciEer7v"
+        },
+        {
+          "id": "saltK2Key",
+          "name": "salt k2",
+          "val": "rtvTthKxEyreVXQCnhluFgLXPOFKPHlA",
+          "type": "text",
+          "desc": "rtvTthKxEyreVXQCnhluFgLXPOFKPHlA"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/zzz.js?raw=true",
+      "script_timeout": 700
+    },
+    {
+      "id": "lkEpicFreeGames",
+      "name": "EPIC限免",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/epic/freeGames.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/epic.png",
+        "https://raw.githubusercontent.com/Orz-3/mini/master/Color/epic.png"
+      ],
+      "keys": [],
+      "settings": [
+        {
+          "id": "lkIsEnableLogEpicFreeGames",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailEpicFreeGames",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyEpicFreeGames",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlEpicFreeGames",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址,如: https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/epic/freeGames.js?raw=true",
+      "script_timeout": 10
+    },
+    {
+      "id": "lkMiyousheCustom",
+      "name": "米游社App自定义",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/mihoyo/miyousheCustom.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/miyoushe.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/miyoushe.png"
+      ],
+      "keys": [
+        "regionGamesKey",
+        "homeTopBarKey",
+        "homePageTabKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogMiyousheCustom",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailMiyousheCustom",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyMiyousheCustom",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlMiyousheCustom",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "regionGamesKey",
+          "name": "App我的游戏卡片过滤",
+          "val": "",
+          "type": "text",
+          "desc": "请填写要保留的游戏卡片，多个用\",\"隔开：新艾利都:url,天空岛；后面的url是卡片点击跳转链接，不改可以不写"
+        },
+        {
+          "id": "homeTopBarKey",
+          "name": "App绝区零首页顶栏",
+          "val": "",
+          "type": "text",
+          "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱:url,签到福利；后面的url是跳转链接，不改可以不写"
+        },
+        {
+          "id": "homePageTabKey",
+          "name": "App绝区零首页tab栏",
+          "val": "",
+          "type": "text",
+          "desc": "请填写要保留的tab栏，多个用\",\"隔开：咖啡馆,同人图。发现和官方tab无法自定义"
+        },
+        {
+          "id": "goodsRegFilterKey",
+          "name": "App兑换中心过滤",
+          "val": "",
+          "type": "text",
+          "desc": "填写正则，多个用<>隔开，只要符合一个就显示"
+        },
+        {
+          "id": "coffeeTopPostFilterKey",
+          "name": "绝区零咖啡馆置顶过滤",
+          "val": "",
+          "type": "text",
+          "desc": "填写正则，多个用<>隔开，只要符合一个就不显示"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/mihoyo/miyousheCustom.js?raw=true",
+      "script_timeout": 10
+    },
+    {
+      "id": "lkEu.org",
+      "name": "eu.org",
+      "desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/master/others/eu.org.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+      "icons": [
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/eu.org.png",
+        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/eu.org.png"
+      ],
+      "keys": [
+        "euOrgCookieKey"
+      ],
+      "settings": [
+        {
+          "id": "lkIsEnableLogEu.org",
+          "name": "开启/关闭日志",
+          "val": true,
+          "type": "boolean",
+          "desc": "默认开启"
+        },
+        {
+          "id": "lkNotifyOnlyFailEu.org",
+          "name": "只当执行失败才通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkIsEnableTgNotifyEu.org",
+          "name": "开启/关闭Telegram通知",
+          "val": false,
+          "type": "boolean",
+          "desc": "默认关闭"
+        },
+        {
+          "id": "lkTgNotifyUrlEu.org",
+          "name": "Telegram通知地址",
+          "val": "",
+          "type": "text",
+          "desc": "Tg的通知地址，如：https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+        },
+        {
+          "id": "euOrgCookieKey",
+          "name": "cookie",
+          "val": "",
+          "type": "text",
+          "desc": "电脑F12复制请求的cookie"
+        },
+        {
+          "id": "euOrgCacheKey",
+          "name": "域名缓存",
+          "val": "",
+          "type": "text",
+          "desc": "用于比对域名，提醒哪些域名通过审核"
+        }
+      ],
+      "author": "@lowking",
+      "repo": "https://github.com/lowking/Scripts",
+      "script": "https://github.com/lowking/Scripts/blob/master/others/eu.org.js?raw=true",
+      "script_timeout": 10
     }
   ]
 }

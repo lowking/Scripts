@@ -1,7 +1,7 @@
 # 说明
 - ToolKit演示
 
-<img src="https://github.com/lowking/Scripts/blob/master/doc/pic/toolkitdemo-show.gif" height="500px">发送指定到手机之后 ➟ <img src="https://github.com/lowking/Scripts/blob/master/doc/pic/toolkitdemo-show-phone.gif" height="500px">
+<img src="https://github.com/lowking/Scripts/blob/master/doc/pic/toolkitdemo-show.gif" height="900px">发送指定到手机之后 ➟ <img src="https://github.com/lowking/Scripts/blob/master/doc/pic/toolkitdemo-show-phone.gif" height="1600px">
 
 - ```ugtoolkit```脚本用于批量替换项目下js中文中所有引用的ToolKit，避免更新一次ToolKit手动多次修改。
 - 使用方法（本人mac环境，以下只针对mac环境）：  

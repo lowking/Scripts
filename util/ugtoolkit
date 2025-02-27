@@ -1,29 +1,154 @@
 #!/usr/bin/env bash
+isDev=$1
 targetPath="/Users/lowking/Desktop/Scripts"
-
+#获取版本号和buildId
+tkVersion=$(grep -n "v\d*\.\d*\.\d*" "${targetPath}/util/ToolKit.js")
+buildId=0
+buildInfo=""
+if [ -n "$tkVersion" ]; then
+    line=()
+    IFS=" " read -r -a line <<< "$tkVersion"
+    tkVersion=${line[2]}
+    buildId=${line[4]}
+    buildInfo="${tkVersion} build $(( buildId + 1 ))"
+    # 更新js中buildId
+    newVersion="${tkVersion} build $(( buildId + 1 ))"
+    sed -i "" "s/${tkVersion} build ${buildId}/${newVersion}/g" "${targetPath}/util/ToolKit.js"
+fi
 # 执行min
-uglifyjs $targetPath/util/ToolKit.js -m -o $targetPath/util/ToolKit.min.js
-
+if [ "$isDev" == "dev" ]; then
+    cp -f "${targetPath}/util/ToolKit.js" "${targetPath}/util/ToolKit.min.js"
+else
+    minify --js-keep-var-names -o "${targetPath}/util/ToolKit.min.js" "${targetPath}/util/ToolKit.js"
+fi
+sed -i "" "s/ToolKit\./ToolKit ${newVersion}\./g" "${targetPath}/util/ToolKit.min.js"
+batchReplacement() {
+    local tarr=$1
+    local prefix=$2
+    for var in ${tarr[@]};
+    do
+        val=`echo ${var##*,}`
+        key=`echo ${var%%,*}`
+        sed -i "" "s/${prefix}${key}/${prefix}${val}/g" "${targetPath}/util/ToolKit.min.js"
+    done
+}
+# 根据配置批量替换
+funcArr=(
+isMarkdown,fa
+getRealPath,fb
+checkPath,fc
+execComm,fd
+callApi,fe
+replaceUseMap,ff
+updateBoxjsSessions,fg
+loadData,fh
+writeData,fi
+responseDataAdapter,fj
+statusAdapter,fk
+costTime,fl
+)
+if [ "$isDev" != "dev" ]; then
+    echo "压缩方法名..."
+    batchReplacement "${funcArr[*]}"
+fi
+varArr=(
+prefix,a
+dataFile,b
+boxJsJsonFile,c
+options,d
+comm,e
+isEnableLog,f
+isNotifyOnlyFail,g
+isEnableTgNotify,h
+tgNotifyUrl,i
+costTotalStringKey,j
+costTotalString,k
+costTotalMs,l
+execCount,m
+sleepTotalMs,n
+logSeparator,o
+twoSpace,p
+startTime,q
+execStatus,r
+notifyInfo,s
+boxjsCurSessionKey,t
+boxjsSessionsKey,u
+preTgEscapeCharMapping,v
+finalTgEscapeCharMapping,w
+tgEscapeCharMappingV2,x
+tgEscapeCharMapping,y
+execComm,z
+)
+if [ "$isDev" != "dev" ]; then
+    echo "压缩this.相关变量名..."
+    batchReplacement "${varArr[*]}" "this\."
+    batchReplacement "${varArr[*]}" "this?\."
+    echo "压缩常规变量名..."
+fi
+parameterArr=(
+fileName,_a
+targetPath,_b
+curDirDataFilePath,_c
+rootDirDataFilePath,_d
+isCurDirDataFile,_e
+isRootDirDataFile,_f
+jsondata,_g
+targetDevice,_h
+fname,_i
+xKey,_j
+httpApiHost,_k
+datPath,_m
+loseParamSet,_n
+isMarkdown,_o
+boxjsJsonPath,_p
+needAppendKeys,_q
+domain,_r
+tabString,_s
+targetMapping,_t
+hasOpenUrl,_u
+hasMediaUrl,_v
+hasCopyText,_w
+hasAutoDismiss,_x
+boxJsId,_y
+boxjsCurSession,_z
+boxjsSessions,_aa
+curSessionDatas,_ab
+session,_ac
+isExists,_ad
+)
+if [ "$isDev" != "dev" ]; then
+    batchReplacement "${parameterArr[*]}"
+fi
 # 复制min文件内容
-pbcopy < $targetPath/util/ToolKit.min.js
-
+pbcopy < "${targetPath}/util/ToolKit.min.js"
 # 从剪辑版复制内容
-pasteStr=`pbpaste -Prefer text`
-
-# 替换到所有脚本//ToolKit-start和//ToolKit-end之间的内容
+pasteStr=$(pbpaste -Prefer text)
+# 替换到所有脚本// * ToolKit v所在行和下一行的内容
+echo $buildInfo
 echo "批量替换.js中ToolKit开始"
-for i in `find $targetPath -name '*.js' ! -path '*node_modules*'`
+count=0
+while IFS= read -r -d '' i
 do
-	lineno=`grep -n "//ToolKit-start" $i`
+	lineno=$(grep -n "// \* ToolKit v" "$i")
 	if [ -n "$lineno" ]; then
-		array=(`echo $lineno | tr ':' ' '` )
-		lineno=$[ ${array[0]} + 0 ]
+		array=()
+		IFS=":" read -r -a array <<< "$lineno"
+		lineno=$(( array[0] ))
 		if [ $lineno -ge 1 ]; then
-			# 调用py
-			python ~/bin/replaceAllJs.py $lineno $i $targetPath/util/ToolKit.min.js
-			echo "$i 已替换【${lineno}】"
+		    # 在注释行下新建一行
+		    sed -i '' $lineno"G" "$i"
+		    # 删除注释行
+		    sed -i '' $lineno"d" "$i"
+		    # 在注释行上一行末尾追加新的注释
+		    sed -i '' "$(( lineno - 1)) a\\
+// * ToolKit $tkVersion build $(( buildId + 1 ))" "$i"
+            # 删除注释行下一行到下100行，也就是文件末尾
+		    sed -i '' $(( lineno + 1 ))","$(( lineno + 9999 ))"d" "$i"
+		    # 在注释行后追加文件的内容
+		    sed -i '' "$(( lineno )) r $targetPath/util/ToolKit.min.js" "$i"
+		    printf "%-20s %s\n" "替换行:$lineno" "$i"
+		    count=$(( count + 1))
 		fi
 	fi
-done
-echo "批量替换.js中ToolKit完成"
-
+done < <(find $targetPath -name '*.js' -print0 ! -path '*node_modules')
+echo "批量替换.js中ToolKit完成。共替换${count}个js"

@@ -1,0 +1,20 @@
+name: Issue question
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  create-comment:
+    runs-on: ubuntu-latest
+    if: github.event.label.name == 'question'
+    steps:
+      - name: Create comment
+        uses: actions-cool/issues-helper@v3.5.1
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hello @${{ github.event.issue.user.login }}, please input issue by template and add detail. It will be closed if no activities in 3 days.
+            你好 @${{ github.event.issue.user.login }}，请按照issue模板填写, 3天内未回复issue自动关闭。
