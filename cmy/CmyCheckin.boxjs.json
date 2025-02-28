@@ -190,6 +190,74 @@
 			"repo": "https://github.com/lowking/Scripts",
 			"script": "https://github.com/lowking/Scripts/blob/master/mihoyo/solitaire.js?raw=true",
 			"script_timeout": 10
+		},
+		{
+			"id": "lkFastLink",
+			"name": "FastLink",
+			"desc_html": "⚠️使用说明</br>详情【<a href='https://github.com/lowking/Scripts/blob/personal/fastlink/fastlink.js?raw=true'><font class='red--text'>点我查看</font></a>】",
+			"icons": [
+				"https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+				"https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
+			],
+			"keys": [
+				"fastLinkUserName",
+				"fastLinkPassword"
+			],
+			"settings": [
+				{
+					"id": "lkIsEnableLogFastLink",
+					"name": "开启/关闭日志",
+					"val": true,
+					"type": "boolean",
+					"desc": "默认开启"
+				},
+				{
+					"id": "lkNotifyOnlyFailFastLink",
+					"name": "只当执行失败才通知",
+					"val": false,
+					"type": "boolean",
+					"desc": "默认关闭"
+				},
+				{
+					"id": "lkIsEnableTgNotifyFastLink",
+					"name": "开启/关闭Telegram通知",
+					"val": false,
+					"type": "boolean",
+					"desc": "默认关闭"
+				},
+				{
+					"id": "lkTgNotifyUrlFastLink",
+					"name": "Telegram通知地址",
+					"val": "",
+					"type": "text",
+					"desc": "Tg的通知地址,如: https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
+				},
+				{
+					"id": "fastLinkDomain",
+					"name": "域名",
+					"val": "",
+					"type": "text",
+					"desc": "https://xxxxx.xxx"
+				},
+				{
+					"id": "fastLinkUserName",
+					"name": "用户名",
+					"val": "",
+					"type": "text",
+					"desc": ""
+				},
+				{
+					"id": "fastLinkPassword",
+					"name": "密码",
+					"val": "",
+					"type": "text",
+					"desc": ""
+				}
+			],
+			"author": "@lowking",
+			"repo": "https://github.com/lowking/Scripts",
+			"script": "https://github.com/lowking/Scripts/blob/personal/fastlink/fastlink.js?raw=true",
+			"script_timeout": 10
 		}
 	]
 }
