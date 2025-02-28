@@ -1,5 +1,5 @@
 /**
- * v1.3.2 build 151
+ * v1.3.2 build 152
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -269,7 +269,7 @@ function ToolKit(scriptName, scriptId, options) {
                 json: true
             }
             this.req.post(options).then(({ error, resp, data }) => {
-                this.log(`已将脚本【${fname}】发给【${targetDevice}】,执行结果: \n${this.twoSpace}error: ${error}\n${this.twoSpace}resp: ${resp?.s()}\n${this.twoSpace}data: ${this.responseDataAdapter(data)}`)
+                this.log(`已将脚本【${fname}】发给【${targetDevice || httpApiHost}】,执行结果: \n${this.twoSpace}error: ${error}\n${this.twoSpace}resp: ${resp?.s()}\n${this.twoSpace}data: ${this.responseDataAdapter(data)}`)
                 this.done()
             })
         }
