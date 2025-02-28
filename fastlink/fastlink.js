@@ -1,5 +1,5 @@
 /*
-fastlink-lowking-v1.0.0
+fastlink-lowking-v1.0.1
 */
 const lk = new ToolKit(`FastLink`, `FastLink`, {"httpApi": "ffff@10.0.0.6:6166"})
 const fastLinkUserNameKey = "fastLinkUserName"
@@ -11,8 +11,8 @@ const domain = lk.getVal(domainKey)
 
 const BoxJsInfo = {
     "icons": [
-        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png",
-        "https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/zzz.png"
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true",
+        "https://github.com/lowking/Scripts/blob/master/boxjs-empty.bmp?raw=true"
     ],
     "settings": [
         {
