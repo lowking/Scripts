@@ -28,10 +28,6 @@
 function ScriptableToolKit(scriptName, scriptId, options) {
     return new (class {
         constructor(scriptName, scriptId, options) {
-            //脚本执行限制
-            this.isLimited = false
-            this.checkLimit()
-
             //scriptable公共组件
             this.local = FileManager.local()
             this.icloud = FileManager.iCloud()
@@ -142,12 +138,16 @@ function ScriptableToolKit(scriptName, scriptId, options) {
             this.execStatus = true
             this.notifyInfo = []
             this.operations = []
+
+            //脚本执行限制
+            this.isLimited = false
+            this.checkLimit()
         }
 
         async checkLimit() {
             const lastRunningTime = await this.getVal(`${this.prefix}LastRunningTime${this.id}`, 'local', 0)
             const runLimitNum = this.getResultByKey(`${this.prefix}RunLimitNum${this.id}`, 300000)
-            this.log(`上次运行时间：${lastRunningTime}，运行频率限制：${runLimitNum}`)
+            this.log(`上次运行时间：${this.formatDate(new Date(lastRunningTime), "yyyy-MM-dd HH:mm:ss.S")} ${lastRunningTime}，运行频率限制：${runLimitNum}`)
             if (lastRunningTime >= 0) {
                 if (this.now.getTime() - lastRunningTime <= runLimitNum) {
                     this.appendNotifyInfo('限制运行')
