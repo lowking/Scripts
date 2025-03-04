@@ -510,13 +510,14 @@ const main = async (isLimited) => {
             lk.log(`${subt}${flowRes}${voiceRes}`)
             widget = await show(widget)
         }
-        lk.saveLog()
         widget.presentSmall()
         Script.setWidget(widget)
         Script.complete()
     } catch (e) {
         // 为了不影响正常显示
         lk.logErr(e)
+    } finally {
+        lk.saveLog()
     }
 }
 
