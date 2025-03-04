@@ -146,7 +146,6 @@ const BoxJsParam = {
 
 const signIn = async (title, uid, cookie, dfp) => new Promise((resolve, _reject) => {
     lk.log(title)
-    // todo 有待后续验证
     let body = {"act_id": "e202406242138391", "region": "prod_gf_cn", "uid": "" + uid, "lang": "zh-cn"}.s()
     lk.post({
         url: `${domain}/event/luna/zzz/sign`,
