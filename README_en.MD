@@ -44,5 +44,10 @@
 ### Scriptable
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🟢</a>
 
+### Applescript
+* Adds the currently playing song to the specified playlist. [here](https://github.com/lowking/Scripts/blob/master/self/add2Favorite.scpt)
+* Adds the currently playing song to the specified playlist and removes it from other playlists. [here](https://github.com/lowking/Scripts/blob/master/self/removeTrackFromAllPlaylist.scpt)
+* Music app volume fades in and out. Two quick triggers pause, and a single trigger switches directly at the maximum/minimum volume. [here](https://github.com/lowking/Scripts/blob/master/self/fadeVolume.scpt)
+
 ## LICENSE
 Copyright © 2020-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.

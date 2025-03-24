@@ -44,5 +44,10 @@
 ### Scriptable
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🟢</a>
 
+### Applescript
+* 将当前播放的歌曲添加到指定播放列表。[点击前往](https://github.com/lowking/Scripts/blob/master/self/add2Favorite.scpt)
+* 将当前播放的歌曲添加到指定播放列表并从其他播放列表移除。[点击前往](https://github.com/lowking/Scripts/blob/master/self/removeTrackFromAllPlaylist.scpt)
+* 音乐app音量淡入淡出。2次快速触发实现暂停，单次触发则在最大/最小音量直接切换[点击前往](https://github.com/lowking/Scripts/blob/master/self/fadeVolume.scpt)
+
 ## 许可
 Copyright © 2020-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.
