@@ -5,7 +5,7 @@
 #!arguments-desc=repoPrefix：个人代码托管url前缀\nrepoSuffix：个人代码托管url后缀
 
 [URL Rewrite]
-(http[s]?:\/\/rule.l\/)(?<author>[\w\W]+[\/])(?<repo>[\w\W]+[\/])(?<branch>[\w\W]+[\/])(?<path>.+) {{{repoPrefix}}}$2$3raw/$4$5{{{repoSuffix}}} 302
+(http[s]?:\/\/rule.l\/)(?<author>[^\/]+[\/])(?<repo>[^\/]+[\/])(?<branch>[\w\W]+[\/])(?<path>.+) {{{repoPrefix}}}$2$3raw/$4$5{{{repoSuffix}}} 302
 
 [Rule]
 # > 京东  去启动广告，必须是REJECT-TINYGIF, 否则比价会失效
