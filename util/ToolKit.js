@@ -1,5 +1,5 @@
 /**
- * v1.3.2 build 152
+ * v1.3.2 build 154
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -90,6 +90,20 @@ function ToolKit(scriptName, scriptId, options) {
             }
             Object.prototype.o = function (reviver) {
                 return JSON.parse(this, reviver)
+            }
+            Object.prototype.getIgnoreCase = function (key) {
+                if (!key) throw "Key required"
+                let target = this
+                try {
+                    if (typeof this === "string") target = JSON.stringify(this)
+                } catch (e) {
+                    throw "It's not a JSON object or string!"
+                }
+                const ret = Object.keys(target).reduce((obj, key) => {
+                    obj[key.toLowerCase()] = target[key]
+                    return obj
+                }, {})
+                return ret[key]
             }
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
