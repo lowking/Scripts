@@ -1,4 +1,4 @@
-// * 监控eu.org域名审核-lowking-v1.0.4
+// * 监控eu.org域名审核-lowking-v1.0.5
 const lk = new ToolKit(`eu.org`, `Eu.org`, {"httpApi": "ffff@10.0.0.6:6166"})
 const cookieKey = 'euOrgCookieKey'
 const cacheKey = 'euOrgCacheKey'
