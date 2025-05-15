@@ -9,3 +9,5 @@ DOMAIN,downloads.plex.tv
 DOMAIN,metadata-static.plex.tv
 DOMAIN,metadata.provider.plex.tv
 DOMAIN,meta.plex.tv
+# > cdn.jsdelivr.net
+DOMAIN,cdn.jsdelivr.net
