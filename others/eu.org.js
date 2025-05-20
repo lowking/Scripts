@@ -1,4 +1,4 @@
-// * 监控eu.org域名审核-lowking-v1.0.5
+// * 监控eu.org域名审核-lowking-v1.0.6
 const lk = new ToolKit(`eu.org`, `Eu.org`, {"httpApi": "ffff@10.0.0.6:6166"})
 const cookieKey = 'euOrgCookieKey'
 const cacheKey = 'euOrgCacheKey'
@@ -63,7 +63,7 @@ const all = async () => {
         const setCookies = resp?.headers.getIgnoreCase("set-cookie")
         const newCsrftoken = lk.getCookieProp(setCookies, "csrftoken")
         const oldCsrftoken = lk.getCookieProp(cookie, "csrftoken")
-        if (newCsrftoken != oldCsrftoken) {
+        if (newCsrftoken && newCsrftoken != oldCsrftoken) {
             lk.setVal(cookieKey, cookie.replaceAll(oldCsrftoken, newCsrftoken))
         }
         let parsedHtml = lk.parseHTML(data)
