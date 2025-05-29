@@ -1,0 +1,8 @@
+#!name=ZzzCapture
+#!desc=该模块自用，获取绝区零抽卡数据
+
+[Script]
+ZzzCapture = type=http-request,pattern=^https?:\/\/public-operation-nap\.mihoyo\.com\/common\/gacha_record\/api\/getGachaLog\?,script-path=zzzCapture.js
+
+[MITM]
+hostname = %APPEND% public-operation-nap.mihoyo.com

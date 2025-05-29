@@ -1,0 +1,12 @@
+#!name=MiyousheCustom
+#!desc=该模块自用，自定义米游社App
+
+[Script]
+米游社我的自定义 = requires-body=1,type=http-response,pattern=https:\/\/api-takumi-record.mihoyo.com\/game_record\/card\/api\/getGameRecordCard,script-path=miyousheCustom.js
+米游社首页自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/home\/new,script-path=miyousheCustom.js
+米游社首页tab自定义 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/forum\/api\/getDiscussionByGame\?gids=8,script-path=miyousheCustom.js
+米游社兑换中心过滤 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/common\/homushop\/v1\/web\/goods\/list,script-path=miyousheCustom.js
+米游社绝区零咖啡馆置顶过滤 = requires-body=1,type=http-response,pattern=https:\/\/bbs-api.miyoushe.com\/apihub\/api\/forumMain,script-path=miyousheCustom.js
+
+[MITM]
+hostname = %APPEND% api-takumi-record.mihoyo.com, bbs-api.miyoushe.com
