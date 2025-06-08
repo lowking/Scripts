@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v1.3.4
+米哈游App自定义-lowking-v2.0.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -54,14 +54,14 @@ const main = async () => {
                     "name": "App我的游戏卡片过滤",
                     "val": "",
                     "type": "text",
-                    "desc": "请填写要保留的游戏卡片，多个用\",\"隔开：新艾利都:url,天空岛；后面的url是卡片点击跳转链接，不改可以不写"
+                    "desc": "请填写要保留的游戏卡片，多个用\",\"隔开：新艾利都：url,天空岛；后面的url是卡片点击跳转链接，不改可以不写"
                 },
                 {
                     "id": homeTopBarKey,
                     "name": "App绝区零首页顶栏",
                     "val": "",
                     "type": "text",
-                    "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱:url,签到福利；后面的url是跳转链接，不改可以不写"
+                    "desc": "请填写要保留的顶栏，多个用\",\"隔开：工具箱：url,签到福利；后面的url是跳转链接，不改可以不写"
                 },
                 {
                     "id": homePageTabKey,
@@ -214,28 +214,55 @@ const main = async () => {
         if (resp?.data?.navigator.length <= 0) {
             return false
         }
-        const topBarNameMap = homeTopBar.split(",").reduce((acc, cur) => {
-            const split = cur.split(":")
-            if (split.length > 2) {
-                acc[split[0]] = `${split[1]}:${split[2]}`
+        let topBarNameMap = homeTopBar.split(",").reduce((acc, cur) => {
+            const split = cur.split("：")
+            if (!split) {
+                return acc
             }
-            acc.topBarNames = `${acc.topBarNames}${split[0]},`
+            const name = split[0]
+            if (split.length == 2) {
+                acc[`${name}-url`] = split[1]
+            } else if (split.length == 3) {
+                acc[`${name}-url`] = split[1]
+                acc[`${name}-icon`] = split[2]
+            } else if (split.length == 1) {
+                // do nothing
+            } else {
+                return acc
+            }
+            acc[`${name}-isAdd`] = true
+            acc.topBarNames = `${acc.topBarNames}${name},`
             return acc
         }, {
-            topBarNames: ","
+            topBarNames: ",",
         })
         let ret = resp.data.navigator.reduce((acc, cur) => {
             const name = `,${cur["name"]},`
             lk.log(`顶栏项目：${cur["name"]}`)
             if (topBarNameMap.topBarNames.includes(name)) {
-                let url = topBarNameMap[cur["name"]]
+                topBarNameMap[`${cur["name"]}-isAdd`] = false
+                const url = topBarNameMap[`${cur["name"]}-url`]
                 if (url && url.startsWith("http")) {
                     cur["app_path"] = url
+                }
+                const icon = topBarNameMap[`${cur["name"]}-icon`]
+                if (icon && icon.startsWith("http")) {
+                    cur["icon"] = icon
                 }
                 acc.push(cur)
             }
             return acc
         }, [])
+        for (const key in topBarNameMap) {
+            if (!key.endsWith("-isAdd")) continue
+            const name = key.split("-isAdd")[0]
+            resp.data.navigator.push({
+                icon: topBarNameMap[`${name}-icon`],
+                name,
+                "app_path": topBarNameMap[`${name}-url`]
+            })
+        }
+        ret = resp.data.navigator
         if (ret.length == 0) {
             return false
         }
@@ -256,9 +283,16 @@ const main = async () => {
             return false
         }
         const regionGamesMap = regionGames.split(",").reduce((acc, cur) => {
-            const split = cur.split(":")
-            if (split.length > 2) {
-                acc[split[0]] = `${split[1]}:${split[2]}`
+            const split = cur.split("：")
+            if (!split) {
+                return acc
+            }
+            if (split.length == 2) {
+                acc[split[0]] = `${split[1]}`
+            } else if (split.length == 1) {
+                // do nothing
+            } else {
+                return acc
             }
             acc.regionNames = `${acc.regionNames}${split[0]},`
             return acc
@@ -270,7 +304,7 @@ const main = async () => {
             const regionName = `,${card["region_name"]},`
             lk.log(`我的-卡片项目：${card["region_name"]}`)
             if (regionGamesMap.regionNames.includes(regionName)) {
-                let regionUrl = regionGamesMap[card["region_name"]]
+                const regionUrl = regionGamesMap[card["region_name"]]
                 if (regionUrl && regionUrl.startsWith("http")) {
                     card.url = regionUrl
                 }
