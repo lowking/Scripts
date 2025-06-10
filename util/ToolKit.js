@@ -1,5 +1,5 @@
 /**
- * v1.4.0 build 155
+ * v1.4.1 build 163
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -285,6 +285,55 @@ function ToolKit(scriptName, scriptId, options) {
             this.req.post(options).then(({ error, resp, data }) => {
                 this.log(`已将脚本【${fname}】发给【${targetDevice || httpApiHost}】,执行结果: \n${this.twoSpace}error: ${error}\n${this.twoSpace}resp: ${resp?.s()}\n${this.twoSpace}data: ${this.responseDataAdapter(data)}`)
                 this.done()
+            }).catch((e) => {
+                let logMsg = ""
+                let hasProcessed = false
+                if (e?.error?.code) {
+                    switch (e.error.code) {
+                        case "EHOSTDOWN":
+                            logMsg = `请检查配置的目标设备【${targetDevice || httpApiHost}】是否在线！`;
+                            hasProcessed = true;
+                            break;
+                        case "ECONNREFUSED":
+                            logMsg = `目标设备【${targetDevice || httpApiHost}】拒绝连接，请确认服务端口已开启且可访问！`;
+                            hasProcessed = true;
+                            break;
+                        case "EHOSTUNREACH":
+                            logMsg = `无法到达目标设备【${targetDevice || httpApiHost}】，请检查网络连接和路由设置！`;
+                            hasProcessed = true;
+                            break;
+                        case "ENETUNREACH":
+                            logMsg = `网络不可达，无法访问目标设备【${targetDevice || httpApiHost}】，请检查本地网络环境！`;
+                            hasProcessed = true;
+                            break;
+                        case "ETIMEDOUT":
+                            logMsg = `连接目标设备【${targetDevice || httpApiHost}】超时，请检查网络状况或目标设备响应状态！`;
+                            hasProcessed = true;
+                            break;
+                        case "ECONNRESET":
+                            logMsg = `与目标设备【${targetDevice || httpApiHost}】的连接被重置，可能是设备重启或网络异常！`;
+                            hasProcessed = true;
+                            break;
+                        case "ENOTFOUND":
+                            logMsg = `未能解析目标设备地址【${targetDevice || httpApiHost}】，请检查配置的主机名或DNS设置！`;
+                            hasProcessed = true;
+                            break;
+                        case "EADDRINUSE":
+                            logMsg = `本地端口已被占用，无法建立与目标设备【${targetDevice || httpApiHost}】的连接！`;
+                            hasProcessed = true;
+                            break;
+                        case "EACCES":
+                            logMsg = `权限不足，无法访问目标设备【${targetDevice || httpApiHost}】！`;
+                            hasProcessed = true;
+                            break;
+                        default:
+                            hasProcessed = false;
+                    }
+                }
+                if (!hasProcessed) {
+                    throw e
+                }
+                this.log(logMsg)
             })
         }
 
