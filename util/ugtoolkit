@@ -97,6 +97,7 @@ targetDevice,_h
 fname,_i
 xKey,_j
 httpApiHost,_k
+hasProcessed,_l
 datPath,_m
 loseParamSet,_n
 isMarkdown,_o
@@ -115,6 +116,7 @@ boxjsSessions,_aa
 curSessionDatas,_ab
 session,_ac
 isExists,_ad
+logMsg,_ae
 )
 if [ "$isDev" != "dev" ]; then
     batchReplacement "${parameterArr[*]}"
