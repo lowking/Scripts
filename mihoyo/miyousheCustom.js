@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v2.0.0
+米哈游App自定义-lowking-v2.1.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -325,6 +325,15 @@ const main = async () => {
                     }
                     card.data[0].name = `无伤: ${climbingTowerMvpNum}`
                     card.data[0].value = layer
+                    // 获取随便观信息
+                    const noteInfo = await getNoteInfo(roleId)
+                    const templeInfo = noteInfo?.data?.temple_running
+                    if (templeInfo) {
+                        const benchState = templeInfo?.bench_state == "BenchStateProducing" ? "造" : "-"
+                        const shelveState = templeInfo?.shelve_state == "ShelveStateSelling" ? "售" : "-"
+                        const expeditionState = templeInfo?.expedition_state == "ExpeditionStateInProgress" ? "探" : "-"
+                        card.data[1].name = `${benchState} ${shelveState} ${expeditionState}`
+                    }
                     // 获取式與防卫战数据
                     let r1, r2 = []
                     const challengeInfo = await getChallengeInfo(roleId, 1)
@@ -386,6 +395,25 @@ const getIndexInfo = async (roleId) => {
     }
     return await lk.req.get({
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/index?${queryString}`,
+        headers
+    }).then(({error, resp, data}) => {
+        return data.o()
+    })
+}
+
+const getNoteInfo = async (roleId) => {
+    lk.log(`正在获取${roleId}的随便观信息`)
+    let queryString = `server=prod_gf_cn&role_id=${roleId}`
+    let headers = {
+        referer: "https://act.mihoyo.com/",
+        "x-rpc-device_fp": zzzDfp,
+        "x-rpc-client_type": 2,
+        "x-rpc-app_version": appVersion,
+        // ds: getDs("", "", queryString),
+        cookie: `${zzzCookie}${zzzBbsCookie}`
+    }
+    return await lk.req.get({
+        url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/note?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
         return data.o()
