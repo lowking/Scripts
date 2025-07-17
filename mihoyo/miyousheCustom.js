@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v2.1.0
+米哈游App自定义-lowking-v2.2.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -311,8 +311,11 @@ const main = async () => {
                 if (regionName == ",新艾利都,") {
                     const activeDays = card.data[0].value
                     const roleId = card["game_role_id"]
-                    // 获取爬塔数据
+                    // 获取首页数据
                     const indexInfo = await getIndexInfo(roleId)
+                    // 获取爬塔详细数据
+                    const climbingTowerDetail = await getClimbingTowerDetail(roleId)
+
                     let layer = "-"
                     if (indexInfo?.data?.stats?.climbing_tower_layer) {
                         layer = `${indexInfo?.data?.stats?.climbing_tower_layer}`
@@ -325,6 +328,7 @@ const main = async () => {
                     }
                     card.data[0].name = `无伤: ${climbingTowerMvpNum}`
                     card.data[0].value = layer
+
                     // 获取随便观信息
                     const noteInfo = await getNoteInfo(roleId)
                     const templeInfo = noteInfo?.data?.temple_running
@@ -334,6 +338,7 @@ const main = async () => {
                         const expeditionState = templeInfo?.expedition_state == "ExpeditionStateInProgress" ? "探" : "-"
                         card.data[1].name = `${benchState} ${shelveState} ${expeditionState}`
                     }
+
                     // 获取式與防卫战数据
                     let r1, r2 = []
                     const challengeInfo = await getChallengeInfo(roleId, 1)
@@ -343,8 +348,20 @@ const main = async () => {
                             return acc
                         }, [])
                     }
-                    card.data[2].name = "本期式與"
-                    card.data[2].value = r1.length == 0 ? "-" : r1.join(" ")
+                    const climbingTowerS3 = climbingTowerDetail?.data?.climbing_tower_s3
+                    if (!climbingTowerS3) {
+                        card.data[2].name = "本期式與"
+                        card.data[2].value = r1.length == 0 ? "-" : r1.join(" ")
+                    } else {
+                        const mvpInfoS3 = climbingTowerS3?.mvp_info
+                        const layerInfoS3 = climbingTowerS3?.layer_info
+                        const formatter = new Intl.NumberFormat('zh-CN', {
+                            notation: 'compact',
+                        });
+                        card.data[2].name = `${mvpInfoS3?.floor_mvp_num}/${layerInfoS3?.climbing_tower_layer} ${(mvpInfoS3?.rank_percent/100).toFixed(2)}%`
+                        card.data[2].value = `${formatter.format(layerInfoS3?.total_score)}`
+                    }
+
                     let memoryBattleFieldScore = "-", memoryBattleFieldRankPercent = "-", memoryBattleFieldStar = "-"
                     if (indexInfo?.data?.stats?.memory_battlefield) {
                         memoryBattleFieldScore = `${indexInfo?.data?.stats?.memory_battlefield?.total_score}`
@@ -353,6 +370,7 @@ const main = async () => {
                     }
                     card.data[3].name = memoryBattleFieldRankPercent == "-" ? "-" : `${memoryBattleFieldRankPercent} ${memoryBattleFieldStar}★`
                     card.data[3].value = memoryBattleFieldScore
+
                     // 修改区服信息，显示活跃天数
                     card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾⁽${convertNumericSymbol(roleId, "up")}⁾`.replaceAll(/\n/g, "")
                 }
@@ -395,6 +413,25 @@ const getIndexInfo = async (roleId) => {
     }
     return await lk.req.get({
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/index?${queryString}`,
+        headers
+    }).then(({error, resp, data}) => {
+        return data.o()
+    })
+}
+
+const getClimbingTowerDetail = async (roleId) => {
+    lk.log(`正在获取${roleId}的爬塔详细信息`)
+    let queryString = `uid=${roleId}&region=prod_gf_cn`
+    let headers = {
+        referer: "https://app.mihoyo.com",
+        "x-rpc-device_fp": zzzDfp,
+        "x-rpc-client_type": 2,
+        "x-rpc-app_version": appVersion,
+        ds: getDs("", "", queryString),
+        cookie: `${zzzCookie}${zzzBbsCookie}`
+    }
+    return await lk.req.get({
+        url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/climbing_tower_detail?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
         return data.o()
