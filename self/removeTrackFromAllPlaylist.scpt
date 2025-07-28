@@ -4,6 +4,7 @@ tell application "Music"
   set trackName to name of current track
   set artistName to artist of current track
   set dbid to database ID of current track
+  set hasDoNext to false
   repeat with aPlaylist in (get every playlist)
     set playlistName to name of aPlaylist
     repeat 1 times -- 这个repeat为了下面的exit repeat，实现循环的continue
@@ -14,9 +15,11 @@ tell application "Music"
       repeat with theTrack in foundTracks
         log trackName & " " & playlistName
         next track
+        set hasDoNext to true
         if not exists (some track of playlist FavoritePlaylist whose database ID is dbid) then duplicate theTrack to thePlaylist
         tell thePlaylist to delete contents of theTrack
       end repeat
     end repeat
   end repeat
+  if not hasDoNext then next track
 end tell
