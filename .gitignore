@@ -42,4 +42,5 @@ github.json
 .wakatime-project
 test/*
 *.bak
+temp.*
 jd/
