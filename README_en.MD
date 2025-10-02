@@ -11,7 +11,7 @@
 🟢In use&nbsp;&nbsp;🟡Not in use&nbsp;&nbsp;🔴Problem
 ### Scripts(Surge, Quantumult X, Loon, nodeJs)
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bilibili/bangumiMonitor.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Alpha/bilibili.png" style="border-radius: 5px;" width="5%">
-🟢</a>
+🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/bilibili/privilegeReceive.js"><img src="https://raw.githubusercontent.com/lowking/Scripts/master/doc/icon/bilibiliBigVip.svg" style="border-radius: 5px;" width="5%">
 🟡</a>
 &nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/github/githubMonitor.js"><img src="https://github.githubassets.com/favicons/favicon-dark.svg" style="border-radius: 5px;" width="5%">
@@ -42,7 +42,7 @@
 🟢</a>
 
 ### Scriptable
-&nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🟢</a>
+&nbsp;&nbsp;<a target="_blank" href="https://github.com/lowking/Scripts/blob/master/Scriptable/10000.js"><img src="https://raw.githubusercontent.com/Orz-3/mini/master/Color/10000.png" style="border-radius: 5px;" width="5%">🔴</a>
 
 ### Applescript
 * Adds the currently playing song to the specified playlist. [here](https://github.com/lowking/Scripts/blob/master/self/add2Favorite.scpt)
@@ -50,4 +50,4 @@
 * Music app volume fades in and out. Two quick triggers pause, and a single trigger switches directly at the maximum/minimum volume. [here](https://github.com/lowking/Scripts/blob/master/self/fadeVolume.scpt)
 
 ## LICENSE
-Copyright © 2020-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.
+Copyright © 2025-present lowking. Licensed under [GPL](https://github.com/lowking/Scripts/blob/master/LICENSE) License.
