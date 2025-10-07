@@ -19,7 +19,7 @@
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
-        "https:\/\/gamebanana.com\/mods\/": [
+        "https:\/\/gamebanana.com\/.*\/": [
             "a.PrimaryPreview",// 详情页的主图
             "a.SecondaryPreview",// 详情页的附图
         ],
@@ -65,28 +65,37 @@
             if (!new RegExp(key).test(currentUrl)) continue
             const selectors = specialElementExclusion[key]
             for (const selector of selectors) {
-                let selectorTarget
-                selectorTarget = target.parentNode.querySelector(selector)
-                log("1st query selector", selectorTarget)
-                try{
-                    selectorTarget = target.closest("a").parentNode.querySelector(selector)
-                    log("2nd query selector", selectorTarget)
-                } catch (err) {
-                    // pass
-                    log(err)
-                }
-                if (!selectorTarget) {
+                let selectorTargets
+                selectorTargets = target.parentNode.querySelectorAll(selector)
+                log("1st query selector", selectorTargets)
+                if (!selectorTargets) {
                     try{
-                        selectorTarget = target.closest("a").parentNode.querySelector(selector)
-                        log("3rd query selector", selectorTarget)
+                        selectorTargets = target.closest("a").parentNode.querySelectorAll(selector)
+                        log("2nd query selector", selectorTargets)
                     } catch (err) {
                         // pass
                         log(err)
                     }
                 }
-                if (!selectorTarget) continue
-                const matched = selectorTarget == target
-                log(matched, target, selectorTarget)
+                if (!selectorTargets) {
+                    try{
+                        selectorTargets = target.closest("a").parentNode.parentNode.querySelectorAll(selector)
+                        log("3rd query selector", selectorTargets)
+                    } catch (err) {
+                        // pass
+                        log(err)
+                    }
+                }
+                if (!selectorTargets) continue
+                log(selectorTargets)
+                let matched = false
+                selectorTargets.forEach((e) => {
+                    if (e === target) {
+                        matched = true
+                        return false
+                    }
+                })
+                log(matched, target, selectorTargets)
                 if (matched) return true
             }
         }
@@ -161,35 +170,39 @@
         if (!link.href || linkStore.has(link) || link?.tagName !== "A") return;
 
         const clickHandler = (e) => {
-            log("clicked", e.target)
-            // 根据配置判断是否阻断原事件
-            if (isExclude(e) || e?.button !== 0) return; // 只处理左键点击
-            e.stopPropagation();
-            e.preventDefault();
-            const data = linkStore.get(link);
-            log("click", data)
-            if (e.shiftKey && e.metaKey) {
-                window.open(data.href, '_blank');
-                return
-            }
-            if (e.metaKey) {
-                openNewBackgroundTab(data.href)
-                return
-            }
-            // 从配置获取打开方式
-            const configOpenTarget = getConfigOpenTarget()
-            if (configOpenTarget) {
-                log("open by config", configOpenTarget)
-                window.open(data.href, configOpenTarget)
-                return
-            }
-            if (data?.target === '_blank') {
-                log("open by data target", data.target)
-                window.open(data.href, '_blank');
-                restoreLink(link)
-            } else {
-                log("finally open self")
-                location.href = data.href;
+            try {
+                const data = linkStore.get(link)
+                log("clicked", e.target, data)
+                link.setAttribute("href", data.href)
+                // 根据配置判断是否阻断原事件
+                if (isExclude(e) || e?.button !== 0) return // 只处理左键点击
+                e.stopPropagation()
+                e.preventDefault()
+                if (e.shiftKey && e.metaKey) {
+                    window.open(data.href, '_blank')
+                    return
+                }
+                if (e.metaKey) {
+                    openNewBackgroundTab(data.href)
+                    return
+                }
+                // 从配置获取打开方式
+                const configOpenTarget = getConfigOpenTarget()
+                if (configOpenTarget) {
+                    log("open by config", configOpenTarget)
+                    window.open(data.href, configOpenTarget)
+                    return
+                }
+                if (data?.target === '_blank') {
+                    log("open by data target", data.target)
+                    window.open(data.href, '_blank')
+                    restoreLink(link)
+                } else {
+                    log("finally open self")
+                    location.href = data.href
+                }
+            } finally {
+                link.removeAttribute("href")
             }
         }
 
