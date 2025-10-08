@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         隐藏左下角悬浮链接,并且配置网址打开链接方式
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @author       lowking
 // @match        *://*/*
 // @grant        none
@@ -25,6 +25,9 @@
         ],
         "https:\/\/www.bilibili.com": [
             "a[data-v-1e1051ac].header-dynamic__box--right",// 顶部动态列表的稍后再看
+            "div.gm-card-switcher",// 稍后再看左边的加号
+            "span.gm-hover",// 稍后再看右下角的浮动按钮
+            "a.gm-entry-list-item",// 稍后再看插件的列表
         ],
         "https:\/\/github.com\/search": [
             "a[data-size]",// github搜索左边
@@ -50,10 +53,33 @@
         "https:\\/\\/greasyfork.org\\/.*/scripts$": "_blank",
     }
 
+    const whetherSelectorMatches = (target, selector, depth = 0) => {
+        if (depth >= searchDepth) return
+        ++depth
+        let selectorTargets
+        let matched = false
+        selectorTargets = target.parentNode.querySelectorAll(selector)
+        log(depth, " query selector: ", selector, selectorTargets)
+        selectorTargets.forEach((e) => {
+            if (e === target) {
+                matched = true
+                return false
+            }
+        })
+        log(matched, target, selectorTargets)
+        if (!matched) {
+            let targetParent = target?.parentNode
+            if (targetParent) {
+                return whetherSelectorMatches(targetParent, selector, depth)
+            }
+        }
+        return matched
+    }
+
     const isExclude = (e) => {
         let target
-        try{
-            target = e.target?.closest("a")
+        try {
+            target = e?.target?.tagName === "A" ? e.target : e.target.closest('a')
         } catch (err) {
             target = e.target
             log(err)
@@ -65,39 +91,11 @@
             if (!new RegExp(key).test(currentUrl)) continue
             const selectors = specialElementExclusion[key]
             for (const selector of selectors) {
-                let selectorTargets
-                selectorTargets = target.parentNode.querySelectorAll(selector)
-                log("1st query selector", selectorTargets)
-                if (!selectorTargets) {
-                    try{
-                        selectorTargets = target.closest("a").parentNode.querySelectorAll(selector)
-                        log("2nd query selector", selectorTargets)
-                    } catch (err) {
-                        // pass
-                        log(err)
-                    }
-                }
-                if (!selectorTargets) {
-                    try{
-                        selectorTargets = target.closest("a").parentNode.parentNode.querySelectorAll(selector)
-                        log("3rd query selector", selectorTargets)
-                    } catch (err) {
-                        // pass
-                        log(err)
-                    }
-                }
-                if (!selectorTargets) continue
-                log(selectorTargets)
                 let matched = false
-                selectorTargets.forEach((e) => {
-                    if (e === target) {
-                        matched = true
-                        return false
-                    }
-                })
-                log(matched, target, selectorTargets)
+                matched = whetherSelectorMatches(target, selector)
                 if (matched) return true
             }
+            log()
         }
         return false
     }
@@ -144,35 +142,36 @@
             0, 0, 0, 0, 0,
             false, false, false, true,
             0, null);
-        a.dispatchEvent(evt);
+        a.dispatchEvent(evt)
     }
 
     // 存储原始链接数据
-    const linkStore = new WeakMap();
+    const linkStore = new WeakMap()
 
     // 主处理函数
-    const handleLink = (link, deepth=0) => {
-        if (deepth >= searchDepth) return
-        ++deepth
+    const handleLink = (link, depth = 0) => {
+        if (depth >= searchDepth) return
+        ++depth
         if (!link) return
         // 向上查找所有父节点是a的,也修改,有的元素是a嵌套a的,必须把父节点以上的所有a都修改了
         let parentNode = link.parentNode
-        switch(parentNode?.tagName){
+        switch (parentNode?.tagName) {
             case "A":
-                handleLink(parentNode, deepth)
+                handleLink(parentNode, depth)
                 break
             case "BODY":
                 break
             default:
-                handleLink(parentNode?.parentNode, deepth)
+                handleLink(parentNode?.parentNode, depth)
         }
 
         if (!link.href || linkStore.has(link) || link?.tagName !== "A") return;
 
         const clickHandler = (e) => {
+            const link = e?.target?.tagName === "A" ? e.target : e.target.closest('a')
+            const data = linkStore.get(link)
             try {
-                const data = linkStore.get(link)
-                log("clicked", e.target, data)
+                log("clicked", link, data)
                 link.setAttribute("href", data.href)
                 // 根据配置判断是否阻断原事件
                 if (isExclude(e) || e?.button !== 0) return // 只处理左键点击
@@ -202,7 +201,12 @@
                     location.href = data.href
                 }
             } finally {
-                link.removeAttribute("href")
+                linkStore.set(link, data)
+                link.setAttribute("original_href", link.getAttribute("href") || link.getAttribute("original_href"))
+                setTimeout(() => {
+                    link.removeAttribute("href")
+                }, 100)
+                log("finally", data)
             }
         }
 
@@ -272,21 +276,22 @@
     // 事件监听
     document.addEventListener('mouseover', (e) => {
         try {
-            const link = e.target.closest('a');
-            const data = linkStore.get(link);
+            const link = e?.target?.tagName === "A" ? e.target : e.target.closest('a')
+            log("Mouse over", link)
+            const data = linkStore.get(link)
             if (!data && link) {
-                log("Mouse enter")
-                handleLink(link);
+                handleLink(link)
                 const originalColor = window.getComputedStyle(link).color
                 const finalColor = colorCalculation(originalColor, 15)
-                link.style.color = finalColor;
+                link.style.color = finalColor
             }
         } catch (err) {}
     }, true);
 
     document.addEventListener('mouseout', (e) => {
-        const link = e.target.closest('a');
-        if (link) restoreLink(link);
+        const link = e?.target?.tagName === "A" ? e.target : e.target.closest('a')
+        log("Mouse out", link)
+        if (link) restoreLink(link)
     }, true);
 
     // 处理初始链接
