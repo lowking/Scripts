@@ -18,6 +18,9 @@
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
+        "https://www.itdog.cn/http/#global_region": [
+            "a.nav-link",// 测速区域的地区选择
+        ],
         "https:\/\/gamebanana.com\/.*\/": [
             "a.PrimaryPreview",// 详情页的主图
             "a.SecondaryPreview",// 详情页的附图
