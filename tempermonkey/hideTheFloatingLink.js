@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         隐藏左下角悬浮链接,并且配置网址打开链接方式
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @author       lowking
 // @match        *://*/*
 // @grant        none
@@ -18,7 +18,10 @@
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
-        "https://www.itdog.cn/http/#global_region": [
+        "https:\/\/www.douyu.com\/directory\/myFollow": [
+            "#copy-cookie-btn",// 自用插件,复制douyu cookie
+        ],
+        "https:\/\/www.itdog.cn\/http\/#global_region": [
             "a.nav-link",// 测速区域的地区选择
         ],
         "https:\/\/gamebanana.com\/.*\/": [
