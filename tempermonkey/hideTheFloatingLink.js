@@ -45,7 +45,7 @@
             "a[aria-label]",// 侧边栏
         ],
         "http:\/\/.*.mynetgear.com:32400\/web\/index.html#!\/": [
-            "a.user-select-container.loaded",// 登录页选登录账号
+            "a.user-select-container",// 登录页选登录账号
         ]
     }
 
