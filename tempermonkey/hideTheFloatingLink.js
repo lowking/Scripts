@@ -18,6 +18,9 @@
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
+        "https:\/\/www.youtube.com\/watch\?": [
+            "#endpoint"
+        ],
         "https:\/\/www.douyu.com\/directory\/myFollow": [
             "#copy-cookie-btn",// 自用插件,复制douyu cookie
         ],
