@@ -11,15 +11,18 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.0.3"
+    GM_info.script.version = "1.0.4"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
-        "https:\/\/dash.cloudflare.com\/" : [
-            "all",// cf所有
+        "[10|192|193|172|100|17|127]\.": [
+            "all"// 本地ip
+        ],
+        "https:\/\/dash.cloudflare.com\/": [
+            "all"// cf所有
         ],
         "https:\/\/www.youtube.com\/watch\?": [
             "#endpoint",// 油管章节跳转
