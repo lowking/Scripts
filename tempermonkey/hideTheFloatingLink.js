@@ -1,7 +1,6 @@
 // ==UserScript==
 // @name         隐藏左下角悬浮链接,并且配置网址打开链接方式
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
 // @author       lowking
 // @match        *://*/*
 // @grant        none
@@ -12,14 +11,18 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
+    GM_info.script.version = "1.0.3"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
+        "https:\/\/dash.cloudflare.com\/" : [
+            "all",// cf所有
+        ],
         "https:\/\/www.youtube.com\/watch\?": [
-            "#endpoint"
+            "#endpoint",// 油管章节跳转
         ],
         "https:\/\/www.douyu.com\/directory\/myFollow": [
             "#copy-cookie-btn",// 自用插件,复制douyu cookie
@@ -99,6 +102,8 @@
             if (!new RegExp(key).test(currentUrl)) continue
             const selectors = specialElementExclusion[key]
             for (const selector of selectors) {
+                // 配置了all,直接返回
+                if (selector === "all") return true
                 let matched = false
                 matched = whetherSelectorMatches(target, selector)
                 if (matched) return true
@@ -117,7 +122,7 @@
         return ""
     }
 
-    const prefix = "[HTFL]"
+    const prefix = `[HTFL ${GM_info.script.version}]`
     const log = (...args) => {
         if (!devMode) return
         console.log(prefix, ...args)
