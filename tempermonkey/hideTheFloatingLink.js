@@ -11,14 +11,14 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.0.5"
+    GM_info.script.version = "1.0.6"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
-        "[10|192|193|172|100|17|127]\.": [
+        "(10|192|193|172|100|17|127)\.": [
             "all"// 本地ip
         ],
         "https:\/\/dash.cloudflare.com\/": [
@@ -60,7 +60,7 @@
 
     // 打开链接的方式,_blank:新标签页打开,_self:当前标签页打开
     const openTarget = {
-        "https:\/\/github.com\/search": "_blank",
+        "https:\\/\\/github.com\\/search": "_blank",
         "https:\\/\\/www.youtube.com\\/$": "_blank",
         "https:\\/\\/gamebanana.com\\/games": "_blank",
         "https:\\/\\/greasyfork.org\\/.*/scripts\\?": "_blank",
@@ -101,8 +101,9 @@
         log(e.target, target)
         log("Enter", currentUrl)
         for (const key in specialElementExclusion) {
-            log("regex", key)
-            if (!new RegExp(key).test(currentUrl)) continue
+            let urlMatched = new RegExp(key).test(currentUrl)
+            log("regex", key, urlMatched)
+            if (!urlMatched) continue
             const selectors = specialElementExclusion[key]
             for (const selector of selectors) {
                 // 配置了all,直接返回
