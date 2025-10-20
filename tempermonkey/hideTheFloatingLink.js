@@ -11,7 +11,7 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.0.6"
+    GM_info.script.version = "1.0.7"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
@@ -36,6 +36,10 @@
         "https:\/\/gamebanana.com\/.*\/": [
             "a.PrimaryPreview",// 详情页的主图
             "a.SecondaryPreview",// 详情页的附图
+        ],
+        "https:\/\/.*bilibili.com\/video": [
+            "a.prev",// 视频评论区上一页
+            "a.next",// 视频评论区下一页
         ],
         "https:\/\/.*bilibili.com": [
             "a[data-v-1e1051ac].header-dynamic__box--right",// 顶部动态列表的稍后再看
