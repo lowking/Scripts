@@ -18,12 +18,13 @@
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
-        "(10|192|193|172|100|17|127)\.": [
-            "all"// 本地ip
-        ],
-        "https:\/\/dash.cloudflare.com\/": [
-            "all"// cf所有
-        ],
+        "mail.sina.com.cn": [ "all" ],
+        // 微信企业邮箱
+        "https:\/\/exmail.qq.com\/": [ "all" ],
+        // 本地ip 
+        "(10|192|193|172|100|17|127)\.": [ "all" ],
+        // cf所有
+        "https:\/\/dash.cloudflare.com\/": [ "all" ],
         "https:\/\/www.youtube.com\/watch\?": [
             "#endpoint",// 油管章节跳转
         ],
