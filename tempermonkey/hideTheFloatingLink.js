@@ -49,6 +49,7 @@
             "span.gm-hover",// 稍后再看右下角的浮动按钮
             "a.gm-entry-list-item",// 稍后再看插件的列表
         ],
+        "https:\/\/github.com\/.*\/.*\/.*": [ "all" ],
         "https:\/\/github.com\/.*\/.*": [
             "a.prc-components-UnderlineItem-lJsg-",// 仓库克隆按钮标签
         ],
