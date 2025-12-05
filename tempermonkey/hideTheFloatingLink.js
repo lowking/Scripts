@@ -11,7 +11,7 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.0.8"
+    GM_info.script.version = "1.0.9"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
@@ -22,6 +22,7 @@
         "mail.sina.com.cn": [ "all" ],
         // 微信企业邮箱
         "https:\/\/exmail.qq.com\/": [ "all" ],
+        "https:\/\/work.weixin.qq.com\/": [ "all" ],
         // 本地ip 
         "(10|192|193|172|100|17|127)\.": [ "all" ],
         // cf所有
