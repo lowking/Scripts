@@ -11,7 +11,7 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 [Script]
 绝区零维护状态监控 = type=cron,cronexp="*\/5 * * * * ?",wake-system=1,timeout=700,script-path=https://raw.githubusercontent.com/lowking/Scripts/master/mihoyo/maintenance.js
 */
-const lk = new ToolKit(`云绝区零维护监控`, `CloudZzzMaintenance`, {"httpApi": "ffff@10.0.0.6:6166"})
+const lk = new ToolKit(`云绝区零维护监控`, `CloudZzzMaintenance`, {"httpApi": "ffff@10.0.0.6:6166", "logLevel": "info"})
 const bannerUrl = 'https://images.gamebanana.com/img/Webpage/Game/Profile/Background/66868c3874664.jpg'
 const domain = 'https://act-nap-api.mihoyo.com'
 const cloudGameDomain = 'https://cg-nap-api.mihoyo.com'
@@ -109,7 +109,7 @@ const all = async () => {
                 lk.appendNotifyInfo("⚠️登录失败, 请重新获取cookie")
                 break
             case 0:
-                lk.log(`⚠️云绝区零维护中 ${lk.formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss')}`)
+                lk.info(`⚠️云绝区零维护中 ${lk.formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss')}`)
                 break
             case 1:
                 lk.appendNotifyInfo(`🎉维护结束, 赶快打开游戏吧`)
