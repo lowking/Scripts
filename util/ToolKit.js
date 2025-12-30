@@ -1,5 +1,5 @@
 /**
- * v1.4.1 build 164
+ * v1.5.0 build 204
  * 根据自己的习惯整合各个开发者而形成的工具包(@NobyDa, @chavyleung)
  * 兼容surge,quantumult x,loon,node环境
  * 并且加入一些好用的方法
@@ -82,6 +82,19 @@ function ToolKit(scriptName, scriptId, options) {
     }
 
     return new (class {
+        LOG_LEVELS = {
+            info: 1 << 1,
+            warn: 1 << 2,
+            error: 1 << 3,
+            debug: 1 << 4,
+        }
+        LOG_LEVELS_ATOMIC = {
+            info: 1 << 1,
+            warn: 1 << 2,
+            error: 1 << 3,
+            debug: 1 << 4,
+        }
+
         constructor(scriptName, scriptId, options) {
             // ! 无法使用匿名函数,会导致内部this指针指向错误无法获取数据
             Object.prototype.s = function (replacer, space) {
@@ -105,6 +118,10 @@ function ToolKit(scriptName, scriptId, options) {
                 }, {})
                 return ret[key]
             }
+            this.LOG_LEVELS.warn |= this.LOG_LEVELS_ATOMIC.info
+            this.LOG_LEVELS.error |= this.LOG_LEVELS.warn
+            this.LOG_LEVELS.debug |= this.LOG_LEVELS.error
+            this.logLevel = this.LOG_LEVELS.debug
             this.userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
             this.prefix = `lk`
             this.name = scriptName
@@ -116,6 +133,9 @@ function ToolKit(scriptName, scriptId, options) {
 
             // surge http api等一些扩展参数
             this.options = options
+            if (this.options?.logLevel) {
+                this.logLevel = this.LOG_LEVELS[this.options.logLevel]
+            }
 
             // 命令行入参
             this.isExecComm = false
@@ -140,7 +160,7 @@ function ToolKit(scriptName, scriptId, options) {
             this.execCount = this.costTotalString.split(",")[1]
             this.sleepTotalMs = 0
 
-            this.logSeparator = '\n██'
+            this.logSeparator = '█'
             this.twoSpace = '  '
             this.now = new Date()
             this.startTime = this.now.getTime()
@@ -537,7 +557,25 @@ function ToolKit(scriptName, scriptId, options) {
         }
 
         log(message) {
-            if (this.isEnableLog) console.log(`${this.logSeparator}${message}`)
+            if (!this.isEnableLog) return
+            // 兼容旧版, 默认旧版全都是debug日志
+            if (this.logLevel === this.LOG_LEVELS.debug) console.log(`\n${this.logSeparator}DEBUG${this.logSeparator}${message}`)
+        }
+        info(message) {
+            if (!this.isEnableLog) return
+            if (this.logLevel & this.LOG_LEVELS_ATOMIC.info) console.log(`\n${this.logSeparator}INFO${this.logSeparator}${message}`)
+        }
+        warn(message) {
+            if (!this.isEnableLog) return
+            if (this.logLevel & this.LOG_LEVELS_ATOMIC.warn) console.log(`\n${this.logSeparator}WARN${this.logSeparator}${message}`)
+        }
+        error(message) {
+            if (!this.isEnableLog) return
+            if (this.logLevel & this.LOG_LEVELS_ATOMIC.error) console.log(`\n${this.logSeparator}ERROR${this.logSeparator}${message}`)
+        }
+        debug(message) {
+            if (!this.isEnableLog) return
+            if (this.logLevel === this.LOG_LEVELS.debug) console.log(`\n${this.logSeparator}DEBUG${this.logSeparator}${message}`)
         }
 
         logErr(message) {

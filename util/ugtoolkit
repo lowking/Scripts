@@ -78,6 +78,9 @@ finalTgEscapeCharMapping,w
 tgEscapeCharMappingV2,x
 tgEscapeCharMapping,y
 execComm,z
+LOG_LEVELS_ATOMIC,aa
+LOG_LEVELS,ab
+logLevel,ac
 )
 if [ "$isDev" != "dev" ]; then
     echo "压缩this.相关变量名..."
@@ -117,6 +120,8 @@ curSessionDatas,_ab
 session,_ac
 isExists,_ad
 logMsg,_ae
+LOG_LEVELS_ATOMIC,aa
+LOG_LEVELS,ab
 )
 if [ "$isDev" != "dev" ]; then
     batchReplacement "${parameterArr[*]}"
