@@ -11,7 +11,7 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.1.0"
+    GM_info.script.version = "1.1.1"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
@@ -47,7 +47,7 @@
             "a.next",// 视频评论区下一页
         ],
         "https:\/\/.*bilibili.com": [
-            "a[data-v-1e1051ac].header-dynamic__box--right",// 顶部动态列表的稍后再看
+            "a.header-dynamic__box--right",// 顶部动态列表的稍后再看
             "div.gm-card-switcher",// 稍后再看左边的加号
             "span.gm-hover",// 稍后再看右下角的浮动按钮
             "a.gm-entry-list-item",// 稍后再看插件的列表
