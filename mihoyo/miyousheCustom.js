@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v2.2.1
+米哈游App自定义-lowking-v2.3.0
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -311,9 +311,11 @@ const main = async () => {
                 if (regionName == ",新艾利都,") {
                     const activeDays = card.data[0].value
                     const roleId = card["game_role_id"]
+                    // 成就数
+                    const achievementAmount = card.data[1].value
                     let tasks = []
                     // 获取首页数据
-                    let indexInfo, climbingTowerDetail, noteInfo, challengeInfo
+                    let indexInfo, climbingTowerDetail, noteInfo, challengeInfo, hadalInfo
                     tasks.push(getIndexInfo(roleId))
                     // 获取爬塔详细数据
                     tasks.push(getClimbingTowerDetail(roleId))
@@ -321,11 +323,14 @@ const main = async () => {
                     tasks.push(getNoteInfo(roleId))
                     // 获取式與防卫战数据
                     tasks.push(getChallengeInfo(roleId, 1))
+                    // 获取新式與防卫战数据
+                    tasks.push(getHadalInfo(roleId, 1))
                     await Promise.all(tasks).then(async (rets) => {
                         indexInfo = rets[0]
                         climbingTowerDetail = rets[1]
                         noteInfo = rets[2]
                         challengeInfo = rets[3]
+                        hadalInfo = rets[4]
                     })
 
                     let layer = "-"
@@ -342,7 +347,11 @@ const main = async () => {
                     card.data[0].value = layer
 
                     const templeInfo = noteInfo?.data?.temple_running
-                    if (templeInfo) {
+                    const hadalInfoV2Brief = hadalInfo?.data?.hadal_info_v2?.brief
+                    if (hadalInfoV2Brief) {
+                        card.data[1].name = `${hadalInfoV2Brief?.rating} ${(hadalInfoV2Brief?.rank_percent/100).toFixed(2)}%`
+                        card.data[1].value = `${hadalInfoV2Brief?.score}`
+                    } else if (templeInfo) {
                         const benchState = templeInfo?.bench_state == "BenchStateProducing" ? "造" : "-"
                         const shelveState = templeInfo?.shelve_state == "ShelveStateSelling" ? "售" : "-"
                         const expeditionState = templeInfo?.expedition_state == "ExpeditionStateInProgress" ? "探" : "-"
@@ -380,7 +389,7 @@ const main = async () => {
                     card.data[3].value = memoryBattleFieldScore
 
                     // 修改区服信息，显示活跃天数
-                    card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾⁽${convertNumericSymbol(roleId, "up")}⁾`.replaceAll(/\n/g, "")
+                    card["nickname"] = `${card["nickname"]} ⁽${convertNumericSymbol(activeDays, "up")}⁾⁽${convertNumericSymbol(roleId, "up")}⁾⁽${convertNumericSymbol(achievementAmount, "up")}⁾`.replaceAll(/\n/g, "")
                 }
                 ret.push(card)
             }
@@ -478,6 +487,25 @@ const getChallengeInfo = async (roleId, scheduleType) => {
     }
     return await lk.req.get({
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/challenge?${queryString}`,
+        headers
+    }).then(({error, resp, data}) => {
+        return data.o()
+    })
+}
+
+const getHadalInfo = async (roleId, scheduleType) => {
+    lk.log(`正在获取${roleId}的新式與防卫战数据`)
+    let queryString = `role_id=${roleId}&schedule_type=${scheduleType}&server=prod_gf_cn&without_v2_detail=true`
+    let headers = {
+        referer: "https://app.mihoyo.com",
+        "x-rpc-device_fp": zzzDfp,
+        "x-rpc-client_type": 2,
+        "x-rpc-app_version": appVersion,
+        ds: getDs("", "", queryString),
+        cookie: `${zzzCookie}${zzzBbsCookie}`
+    }
+    return await lk.req.get({
+        url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/hadal_info_v2?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
         return data.o()
