@@ -922,6 +922,13 @@
           "desc": "Tg的通知地址,如: https://api.telegram.org/bot-token/sendMessage?chat_id=-100140&parse_mode=Markdown&text="
         },
         {
+          "id": "zzzExchangePolychromes",
+          "name": "米游社兑换菲林",
+          "val": false,
+          "type": "boolean",
+          "desc": "米游社兑换菲林"
+        },
+        {
           "id": "zzzOpenUrlKey",
           "name": "点击跳转链接",
           "val": "mihoyobbs://webview?link=https%3A%2F%2Fact.mihoyo.com%2Fbbs%2Fevent%2Fsignin%2Fzzz%2Fe202406242138391.html%3Fact_id%3De202406242138391%26bbs_auth_required%3Dtrue%26bbs_presentation_style%3Dfullscreen",
