@@ -1,5 +1,5 @@
 /*
-索尼俱乐部签到-lowking-v1.4.1
+索尼俱乐部签到-lowking-v1.4.2
 
 ⚠️v1.2之后需要订阅BoxJs之后填写帐号密码
 
@@ -31,7 +31,7 @@ const signIn = async () => {
         }
     }
     lk.log(`${url.s()}`)
-    await lk.req.post(url).then(async ({ error, response, data }) => {
+    await lk.req.post(url).then(async ({ error, resp, data }) => {
         lk.log(data)
         if (data == undefined || data.startsWith("<")) {
             lk.log(`进入自动登录`)
@@ -87,9 +87,9 @@ const loginSonyClub = async () => {
         }.s()
     };
     lk.log(loginUrl.s())
-    await lk.req.post(loginUrl).then(async ({ error, response, data }) => {
+    await lk.req.post(loginUrl).then(async ({ error, resp, data }) => {
         lk.log(data)
-        if (!!data) {
+        if (!data) {
             if (loginCount > 3) {
                 lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
                 lk.execFail()
