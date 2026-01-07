@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v2.3.0
+米哈游App自定义-lowking-v2.3.1
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -226,7 +226,10 @@ const main = async () => {
                 acc[`${name}-url`] = split[1]
                 acc[`${name}-icon`] = split[2]
             } else if (split.length == 1) {
-                // do nothing
+                // 如果没有指定url和icon则使用源数据
+                const target = resp.data.navigator.find((e) => e.name === name)
+                acc[`${name}-url`] = target.app_path
+                acc[`${name}-icon`] = target.icon
             } else {
                 return acc
             }
@@ -238,7 +241,7 @@ const main = async () => {
         })
         let ret = resp.data.navigator.reduce((acc, cur) => {
             const name = `,${cur["name"]},`
-            lk.log(`顶栏项目：${cur["name"]}`)
+            lk.log(`顶栏项目：${cur["name"]}, ${cur["app_path"]}, ${cur["icon"]}`)
             if (topBarNameMap.topBarNames.includes(name)) {
                 topBarNameMap[`${cur["name"]}-isAdd`] = false
                 const url = topBarNameMap[`${cur["name"]}-url`]
