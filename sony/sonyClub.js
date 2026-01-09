@@ -1,5 +1,5 @@
 /*
-索尼俱乐部签到-lowking-v1.4
+索尼俱乐部签到-lowking-v1.4.1
 
 ⚠️v1.2之后需要订阅BoxJs之后填写帐号密码
 
@@ -13,146 +13,127 @@ Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
 */
 const sonyClubTokenKey = 'lkSonyClubToken'
 const lk = new ToolKit('索尼俱乐部签到', 'SonyClub')
-const signurlVal = `https://www.sonystyle.com.cn/eSolverOmniChannel/account/signupPoints.do?channel=WAP&access_token=`
-var sonyClubToken = lk.getVal(sonyClubTokenKey)
+const signUrlVal = `https://www.sonystyle.com.cn/eSolverOmniChannel/account/signupPoints.do?channel=WAP&access_token=`
+let sonyClubToken = lk.getVal(sonyClubTokenKey)
 const userAgent = `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`
 
-if (!lk.isExecComm) {
-    all()
-
-    async function all() {
-        lk.boxJsJsonBuilder({"author": "@lowking"})
-        await signIn() //签到
-        await notify() //通知
-    }
-
-    function signIn() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let url = {
-                    url: `${signurlVal}${sonyClubToken}`,
-                    headers: {
-                        "User-Agent": userAgent
-                    }
-                }
-                lk.log(`${url.s()}`)
-                lk.post(url, async (error, response, data) => {
-                    try {
-                        lk.log(data)
-                        if (data == undefined || data.startsWith("<")) {
-                            lk.log(`进入自动登录`)
-                            // 不通知直接登录获取token
-                            if (loginCount > 3) {
-                                lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
-                                lk.execFail()
-                            } else {
-                                await loginSonyClub()
-                            }
-                        } else {
-                            const result = data.o()
-                            if (result.resultMsg[0].code == "00") {
-                                lk.appendNotifyInfo(`连续签到${result.resultData.successiveSignupDays}天🎉\n本次签到获得【${result.resultData.signupRankingOfDay}】成长值，共【${result.resultData.totalPoints}】成长值`)
-                            } else if (result.resultMsg[0].code == "99") {
-                                lk.appendNotifyInfo(`重复签到🔁`)
-                            } else if (result.resultMsg[0].code == "98") {
-                                if (loginCount > 3) {
-                                    lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
-                                    lk.execFail()
-                                } else {
-                                    await loginSonyClub()
-                                }
-                            } else {
-                                lk.appendNotifyInfo(`签到失败❌\\n${result.resultMsg[0].message}`)
-                                lk.execFail()
-                            }
-                        }
-                    } catch (ee) {
-                        throw ee
-                    } finally {
-                        resolve()
-                    }
-                })
-            } catch (e) {
-                lk.log(`${lk.name}异常：\n${e}`)
-                lk.execFail()
-                lk.appendNotifyInfo(`签到异常，请带上日志联系作者❌`)
-                return resolve()
-            }
-        })
-    }
-
-    var loginCount = 0
-
-    async function loginSonyClub() {
-        ++loginCount
-        return new Promise(async (resolve, reject) => {
-            lk.log(`第${loginCount}次尝试登录`)
-            let loginId = lk.getVal("lkSonyClubLoginId")
-            let pwd = lk.getVal("lkSonyClubPassword")
-            if (lk.isEmpty(loginId) || lk.isEmpty(pwd)) {
-                lk.appendNotifyInfo(`请到BoxJs填写帐号密码⚠️`)
-                lk.execFail()
-                return resolve()
-            }
-            let loginUrl = {
-                url: `https://www.sonystyle.com.cn/eSolverOmniChannel/account/login.do`,
-                headers: {
-                    "User-Agent": userAgent,
-                    "Content-Type": "application/json"
-                },
-                body: {
-                    "channel": "WAP",
-                    "loginID": loginId,
-                    "password": pwd
-                }.s()
-            };
-            try {
-                lk.log(loginUrl.s())
-                lk.post(loginUrl, async (error, response, data) => {
-                    try {
-                        lk.log(data)
-                        if (data == undefined) {
-                            if (loginCount > 3) {
-                                lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
-                                lk.execFail()
-                                return resolve()
-                            } else {
-                                await loginSonyClub()
-                            }
-                        } else {
-                            const result = data.o()
-                            if (result.resultMsg[0].code == "00") {
-                                //登录成功，调用签到
-                                let accessToken = result.resultData["access_token"]
-                                lk.log(`登录成功，token：${accessToken}`)
-                                lk.setVal(sonyClubTokenKey, accessToken)
-                                sonyClubToken = accessToken
-                                await signIn()
-                            } else {
-                                lk.appendNotifyInfo(`登录失败❌\n${result.resultMsg[0].message}`)
-                                lk.execFail()
-                                return resolve()
-                            }
-                        }
-                    } finally {
-                        resolve()
-                    }
-                })
-            } catch (e) {
-                lk.execFail()
-                throw e
-            }
-        })
-    }
+const BoxJsParam = {
+    "script_url": "https://github.com/lowking/Scripts/blob/master/sony/sonyClub.js",
+    "author": "@lowking",
+    "repo": "https://github.com/lowking/Scripts",
 }
 
-function notify() {
-    return new Promise((resolve, reject) => {
-        lk.msg(``)
-        lk.done()
-        return resolve()
+const signIn = async () => {
+    let url = {
+        url: `${signUrlVal}${sonyClubToken}`,
+        headers: {
+            "User-Agent": userAgent
+        }
+    }
+    lk.log(`${url.s()}`)
+    await lk.req.post(url).then(async ({ error, response, data }) => {
+        lk.log(data)
+        if (data == undefined || data.startsWith("<")) {
+            lk.log(`进入自动登录`)
+            // 不通知直接登录获取token
+            if (loginCount > 3) {
+                lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                lk.execFail()
+            } else {
+                await loginSonyClub()
+            }
+        } else {
+            const result = data.o()
+            if (result.resultMsg[0].code == "00") {
+                lk.appendNotifyInfo(`连续签到${result.resultData.successiveSignupDays}天🎉\n本次签到获得【${result.resultData.signupRankingOfDay}】成长值，共【${result.resultData.totalPoints}】成长值`)
+            } else if (result.resultMsg[0].code == "99") {
+                lk.appendNotifyInfo(`重复签到🔁`)
+            } else if (result.resultMsg[0].code == "98") {
+                if (loginCount > 3) {
+                    lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                    lk.execFail()
+                } else {
+                    await loginSonyClub()
+                }
+            } else {
+                lk.appendNotifyInfo(`签到失败❌\\n${result.resultMsg[0].message}`)
+                lk.execFail()
+            }
+        }
     })
 }
+
+let loginCount = 0
+const loginSonyClub = async () => {
+    ++loginCount
+    lk.log(`第${loginCount}次尝试登录`)
+    let loginId = lk.getVal("lkSonyClubLoginId")
+    let pwd = lk.getVal("lkSonyClubPassword")
+    if (lk.isEmpty(loginId) || lk.isEmpty(pwd)) {
+        lk.appendNotifyInfo(`请到BoxJs填写帐号密码⚠️`)
+        lk.execFail()
+        return
+    }
+    let loginUrl = {
+        url: `https://www.sonystyle.com.cn/eSolverOmniChannel/account/login.do`,
+        headers: {
+            "User-Agent": userAgent,
+            "Content-Type": "application/json"
+        },
+        body: {
+            "channel": "WAP",
+            "loginID": loginId,
+            "password": pwd
+        }.s()
+    };
+    lk.log(loginUrl.s())
+    await lk.req.post(loginUrl).then(async ({ error, response, data }) => {
+        lk.log(data)
+        if (!!data) {
+            if (loginCount > 3) {
+                lk.appendNotifyInfo(`登录尝试3次，均失败❌请确认帐号密码是否正确！`)
+                lk.execFail()
+                return
+            }
+            await loginSonyClub()
+        } else {
+            const result = data.o()
+            if (result.resultMsg[0].code != "00") {
+                lk.appendNotifyInfo(`登录失败❌\n${result.resultMsg[0].message}`)
+                lk.execFail()
+                return
+            }
+            //登录成功，调用签到
+            let accessToken = result.resultData["access_token"]
+            lk.log(`登录成功，token：${accessToken}`)
+            lk.setVal(sonyClubTokenKey, accessToken)
+            sonyClubToken = accessToken
+            await signIn()
+        }
+    })
+}
+
+const all = async () => {
+    await signIn() //签到
+}
+
+const main = () => {
+    if (lk.isRequest()) {
+        lk.done()
+        return
+    }
+    lk.boxJsJsonBuilder({"author": "@lowking"}, BoxJsParam)
+    all().catch((err) => {
+        lk.logErr(err)
+        lk.execFail()
+        lk.msg(``, err)
+    }).finally(() => {
+        lk.msg(``)
+        lk.done()
+    })
+}
+
+if(!lk.isExecComm) main()
 
 // * ToolKit v1.5.0 build 204
 function ToolKit(scriptName,scriptId,options){class Request{constructor(tk){this.tk=tk}fetch(options,method="GET"){options=typeof options=="string"?{url:options}:options;let fetcher;switch(method){case"PUT":fetcher=this.put;break;case"POST":fetcher=this.post;break;default:fetcher=this.get}const doFetch=new Promise((resolve,reject)=>{fetcher.call(this,options,(error,resp,data)=>error?reject({error,resp,data}):resolve({error,resp,data}))}),delayFetch=(promise,timeout=5e3)=>Promise.race([promise,new Promise((_,reject)=>setTimeout(()=>reject(new Error("请求超时")),timeout))]);return options.timeout>0?delayFetch(doFetch,options.timeout):doFetch}async get(options){return this.fetch.call(this.tk,options)}async post(options){return this.fetch.call(this.tk,options,"POST")}async put(options){return this.fetch.call(this.tk,options,"PUT")}}return new class{ab={info:1<<1,warn:1<<2,error:1<<3,debug:1<<4};aa={info:1<<1,warn:1<<2,error:1<<3,debug:1<<4};constructor(scriptName,scriptId,options){Object.prototype.s=function(replacer,space){return typeof this=="string"?this:JSON.stringify(this,replacer,space)},Object.prototype.o=function(reviver){return JSON.parse(this,reviver)},Object.prototype.getIgnoreCase=function(key){if(!key)throw"Key required";let target=this;try{typeof this=="string"&&(target=JSON.stringify(this))}catch{throw"It's not a JSON object or string!"}const ret=Object.keys(target).reduce((obj,key)=>(obj[key.toLowerCase()]=target[key],obj),{});return ret[key]},this.ab.warn|=this.aa.info,this.ab.error|=this.ab.warn,this.ab.debug|=this.ab.error,this.ac=this.ab.debug,this.userAgent=`Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.2 Safari/605.1.15`,this.a=`lk`,this.name=scriptName,this.id=scriptId,this.req=new Request(this),this.data=null,this.b=this.fb(`${this.a}${this.id}.dat`),this.c=this.fb(`${this.a}${this.id}.boxjs.json`),this.d=options,this.d?.logLevel&&(this.ac=this.ab[this.d.logLevel]),this.isExecComm=!1,this.f=this.getVal(`${this.a}IsEnableLog${this.id}`),this.f=!!this.isEmpty(this.f)||this.f.o(),this.g=this.getVal(`${this.a}NotifyOnlyFail${this.id}`),this.g=!this.isEmpty(this.g)&&this.g.o(),this.h=this.getVal(`${this.a}IsEnableTgNotify${this.id}`),this.h=!this.isEmpty(this.h)&&this.h.o(),this.i=this.getVal(`${this.a}TgNotifyUrl${this.id}`),this.h=this.h?!this.isEmpty(this.i):this.h,this.j=`${this.a}CostTotalString${this.id}`,this.k=this.getVal(this.j),this.k=this.isEmpty(this.k)?`0,0`:this.k.replace('"',""),this.l=this.k.split(",")[0],this.m=this.k.split(",")[1],this.n=0,this.o="█",this.p="  ",this.now=new Date,this.q=this.now.getTime(),this.node=(()=>{if(this.isNode()){const request=require("request");return{request}}return null})(),this.r=!0,this.s=[],this.t="chavy_boxjs_cur__acs",this.u="chavy_boxjs__acs",this.v={"|`|":",backQuote,"},this.w={",backQuote,":"`","%2CbackQuote%2C":"`"},this.y={"_":"\\_","*":"\\*","`":"\\`"},this.x={"_":"\\_","*":"\\*","[":"\\[","]":"\\]","(":"\\(",")":"\\)","~":"\\~","`":"\\`",">":"\\>","#":"\\#","+":"\\+","-":"\\-","=":"\\=","|":"\\|","{":"\\{","}":"\\}",".":"\\.","!":"\\!"},this.log(`${this.name}, 开始执行!`),this.fd()}fb(_a){if(!this.isNode())return _a;let _b=process.argv.slice(1,2)[0].split("/");return _b[_b.length-1]=_a,_b.join("/")}fc(_a){const _c=this.path.resolve(_a),_d=this.path.resolve(process.cwd(),_a),_e=this.fs.existsSync(_c),_f=!_e&&this.fs.existsSync(_d);return{_c,_d,_e,_f}}async fd(){if(!this.isNode())return;if(this.e=process.argv.slice(1),this.e[1]!="p")return;this.isExecComm=!0,this.log(`开始执行指令【${this.e[1]}】=> 发送到其他终端测试脚本!`);let httpApi=this.d?.httpApi,_h;if(this.isEmpty(this?.d?.httpApi))this.log(`未设置options,使用默认值`),this.isEmpty(this?.d)&&(this.d={}),this.d.httpApi=`ffff@10.0.0.6:6166`,httpApi=this.d.httpApi,_h=httpApi.split("@")[1];else{if(typeof httpApi=="object")if(_h=this.isNumeric(this.e[2])?this.e[3]||"unknown":this.e[2],httpApi[_h])httpApi=httpApi[_h];else{const keys=Object.keys(httpApi);keys[0]?(_h=keys[0],httpApi=httpApi[keys[0]]):httpApi="error"}if(!/.*?@.*?:[0-9]+/.test(httpApi)){this.log(`❌httpApi格式错误!格式: ffff@3.3.3.18:6166`),this.done();return}}this.fe(this.e[2],_h,httpApi)}fe(timeout,_h,httpApi){let _i=this.e[0];const[_j,_k]=httpApi.split("@");this.log(`获取【${_i}】内容传给【${_h||_k}】`),this.fs=this.fs?this.fs:require("fs"),this.path=this.path?this.path:require("path");const{_c,_d,_e,_f}=this.fc(_i);if(!_e&&!_f){lk.done();return}const _m=_e?_c:_d;let options={url:`http://${_k}/v1/scripting/evaluate`,headers:{"X-Key":_j},body:{script_text:new String(this.fs.readFileSync(_m)),mock_type:"cron",timeout:!this.isEmpty(timeout)&&timeout>5?timeout:5},json:!0};this.req.post(options).then(({error,resp,data})=>{this.log(`已将脚本【${_i}】发给【${_h||_k}】,执行结果: 
