@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.4.0
+绝区零-lowking-v1.4.1
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -56,7 +56,7 @@ const BoxJsInfo = {
             "name": "米游社兑换菲林",
             "val": false,
             "type": "boolean",
-            "desc": "米游社兑换菲林"
+            "desc": "米游社兑换菲林(开启之后定时任务必须在19点执行一次)"
         },
         {
             "id": openUrlKey,
@@ -858,14 +858,18 @@ const all = async () => {
     if (!zzzUid || !zzzCookie || !zzzDfp || !zzzBbsCookie) {
         throw "⚠️请先打开米游社获取cookie"
     }
-    if (zzzCloudGameCookie && zzzComboToken) {
-        await doCloudGameDailyCheck()
+    const hours = lk.now.getHours()
+    if (hours === 19) {
+        await doExchangePolychromes()
+    } else {
+        if (zzzCloudGameCookie && zzzComboToken) {
+            await doCloudGameDailyCheck()
+        }
+        await doSignIn()
+        await doBbsSignIn()
+        await doBbsVoteAndShare()
+        await doReleasePost()
     }
-    await doSignIn()
-    await doBbsSignIn()
-    await doExchangePolychromes()
-    await doBbsVoteAndShare()
-    await doReleasePost()
 }
 
 const getDs = (task, body) => {

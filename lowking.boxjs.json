@@ -926,7 +926,7 @@
           "name": "米游社兑换菲林",
           "val": false,
           "type": "boolean",
-          "desc": "米游社兑换菲林"
+          "desc": "米游社兑换菲林(开启之后定时任务必须在19点执行一次)"
         },
         {
           "id": "zzzOpenUrlKey",
