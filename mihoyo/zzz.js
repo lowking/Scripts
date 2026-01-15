@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.4.1
+绝区零-lowking-v1.4.2
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -569,7 +569,13 @@ const doExchangePolychromes = async () => {
     let title = '获取兑换中心菲林兑换信息'
     lk.debug(title)
     const goodsInfo = await getPolychromesGoodsInfo(zzzBbsCookie, zzzDfp)
-    if (!goodsInfo || goodsInfo?.total === 0 || goodsInfo?.account_exchange_num === goodsInfo?.account_cycle_limit) return
+    if (!goodsInfo || goodsInfo?.total === 0 || goodsInfo?.account_exchange_num === goodsInfo?.account_cycle_limit) {
+        lk.prependNotifyInfo(`⚠️菲林已兑换`)
+        return
+    } else if (goodsInfo?.now_time < goodsInfo?.next_time) {
+        lk.prependNotifyInfo(`⚠️未开放兑换, 下次兑换时间: ${lk.formatDate(new Date(goodsInfo?.next_time * 1000), "yyyy-MM-dd HH:mm")}`)
+        return
+    }
     title = '菲林兑换中...'
     lk.debug(title)
     await exchangePolychromes(goodsInfo, zzzBbsCookie, zzzDfp)
@@ -600,15 +606,20 @@ const exchangePolychromes = async (goodsInfo, cookie, dfp) => {
         }.s()
     }).then(({error, resp, data}) => {
         data = data.o()
-        if (data?.retcode !== 0) {
-            lk.error(`菲林兑换失败: ${data?.message}`)
-            lk.debug(data.s(), null, 2)
-            lk.debug(cookie)
-            return
+        const retcode = data?.retcode
+        // {"data":null,"message":"兑换周期内当前商品的可兑换数量超限","retcode":-2101}
+        let message = `🎉菲林兑换成功`
+        switch (retcode) {
+            case 0:
+                lk.debug(message)
+                break
+            default:
+                message = data?.message
+                lk.error(`菲林兑换失败: ${data?.message}`)
+                lk.debug(data.s(), null, 2)
+                lk.debug(cookie)
         }
-        const message = `🎉菲林兑换成功`
-        lk.appendNotifyInfo(message)
-        lk.debug(message)
+        lk.prependNotifyInfo(message)
     })
 }
 
