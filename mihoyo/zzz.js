@@ -1,5 +1,5 @@
 /*
-绝区零-lowking-v1.4.2
+绝区零-lowking-v1.4.3
 
 cookie获取自己抓包，能不能用随缘
 超时设置久点，中间要等待10分钟发第二个帖子完成任务
@@ -570,7 +570,7 @@ const doExchangePolychromes = async () => {
     lk.debug(title)
     const goodsInfo = await getPolychromesGoodsInfo(zzzBbsCookie, zzzDfp)
     if (!goodsInfo || goodsInfo?.total === 0 || goodsInfo?.account_exchange_num === goodsInfo?.account_cycle_limit) {
-        lk.prependNotifyInfo(`⚠️菲林已兑换`)
+        lk.debug(`⚠️菲林已兑换`)
         return
     } else if (goodsInfo?.now_time < goodsInfo?.next_time) {
         lk.prependNotifyInfo(`⚠️未开放兑换, 下次兑换时间: ${lk.formatDate(new Date(goodsInfo?.next_time * 1000), "yyyy-MM-dd HH:mm")}`)
@@ -615,7 +615,7 @@ const exchangePolychromes = async (goodsInfo, cookie, dfp) => {
                 break
             default:
                 message = data?.message
-                lk.error(`菲林兑换失败: ${data?.message}`)
+                lk.error(`❌菲林兑换失败: ${data?.message}`)
                 lk.debug(data.s(), null, 2)
                 lk.debug(cookie)
         }
