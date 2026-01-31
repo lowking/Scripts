@@ -1,5 +1,5 @@
 /*
-米哈游App自定义-lowking-v2.3.1
+米哈游App自定义-lowking-v2.3.2
 
 ************************
 Surge 4.2.0+ 脚本配置(其他APP自行转换配置):
@@ -318,22 +318,19 @@ const main = async () => {
                     const achievementAmount = card.data[1].value
                     let tasks = []
                     // 获取首页数据
-                    let indexInfo, climbingTowerDetail, noteInfo, challengeInfo, hadalInfo
+                    let indexInfo, climbingTowerDetail, noteInfo, hadalInfo
                     tasks.push(getIndexInfo(roleId))
                     // 获取爬塔详细数据
                     tasks.push(getClimbingTowerDetail(roleId))
                     // 获取随便观信息
                     tasks.push(getNoteInfo(roleId))
-                    // 获取式與防卫战数据
-                    tasks.push(getChallengeInfo(roleId, 1))
                     // 获取新式與防卫战数据
                     tasks.push(getHadalInfo(roleId, 1))
                     await Promise.all(tasks).then(async (rets) => {
                         indexInfo = rets[0]
                         climbingTowerDetail = rets[1]
                         noteInfo = rets[2]
-                        challengeInfo = rets[3]
-                        hadalInfo = rets[4]
+                        hadalInfo = rets[3]
                     })
 
                     let layer = "-"
@@ -361,24 +358,14 @@ const main = async () => {
                         card.data[1].name = `${benchState} ${shelveState} ${expeditionState}`
                     }
 
-                    let r1, r2 = []
-                    if (challengeInfo?.data?.rating_list) {
-                        r1 = challengeInfo.data.rating_list.reduce((acc, cur) => {
-                            acc.push(`${cur.times}${cur.rating}`)
-                            return acc
-                        }, [])
-                    }
                     const climbingTowerS3 = climbingTowerDetail?.data?.climbing_tower_s3
-                    if (!climbingTowerS3) {
-                        card.data[2].name = "本期式與"
-                        card.data[2].value = r1.length == 0 ? "-" : r1.join(" ")
-                    } else {
+                    if (climbingTowerS3) {
                         const mvpInfoS3 = climbingTowerS3?.mvp_info
                         const layerInfoS3 = climbingTowerS3?.layer_info
                         const formatter = new Intl.NumberFormat('zh-CN', {
                             notation: 'compact',
-                        });
-                        card.data[2].name = `${mvpInfoS3?.floor_mvp_num}/${layerInfoS3?.climbing_tower_layer} ${(mvpInfoS3?.rank_percent/100).toFixed(2)}%`
+                        })
+                        card.data[2].name = `${mvpInfoS3?.floor_mvp_num}/${layerInfoS3?.climbing_tower_layer} ${(mvpInfoS3?.rank_percent / 100).toFixed(2)}%`
                         card.data[2].value = `${formatter.format(layerInfoS3?.total_score)}`
                     }
 
@@ -471,25 +458,6 @@ const getNoteInfo = async (roleId) => {
     }
     return await lk.req.get({
         url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/note?${queryString}`,
-        headers
-    }).then(({error, resp, data}) => {
-        return data.o()
-    })
-}
-
-const getChallengeInfo = async (roleId, scheduleType) => {
-    lk.log(`正在获取${roleId}的挑战信息`)
-    let queryString = `role_id=${roleId}&schedule_type=${scheduleType}&server=prod_gf_cn`
-    let headers = {
-        referer: "https://app.mihoyo.com",
-        "x-rpc-device_fp": zzzDfp,
-        "x-rpc-client_type": 2,
-        "x-rpc-app_version": appVersion,
-        ds: getDs("", "", queryString),
-        cookie: `${zzzCookie}${zzzBbsCookie}`
-    }
-    return await lk.req.get({
-        url: `https://api-takumi-record.mihoyo.com/event/game_record_zzz/api/zzz/challenge?${queryString}`,
         headers
     }).then(({error, resp, data}) => {
         return data.o()
