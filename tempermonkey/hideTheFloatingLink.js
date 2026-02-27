@@ -11,13 +11,15 @@
 
     // 开发者模式,用来显示日志
     const devMode = false
-    GM_info.script.version = "1.1.1"
+    GM_info.script.version = "1.1.2"
     // 鼠标移到链接上,搜索其父节点的深度
     const searchDepth = 5
     let currentUrl;
 
     // 某些网址的a标签有自己的处理方式,不需要用到脚本的点击事件,一般配置能够动态加载数据不希望新页面打开或者刷新页码的
     const specialElementExclusion = {
+        "www.pinterest.com": [ "all" ],
+        "mynetgear.com": [ "all" ],
         "ripay.nexon.com": [ "all" ],
         "dnfm.nexon.com": [ "all" ],
         "flac.music.hi.cn": [ "all" ],
